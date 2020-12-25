@@ -554,7 +554,7 @@ public class TheatreDAO {
         return ticketPrice;
     }
 
-    public String addTicketPrice(String theatreId, String startTime, double price) throws Exception {
+    public String addTicketPrice(String theatreId, String startTime, String price) throws Exception {
         String INSERT_TICKET_PRICE = String.format(
             "INSERT INTO %s (%s, %s, %s) VALUES (?,?,?);",
             TicketPriceDB.TABLE, TicketPriceDB.THEATRE_ID, TicketPriceDB.START_TIME,
@@ -570,7 +570,7 @@ public class TheatreDAO {
             insertTicketPrice = conn.prepareStatement(INSERT_TICKET_PRICE);
             insertTicketPrice.setString(1, theatreId);
             insertTicketPrice.setString(2, startTime);
-            insertTicketPrice.setDouble(3, price);
+            insertTicketPrice.setString(3, price);
             insertTicketPrice.executeUpdate();
 
             conn.commit();

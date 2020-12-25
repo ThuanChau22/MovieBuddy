@@ -13,10 +13,15 @@ public class DBConnection {
     private DBConnection() {
     }
 
+    // Open a connection
     public static Connection connect() throws IOException, ClassNotFoundException, SQLException {
         Connection conn = null;
+
+        // Get current path to .properties file
         String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath().replaceAll("%20", " ");
         String dbConfigPath = rootPath + "db.properties";
+
+        // Get database credential from .properties file
         Properties props = new Properties();
         props.load(new FileInputStream(dbConfigPath));
         Class.forName(props.getProperty("driver"));
@@ -30,12 +35,14 @@ public class DBConnection {
         return conn;
     }
 
+    // Close a statement
     public static void close(PreparedStatement st) throws SQLException {
         if (st != null) {
             st.close();
         }
     }
 
+    // Close a connection
     public static void close(Connection conn) throws SQLException {
         if (conn != null) {
             conn.close();

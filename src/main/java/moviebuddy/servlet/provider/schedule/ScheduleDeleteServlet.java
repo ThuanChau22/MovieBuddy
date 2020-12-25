@@ -10,7 +10,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import moviebuddy.dao.ScheduleDAO;
+import moviebuddy.model.Schedule;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/ScheduleDelete")
 public class ScheduleDeleteServlet extends HttpServlet {
@@ -26,20 +28,46 @@ public class ScheduleDeleteServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-            Object role = session.getAttribute("role");
-            if (role != null && (role.equals("admin") || role.equals("manager"))) {
+            Object role = session.getAttribute(S.ROLE);
+            // Check authorized access as admin and manager
+            if (role != null && (role.equals(S.ADMIN) || role.equals(S.MANAGER))) {
+                // Sanitize parameter
                 String scheduleId = Validation.sanitize(request.getParameter("scheduleId"));
-                String errorMessage = scheduleDAO.deleteSchedule(scheduleId);
-                if (!errorMessage.isEmpty()) {
-                    session.setAttribute("errorMessage", errorMessage);
+
+                // Check authorized deletion as manager
+                String errorMessage = "";
+                if(role.equals(S.MANAGER)) {
+                    String theatreId = "";
+                    Object theatreIdObj = session.getAttribute(S.EMPLOY_THEATRE_ID);
+                    if (theatreIdObj != null) {
+                        theatreId = theatreIdObj.toString();
+                    }
+
+                    // Retrieve schedule information
+                    Schedule schedule = scheduleDAO.getScheduleById(scheduleId);
+
+                    if(theatreId.isEmpty() || !theatreId.equals(schedule.getTheatreId() + "")){
+                        errorMessage = "Unauthorized deletion";
+                    }
                 }
-                response.sendRedirect("manageschedule.jsp");
+
+                // Delete schedule
+                if(errorMessage.isEmpty()){
+                    errorMessage = scheduleDAO.deleteSchedule(scheduleId);
+                }
+                if (!errorMessage.isEmpty()) {
+                    session.setAttribute(S.ERROR_MESSAGE, errorMessage);
+                }
+
+                // Redirect to Manage Schedule page
+                response.sendRedirect(S.MANAGE_SCHEDULE_PAGE);
             } else {
-                response.sendRedirect("home.jsp");
+                // Redirect to Home page for unauthorized access
+                response.sendRedirect(S.HOME_PAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

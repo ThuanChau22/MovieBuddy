@@ -9,29 +9,25 @@ import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.time.LocalTime;
-import java.util.List;
 
+import moviebuddy.dao.TheatreDAO;
 import moviebuddy.dao.MovieDAO;
 import moviebuddy.dao.ScheduleDAO;
 import moviebuddy.model.Movie;
 import moviebuddy.model.Schedule;
-import moviebuddy.model.ShowTime;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/ScheduleAdd")
 public class ScheduleAddServlet extends HttpServlet {
     private static final long serialVersionUID = -9166508971254120994L;
 
-    private static final String THEATRE_ID = "scheduleTheatreId";
-    private static final String MOVIE_ID = "scheduleMovieId";
-    private static final String SHOW_DATE = "scheduleShowDateUpload";
-    private static final String START_TIME = "scheduleShowTimeUpload";
-    private static final String ROOM_NUMBER = "scheduleRoomNumberUpload";
-
+    private TheatreDAO theatreDAO;
     private MovieDAO movieDAO;
     private ScheduleDAO scheduleDAO;
 
     public void init() {
+        theatreDAO = new TheatreDAO();
         movieDAO = new MovieDAO();
         scheduleDAO = new ScheduleDAO();
     }
@@ -40,55 +36,83 @@ public class ScheduleAddServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-            Object role = session.getAttribute("role");
-            if (role != null && role.equals("admin")) {
-                String theatreId = session.getAttribute(THEATRE_ID).toString();
-                String movieId = session.getAttribute(MOVIE_ID).toString();
+            Object role = session.getAttribute(S.ROLE);
+            // Check authorized access as admin and manager
+            if (role != null && (role.equals(S.ADMIN) || role.equals(S.MANAGER))) {
+                // Retrieve current theatre id
+                String theatreId = "";
+
+                // Set theatre id as admin
+                if (role.equals(S.ADMIN)) {
+                    Object theatreIdObj = session.getAttribute(S.SELECTED_THEATRE_ID);
+                    if (theatreIdObj != null) {
+                        theatreId = theatreIdObj.toString();
+                    }
+                }
+
+                // Set theatre id as manager
+                if (role.equals(S.MANAGER)) {
+                    theatreId = "";
+                    Object theatreIdObj = session.getAttribute(S.EMPLOY_THEATRE_ID);
+                    if (theatreIdObj != null) {
+                        theatreId = theatreIdObj.toString();
+                    }
+                }
+
+                // Sanitize user inputs
+                String movieId = Validation.sanitize(request.getParameter("movieId"));
                 String showDate = Validation.sanitize(request.getParameter("showDate"));
-                String showTime = Validation.sanitize(request.getParameter("showTime"));
+                String startTime = Validation.sanitize(request.getParameter("startTime"));
                 String roomNumber = Validation.sanitize(request.getParameter("roomNumber"));
-                String errorMessage = Validation.validateDate(showDate);
-                if (errorMessage.isEmpty()) {
-                    errorMessage = Validation.validateTime(showTime);
-                }
-                if (errorMessage.isEmpty()) {
-                    errorMessage = Validation.validateNumber(roomNumber);
-                }
-                Movie movie = movieDAO.getMovieById(movieId);
-                // Check for time conflict
-                if (errorMessage.isEmpty()) {
-                    LocalTime startTime = LocalTime.parse(showTime);
-                    LocalTime endTime = startTime.plusMinutes(movie.getDuration());
-                    ShowTime interval = new ShowTime(startTime, endTime);
-                    List<Schedule> schedule = scheduleDAO.listScheduleByMovieDate(theatreId, movieId, showDate);
-                    errorMessage = Validation.checkScheduleConflict(schedule, interval);
+
+                // Validate user inputs
+                String errorMessage = Validation.validateScheduleForm(showDate, startTime, roomNumber);
+                if (errorMessage.isEmpty() && theatreDAO.getRoomById(theatreId, roomNumber) == null) {
+                    errorMessage = "Room number does not exist";
                 }
 
-                // Check for space conflict
-                if (errorMessage.isEmpty()) {
-                    LocalTime startTime = LocalTime.parse(showTime);
-                    LocalTime endTime = startTime.plusMinutes(movie.getDuration());
-                    ShowTime interval = new ShowTime(startTime, endTime);
-                    List<Schedule> schedule = scheduleDAO.listScheduleByRoomDate(theatreId, roomNumber, showDate);
-                    errorMessage = Validation.checkScheduleConflict(schedule, interval);
+                // Obtain end time
+                String endTime = "";
+                if(errorMessage.isEmpty()){
+                    Movie movie = movieDAO.getMovieById(movieId);
+                    if(movie != null) {
+                        endTime = LocalTime.parse(startTime).plusMinutes(movie.getDuration()).toString();
+                    } else {
+                        errorMessage = "Unable to obtain schedule end time";
+                    }
                 }
 
+                // Check for schedule conflict
                 if (errorMessage.isEmpty()) {
-                    errorMessage = scheduleDAO.addSchedule(theatreId, roomNumber, movieId, showDate, showTime);
+                    Schedule schedule = scheduleDAO.getScheduleConflict(theatreId, showDate, movieId, roomNumber, startTime, endTime);
+                    if (schedule != null) {
+                        errorMessage = String.format("Time conflict - Movie#%s | Schedule#%s on %s at %s-%s Room#%s", schedule.getMovieId(), schedule.getScheduleId(), schedule.displayShowDate(), schedule.getStartTime(), schedule.getEndTime(), schedule.getRoomNumber());
+                    }
                 }
+
+                // Add movie schedule
+                if (errorMessage.isEmpty()) {
+                    errorMessage = scheduleDAO.addSchedule(theatreId, roomNumber, movieId,
+                    showDate, startTime, endTime);
+                }
+
+                // Return previous inputs
                 if (!errorMessage.isEmpty()) {
-                    session.setAttribute("errorMessage", errorMessage);
-                    session.setAttribute(SHOW_DATE, showDate);
-                    session.setAttribute(START_TIME, showTime);
-                    session.setAttribute(ROOM_NUMBER, roomNumber);
+                    session.setAttribute(S.SCHEDULE_SHOW_DATE_CREATE, showDate);
+                    session.setAttribute(S.SCHEDULE_START_TIME_CREATE, startTime);
+                    session.setAttribute(S.SCHEDULE_ROOM_NUMBER_CREATE, roomNumber);
+                    session.setAttribute(S.ERROR_MESSAGE, errorMessage);
                 }
-                response.sendRedirect("manageschedule.jsp");
+
+                // Redirect to Manage Schedule page
+                response.sendRedirect(S.MANAGE_SCHEDULE_PAGE);
             } else {
-                response.sendRedirect("home.jsp");
+                // Redirect to Home page for unauthorized access
+                response.sendRedirect(S.HOME_PAGE);
             }
         } catch (Exception e) {
-            response.sendRedirect("error.jsp");
             e.printStackTrace();
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

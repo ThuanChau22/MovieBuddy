@@ -1,28 +1,40 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="moviebuddy.util.Passwords" %>
+<%@ page import="moviebuddy.util.S" %>
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
     response.setHeader("Pragma", "no-cache"); // HTTP 1.0
     response.setHeader("Expires", "0"); // Proxies
 
+    // Initiate session
     session = request.getSession();
-    if (session.getAttribute("sessionId") == null) {
-        session.setAttribute("sessionId", Passwords.applySHA256(session.getId()));
-    }
-    if (session.getAttribute("count") == null) {
-        session.setAttribute("count", 0);
-    } else {
-        int count = (int) session.getAttribute("count");
-        session.setAttribute("count", count + 1);
+    Object sessionId = session.getAttribute(S.SESSION_ID);
+    if (sessionId == null || !sessionId.equals(Passwords.applySHA256(session.getId()))) {
+        session.invalidate();
+        session = request.getSession();
+        session.setAttribute(S.SESSION_ID, Passwords.applySHA256(session.getId()));
     }
 
-    if(session.getAttribute("email") == null || !session.getAttribute("currentSession").equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr())) || session.getAttribute("staffId") == null || !(session.getAttribute("role").equals("admin"))){
-        response.sendRedirect("home.jsp");
+    // Check authentication as admin
+    Object accountId = session.getAttribute(S.ACCOUNT_ID);
+    Object currentSession = session.getAttribute(S.CURRENT_SESSION);
+    Object staffId = session.getAttribute(S.STAFF_ID);
+    Object role = session.getAttribute(S.ROLE);
+    if(accountId == null || !currentSession.equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr())) || staffId == null || !(role.equals(S.ADMIN))){
+        response.sendRedirect(S.HOME_PAGE);
     }
 
-    request.setAttribute("errorMessage", session.getAttribute("errorMessage"));
-    session.removeAttribute("errorMessage");
+    request.setAttribute("theatreId", session.getAttribute(S.THEATRE_EDIT_ID));
+    request.setAttribute("nameInput", session.getAttribute(S.THEATRE_EDIT_NAME));
+    request.setAttribute("addressInput", session.getAttribute(S.THEATRE_EDIT_ADDRESS));
+    request.setAttribute("cityInput", session.getAttribute(S.THEATRE_EDIT_CITY));
+    request.setAttribute("stateInput", session.getAttribute(S.THEATRE_EDIT_STATE));
+    request.setAttribute("countryInput", session.getAttribute(S.THEATRE_EDIT_COUNTRY));
+    request.setAttribute("zipInput", session.getAttribute(S.THEATRE_EDIT_ZIP));
+
+    request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
+    session.removeAttribute(S.ERROR_MESSAGE);
 %>
 <html lang="en">
 
@@ -32,55 +44,65 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" href="./images/MovieBuddy.ico">
     <title>Movie Buddy | Manage Theatre</title>
 </head>
 
-<body onload="loadSelectedOption('default', 'state', '${theatreStateEdit}')">
+<body>
     <!-- Navigation bar -->
-    <jsp:include page="/navbar.jsp" />
-    <div style="min-height: 60px;"></div>
+    <jsp:include page="./${S.NAV_BAR_PAGE}" />
     <div id="custom-scroll">
         <div class="main">
-            <!-- Page Content -->
+            <!-- Page content -->
             <div class="container">
                 <h3>Theatre</h3>
                 <hr>
                 <h1 class="display-3 text-center">Update Theatre Information</h1>
                 <hr>
-                <a class="inputAsLink" href="./managetheatre.jsp">&#8249;
+                <a class="inputAsLink" href="./${S.MANAGE_THEATRE_PAGE}">&#8249;
                     <span>Back</span>
                 </a>
                 <div class="row">
-                    <div class="col"></div>
-                    <div class="col-6">
+                    <div class="col-lg-3"></div>
+                    <div class="col-lg">
+                        <!-- Error message -->
                         <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                        <!-- Edit theatre information form -->
                         <form id="editTheatreForm" action="TheatreEdit" method="POST"
                             onsubmit="return validateTheatreForm(this)">
+                            <!-- Save hook -->
                             <div class="form-group">
                                 <input type="hidden" name="action" value="save" />
                             </div>
+                            <!-- Theatre id -->
                             <div class="form-group">
-                                <input type="hidden" name="theatreId" value="${theatreIdEdit}" />
+                                <input type="hidden" name="theatreId" value="${theatreId}" />
                             </div>
+                            <!-- Input theatre name -->
                             <div class="form-group">
                                 <label>Theatre Name</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="theatreName" type="text" placeholder="Buddy###"
-                                    value="${theatreNameEdit}" />
+                                <input class="inputbox" name="theatreName" type="text" placeholder="Buddy###" onkeyup="checkTheatreName(this, 'theatreNameError')" value="${nameInput}" />
+                                <br>
+                                <!-- Theatre name error -->
+                                <span id="theatreNameError" class="errormessage"></span>
                             </div>
+                            <!-- Input address -->
                             <div class="form-group">
                                 <label>Address</label><span class="errormessage">*</span><br>
                                 <input class="inputbox" name="address" type="text" placeholder="1234 Main St"
-                                    value="${theatreAddressEdit}" />
+                                    value="${addressInput}" />
                             </div>
+                            <!-- Input city -->
                             <div class="form-group">
                                 <label>City</label><span class="errormessage">*</span><br>
                                 <input class="inputbox" name="city" type="text" placeholder="San Francisco"
-                                    value="${theatreCityEdit}" />
+                                    value="${cityInput}" />
                             </div>
+                            <!-- input state -->
                             <div class="form-group">
                                 <label>State</label><span class="errormessage">*</span><br>
                                 <select id="state" class="inputbox" name="state">
-                                    <option id="default" hidden selected value="none">Select a State</option>
+                                    <option id="default" hidden selected value="">Select a State</option>
                                     <option value="AL">Alabama</option>
                                     <option value="AK">Alaska</option>
                                     <option value="AZ">Arizona</option>
@@ -134,17 +156,24 @@
                                     <option value="WY">Wyoming</option>
                                 </select>
                             </div>
+                            <!-- Input country -->
                             <div class="form-group">
                                 <label>Country</label><span class="errormessage">*</span><br>
                                 <input class="inputbox" name="country" type="text" placeholder="USA"
-                                    value="${theatreCountryEdit}" />
+                                    value="${countryInput}" />
                             </div>
+                            <!-- Input zip code -->
                             <div class="form-group">
                                 <label>Zip Code</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="zip" type="text" placeholder="12345" value="${theatreZipEdit}" />
+                                <input class="inputbox" name="zip" type="text" placeholder="12345" onkeyup="checkZip(this, 'zipError')" value="${zipInput}" />
+                                <br>
+                                <!-- Zip code error -->
+                                <span id="zipError" class="errormessage"></span>
                             </div>
                         </form>
+                        <!-- Cancel form -->
                         <form id="cancelTheatreForm" action="TheatreEdit" method="POST">
+                            <!-- Cancel hook -->
                             <div class="form-group">
                                 <input type="hidden" name="action" value="cancel" />
                             </div>
@@ -158,13 +187,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col"></div>
+                    <div class="col-lg-3"></div>
                 </div>
             </div>
         </div>
+        <!-- Footer -->
         <div class="footer">
-            <hr>
-            <p class="text-center">CS157A-Section01-Team11&copy;2020</p>
+            <jsp:include page="./${S.FOOTER_PAGE}" />
         </div>
     </div>
 
@@ -177,6 +206,9 @@
 
     <script src="./JS/functions.js"></script>
     <script src="./JS/validation.js"></script>
+    <script>
+        loadSelectedOption("default", "state", "${stateInput}");
+    </script>
 </body>
 
 </html>

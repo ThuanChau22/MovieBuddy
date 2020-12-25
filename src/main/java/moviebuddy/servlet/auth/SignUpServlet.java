@@ -6,12 +6,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.RequestDispatcher;
 import java.io.IOException;
 
 import moviebuddy.dao.UserDAO;
-import moviebuddy.model.User;
-import moviebuddy.util.Passwords;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/SignUp")
 public class SignUpServlet extends HttpServlet {
@@ -25,6 +25,8 @@ public class SignUpServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            HttpSession session = request.getSession();
+
             // Sanitize user inputs
             String userName = Validation.sanitize(request.getParameter("userName"));
             String email = Validation.sanitize(request.getParameter("email"));
@@ -32,39 +34,31 @@ public class SignUpServlet extends HttpServlet {
             String rePassword = Validation.sanitize(request.getParameter("rePassword"));
 
             // Validate user inputs
-            String invalidUserName = Validation.validateUserName(userName);
-            String invalidEmail = Validation.validateEmail(email);
-            if (invalidEmail.isEmpty() && userDAO.getRegisteredUser(email) != null) {
-                invalidEmail = "Email is already registered";
+            String errorMessage = Validation.validateSignUpForm(userName, email, password, rePassword);
+            if (errorMessage.isEmpty() && userDAO.getRegisteredUser(email) != null) {
+                errorMessage = "Email is already registered";
             }
-            String invalidPassword = Validation.validatePassword(password);
-            String invalidRePassword = Validation.validateRePassword(password, rePassword);
 
-            String message = invalidUserName + invalidEmail + invalidPassword + invalidRePassword;
-            if (message.isEmpty() && userDAO.signUpRegisteredUser(userName, email, password).isEmpty()) {
+            // Create user account
+            if (errorMessage.isEmpty()) {
+                errorMessage = userDAO.createRegisteredUser(userName, email, password);
+            }
+
+            if (errorMessage.isEmpty()) {
                 // Sign up successfully
-                User user = userDAO.signInCustomer(email, password);
-                HttpSession session = request.getSession();
-                session.setAttribute("accountId", user.getAccountId());
-                session.setAttribute("userName", user.getUserName());
-                session.setAttribute("email", user.getEmail());
-                session.setAttribute("zip", user.getZip());
-                session.setAttribute("currentSession",
-                        Passwords.applySHA256(session.getId() + request.getRemoteAddr()));
-                response.sendRedirect("home.jsp");
+                // Process authentication
+                RequestDispatcher rd = request.getRequestDispatcher("SignIn");
+                rd.forward(request, response);
             } else {
-                HttpSession session = request.getSession();
-                session.setAttribute("signupUserName", request.getParameter("userName"));
-                session.setAttribute("signupEmail", request.getParameter("email"));
-                session.setAttribute("userNameError", invalidUserName);
-                session.setAttribute("emailError", invalidEmail);
-                session.setAttribute("passwordError", invalidPassword);
-                session.setAttribute("rePasswordError", invalidRePassword);
-                response.sendRedirect("signup.jsp");
+                // Back to SignUp page with previous inputs
+                session.setAttribute(S.SIGN_UP_USERNAME, userName);
+                session.setAttribute(S.SIGN_UP_EMAIL, email);
+                session.setAttribute(S.ERROR_MESSAGE, errorMessage);
+                response.sendRedirect(S.SIGN_UP_PAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

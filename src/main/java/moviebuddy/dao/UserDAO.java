@@ -11,14 +11,15 @@ import java.time.LocalDate;
 
 import moviebuddy.util.Passwords;
 import moviebuddy.util.DBConnection;
+import moviebuddy.util.S;
 import moviebuddy.db.UserDB;
 import moviebuddy.db.RegisteredDB;
 import moviebuddy.db.MembershipDB;
 import moviebuddy.db.ProviderDB;
 import moviebuddy.db.RoleDB;
 import moviebuddy.db.EmployDB;
-import moviebuddy.db.TheatreDB;
 import moviebuddy.model.User;
+import moviebuddy.model.Role;
 
 public class UserDAO {
 
@@ -188,6 +189,33 @@ public class UserDAO {
         return staffs;
     }
 
+    public List<Role> listRoles() throws Exception {
+        String QUERY_ROLES = String.format(
+                "SELECT %s, %s FROM %s;",
+                RoleDB.ROLE_ID, RoleDB.TITLE, RoleDB.TABLE
+        );
+
+        List<Role> roles = new LinkedList<>();
+        Connection conn = null;
+        PreparedStatement queryRoles = null;
+        try {
+            conn = DBConnection.connect();
+            queryRoles = conn.prepareStatement(QUERY_ROLES);
+            ResultSet res = queryRoles.executeQuery();
+            while (res.next()) {
+                Role role = new Role(res.getInt(RoleDB.ROLE_ID));
+                role.setTitle(res.getString(RoleDB.TITLE));
+                roles.add(role);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            DBConnection.close(queryRoles);
+            DBConnection.close(conn);
+        }
+        return roles;
+    }
+
     public int getEmployTheatreId(String staffId) throws Exception {
         String QUERY_EMPLOY_THEATRE_ID = String.format(
             "SELECT theatre_id FROM employ WHERE staff_id=?;",
@@ -214,7 +242,7 @@ public class UserDAO {
         return theatreId;
     }
 
-    public String signUpRegisteredUser(String userName, String email, String password) throws Exception {
+    public String createRegisteredUser(String userName, String email, String password) throws Exception {
         String INSERT_USER = String.format(
             "INSERT INTO %s(%s) VALUES(?);",
             UserDB.TABLE, UserDB.USER_TYPE
@@ -254,7 +282,7 @@ public class UserDAO {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            return "Fail to sign up";
+            return "Fail to create account";
         } finally {
             conn.setAutoCommit(true);
             DBConnection.close(insertUser);
@@ -264,7 +292,7 @@ public class UserDAO {
         return "";
     }
 
-    public String signUpProvider(String role, String theatreLocation, String userName, String email, String password)
+    public String createProvider(String role, String theatreLocation, String userName, String email, String password)
             throws Exception {
         String INSERT_USER = String.format(
             "INSERT INTO %s(%s) VALUES(?);",
@@ -285,9 +313,8 @@ public class UserDAO {
             RoleDB.ROLE_ID, RoleDB.TABLE, RoleDB.TITLE
         );
         String INSERT_EMPLOY = String.format(
-            "INSERT INTO %s(%s, %s) VALUES (LAST_INSERT_ID(), (SELECT %s FROM %s WHERE %s=?));",
-            EmployDB.TABLE, EmployDB.STAFF_ID, EmployDB.THEATRE_ID,
-            TheatreDB.THEATRE_ID, TheatreDB.TABLE, TheatreDB.THEATRE_ID
+            "INSERT INTO %s(%s, %s) VALUES (LAST_INSERT_ID(), ?);",
+            EmployDB.TABLE, EmployDB.STAFF_ID, EmployDB.THEATRE_ID
         );
 
         int autoRenew = 1;
@@ -322,7 +349,7 @@ public class UserDAO {
             insertProvider.setString(1, role);
             insertProvider.executeUpdate();
 
-            if (!theatreLocation.isEmpty()) {
+            if (!role.equals(S.ADMIN)) {
                 insertEmploy = conn.prepareStatement(INSERT_EMPLOY);
                 insertEmploy.setString(1, theatreLocation);
                 insertEmploy.executeUpdate();

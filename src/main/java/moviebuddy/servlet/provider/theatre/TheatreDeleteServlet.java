@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import moviebuddy.dao.TheatreDAO;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/TheatreDelete")
 public class TheatreDeleteServlet extends HttpServlet {
@@ -25,20 +26,27 @@ public class TheatreDeleteServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-            Object role = session.getAttribute("role");
-            if (role != null && role.equals("admin")) {
+            Object role = session.getAttribute(S.ROLE);
+            // Check authorized access as admin
+            if (role != null && role.equals(S.ADMIN)) {
+                // Sanitize parameter
                 String theatreId = Validation.sanitize(request.getParameter("theatreId"));
+
+                // Delete theatre information
                 String errorMessage = theatreDAO.deleteTheatre(theatreId);
                 if (!errorMessage.isEmpty()) {
-                    session.setAttribute("errorMessage", errorMessage);
+                    session.setAttribute(S.ERROR_MESSAGE, errorMessage);
                 }
-                response.sendRedirect("managetheatre.jsp");
+
+                // Redirect to Manage Theatre page
+                response.sendRedirect(S.MANAGE_THEATRE_PAGE);
             } else {
-                response.sendRedirect("home.jsp");
+                // Redirect to Home page for unauthorized access
+                response.sendRedirect(S.HOME_PAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

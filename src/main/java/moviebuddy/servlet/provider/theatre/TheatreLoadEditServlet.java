@@ -12,18 +12,11 @@ import java.io.IOException;
 import moviebuddy.dao.TheatreDAO;
 import moviebuddy.model.Theatre;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/TheatreLoadEdit")
 public class TheatreLoadEditServlet extends HttpServlet {
     private static final long serialVersionUID = 3856058405158486366L;
-
-    private static final String THEATRE_ID = "theatreIdEdit";
-    private static final String NAME = "theatreNameEdit";
-    private static final String ADDRESS = "theatreAddressEdit";
-    private static final String CITY = "theatreCityEdit";
-    private static final String STATE = "theatreStateEdit";
-    private static final String COUNTRY = "theatreCountryEdit";
-    private static final String ZIP = "theatreZipEdit";
 
     private TheatreDAO theatreDAO;
 
@@ -35,28 +28,37 @@ public class TheatreLoadEditServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-            Object role = session.getAttribute("role");
-            if (role != null && role.equals("admin")) {
+            Object role = session.getAttribute(S.ROLE);
+            // Check authorized access as admin
+            if (role != null && role.equals(S.ADMIN)) {
+                // Sanitize parameter
                 String theatreId = Validation.sanitize(request.getParameter("theatreId"));
+
+                // Retrieve theatre information
                 Theatre theatre = theatreDAO.getTheatreById(theatreId);
                 if (theatre != null) {
-                    session.setAttribute(THEATRE_ID, theatreId);
-                    session.setAttribute(NAME, theatre.getTheatreName());
-                    session.setAttribute(ADDRESS, theatre.getAddress());
-                    session.setAttribute(CITY, theatre.getCity());
-                    session.setAttribute(STATE, theatre.getState());
-                    session.setAttribute(COUNTRY, theatre.getCountry());
-                    session.setAttribute(ZIP, theatre.getZip());
-                    response.sendRedirect("theatreedit.jsp");
+                    // Set theatre information in session
+                    session.setAttribute(S.THEATRE_EDIT_ID, theatreId);
+                    session.setAttribute(S.THEATRE_EDIT_NAME, theatre.getTheatreName());
+                    session.setAttribute(S.THEATRE_EDIT_ADDRESS, theatre.getAddress());
+                    session.setAttribute(S.THEATRE_EDIT_CITY, theatre.getCity());
+                    session.setAttribute(S.THEATRE_EDIT_STATE, theatre.getState());
+                    session.setAttribute(S.THEATRE_EDIT_COUNTRY, theatre.getCountry());
+                    session.setAttribute(S.THEATRE_EDIT_ZIP, theatre.getZip());
+
+                    // Redirect to Edit Theatre page
+                    response.sendRedirect(S.THEATRE_EDIT_PAGE);
                 } else {
-                    response.sendRedirect("managetheatre.jsp");
+                    // Back to Manage Theatre page
+                    response.sendRedirect(S.MANAGE_THEATRE_PAGE);
                 }
             } else {
-                response.sendRedirect("home.jsp");
+                // Redirect to Home page for unauthorized access
+                response.sendRedirect(S.HOME_PAGE);
             }
         } catch (Exception e) {
-            response.sendRedirect("error.jsp");
             e.printStackTrace();
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

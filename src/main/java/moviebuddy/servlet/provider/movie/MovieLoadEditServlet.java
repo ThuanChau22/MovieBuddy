@@ -11,17 +11,11 @@ import java.io.IOException;
 import moviebuddy.dao.MovieDAO;
 import moviebuddy.model.Movie;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/MovieLoadEdit")
 public class MovieLoadEditServlet extends HttpServlet {
     private static final long serialVersionUID = 4761952928243992449L;
-
-    private static final String MOVIE_ID = "movieIdEdit";
-    private static final String TITLE = "movieTitleEdit";
-    private static final String RELEASE_DATE = "movieReleaseDateEdit";
-    private static final String DURATION = "movieDurationEdit";
-    private static final String TRAILER = "movieTrailerEdit";
-    private static final String DESCRIPTION = "movieDescriptionEdit";
 
     private MovieDAO movieDAO;
 
@@ -33,27 +27,36 @@ public class MovieLoadEditServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-            Object role = session.getAttribute("role");
-            if (role != null && role.equals("admin")) {
+            Object role = session.getAttribute(S.ROLE);
+            // Check authorized access as admin
+            if (role != null && role.equals(S.ADMIN)) {
+                // Sanitize parameter
                 String movieId = Validation.sanitize(request.getParameter("movieId"));
+
+                // Retrieve movie information
                 Movie movie = movieDAO.getMovieById(movieId);
                 if (movie != null) {
-                    session.setAttribute(MOVIE_ID, movieId);
-                    session.setAttribute(TITLE, movie.getTitle());
-                    session.setAttribute(RELEASE_DATE, movie.getReleaseDate());
-                    session.setAttribute(DURATION, movie.getDuration());
-                    session.setAttribute(TRAILER, movie.getTrailer());
-                    session.setAttribute(DESCRIPTION, movie.getDescription());
-                    response.sendRedirect("movieedit.jsp");
+                    // Set movie information in session
+                    session.setAttribute(S.MOVIE_EDIT_ID, movieId);
+                    session.setAttribute(S.MOVIE_EDIT_TITLE, movie.getTitle());
+                    session.setAttribute(S.MOVIE_EDIT_RELEASE_DATE, movie.getReleaseDate());
+                    session.setAttribute(S.MOVIE_EDIT_DURATION, movie.getDuration());
+                    session.setAttribute(S.MOVIE_EDIT_TRAILER, movie.getTrailer());
+                    session.setAttribute(S.MOVIE_EDIT_DESCRIPTION, movie.getDescription());
+
+                    // Redirect to Edit Movie Information page
+                    response.sendRedirect(S.MOVIE_EDIT_PAGE);
                 } else {
-                    response.sendRedirect("managemovie.jsp");
+                    // Back to Manage Movie page
+                    response.sendRedirect(S.MANAGE_MOVIE_PAGE);
                 }
             } else {
-                response.sendRedirect("home.jsp");
+                // Redirect to Home page for unauthorized access
+                response.sendRedirect(S.HOME_PAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

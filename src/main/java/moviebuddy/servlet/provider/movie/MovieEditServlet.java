@@ -14,6 +14,7 @@ import java.io.InputStream;
 
 import moviebuddy.dao.MovieDAO;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/MovieEdit")
 @MultipartConfig
@@ -29,9 +30,13 @@ public class MovieEditServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-            Object role = session.getAttribute("role");
-            if (role != null && role.equals("admin")) {
+            Object role = session.getAttribute(S.ROLE);
+            // Check authorized access as admin
+            if (role != null && role.equals(S.ADMIN)) {
+
+                // Save action
                 if (request.getParameter("action").equals("save")) {
+                    // Sanitize user inputs
                     String movieId = Validation.sanitize(request.getParameter("movieId"));
                     String title = Validation.sanitize(request.getParameter("title"));
                     String releaseDate = Validation.sanitize(request.getParameter("releaseDate"));
@@ -41,24 +46,42 @@ public class MovieEditServlet extends HttpServlet {
                     InputStream streamPoster = partPoster.getInputStream();
                     long posterSize = partPoster.getSize();
                     String description = Validation.sanitize(request.getParameter("description"));
-                    String errorMessage = movieDAO.updateMovie(movieId, title, releaseDate, duration, trailer,
-                            streamPoster, posterSize, description);
+
+                    // Validate user inputs
+                    String errorMessage = Validation.validateMovieForm(title, releaseDate, duration, trailer, description);
+
+                    // Update movie information
+                    if(errorMessage.isEmpty()){
+                        errorMessage = movieDAO.updateMovie(movieId, title, releaseDate, duration, trailer,
+                                streamPoster, posterSize, description);
+                    }
+
                     if (errorMessage.isEmpty()) {
-                        response.sendRedirect("managemovie.jsp");
+                        // Redirect to Manage Movie page
+                        response.sendRedirect(S.MANAGE_MOVIE_PAGE);
                     } else {
-                        session.setAttribute("errorMessage", errorMessage);
-                        response.sendRedirect("movieedit.jsp");
+                        // Back to Edit Movie page with previous inputs
+                        session.setAttribute(S.MOVIE_EDIT_TITLE, title);
+                        session.setAttribute(S.MOVIE_EDIT_RELEASE_DATE, releaseDate);
+                        session.setAttribute(S.MOVIE_EDIT_DURATION, duration);
+                        session.setAttribute(S.MOVIE_EDIT_TRAILER, trailer);
+                        session.setAttribute(S.MOVIE_EDIT_DESCRIPTION, description);
+                        session.setAttribute(S.ERROR_MESSAGE, errorMessage);
+                        response.sendRedirect(S.MOVIE_EDIT_PAGE);
                     }
                 }
+
+                // Cancel action
                 if (request.getParameter("action").equals("cancel")) {
-                    response.sendRedirect("managemovie.jsp");
+                    response.sendRedirect(S.MANAGE_MOVIE_PAGE);
                 }
             } else {
-                response.sendRedirect("home.jsp");
+                // Redirect to Home page for unauthorized access
+                response.sendRedirect(S.HOME_PAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

@@ -14,14 +14,11 @@ import moviebuddy.dao.TheatreDAO;
 import moviebuddy.model.Theatre;
 import moviebuddy.model.Room;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/RoomGet")
 public class RoomGetServlet extends HttpServlet {
     private static final long serialVersionUID = 7128033020470518231L;
-
-    private static final String THEATRE_ID = "roomTheatreId";
-    private static final String THEATRE_NAME = "roomTheatreName";
-    private static final String ROOMS = "roomList";
 
     private TheatreDAO theatreDAO;
 
@@ -33,14 +30,17 @@ public class RoomGetServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-            if (session.getAttribute(THEATRE_ID) != null) {
-                String theatreId = session.getAttribute(THEATRE_ID).toString();
+            // Retrieve current theatre id
+            Object theatreIdObj = session.getAttribute(S.ROOM_THEATRE_ID);
+            if (theatreIdObj != null) {
+                String theatreId = theatreIdObj.toString();
+                // Retrieve list of rooms
                 List<Room> rooms = theatreDAO.listRooms(theatreId);
-                request.setAttribute(ROOMS, rooms);
+                session.setAttribute(S.ROOM_LIST, rooms);
             }
         } catch (Exception e) {
-            response.sendRedirect("error.jsp");
             e.printStackTrace();
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 
@@ -48,15 +48,19 @@ public class RoomGetServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
+            // Sanitize parameter
             String theatreId = Validation.sanitize(request.getParameter("theatreId"));
-            Theatre theatre = theatreDAO.getTheatreById(theatreId);
-            session.setAttribute(THEATRE_ID, theatreId);
-            session.setAttribute(THEATRE_NAME, theatre.getTheatreName());
-            response.sendRedirect("manageroom.jsp");
 
+            // Set theatre information in session
+            Theatre theatre = theatreDAO.getTheatreById(theatreId);
+            session.setAttribute(S.ROOM_THEATRE_NAME, theatre.getTheatreName());
+            session.setAttribute(S.ROOM_THEATRE_ID, theatreId);
+
+            // Redirect to Manage Room page
+            response.sendRedirect(S.MANAGE_ROOM_PAGE);
         } catch (Exception e) {
-            response.sendRedirect("error.jsp");
             e.printStackTrace();
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

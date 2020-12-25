@@ -9,89 +9,83 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import moviebuddy.dao.UserDAO;
+import moviebuddy.dao.TheatreDAO;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/SignUpStaff")
 public class SignUpStaffServlet extends HttpServlet {
     private static final long serialVersionUID = 6851275245718964069L;
 
-    private static final String ROLE = "signupStaffRole";
-    private static final String LOCATION = "signupStaffTheatreLocation";
-    private static final String USERNAME = "signupStaffUserName";
-    private static final String EMAIL = "signupStaffEmail";
-    private static final String ROLE_ERROR = "roleError";
-    private static final String LOCATION_ERROR = "theatreLocationError";
-    private static final String USERNAME_ERROR = "userNameError";
-    private static final String EMAIL_ERROR = "emailError";
-    private static final String PASSWORD_ERROR = "passwordError";
-
     private UserDAO userDAO;
+    private TheatreDAO theatreDAO;
 
     public void init() {
         userDAO = new UserDAO();
+        theatreDAO = new TheatreDAO();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-            Object role = session.getAttribute("role");
-            if (role != null && (role.equals("admin") || role.equals("manager"))) {
+            Object role = session.getAttribute(S.ROLE);
+            // Check authorized access as admin or manager
+            if (role != null && (role.equals(S.ADMIN) || role.equals(S.MANAGER))) {
                 // Sanitize user inputs
-                String roleInput = Validation.sanitize(request.getParameter("role"));
-                String theatreLocation = Validation.sanitize(request.getParameter("theatreLocation"));
+                String roleInput = "";
+                String locationInput = "";
+                if (role.equals(S.ADMIN)) {
+                    roleInput = Validation.sanitize(request.getParameter("role"));
+                    locationInput = Validation.sanitize(request.getParameter("theatreLocation"));
+                }
+                if (role.equals(S.MANAGER)) {
+                    roleInput = S.FACULTY;
+                    // Retrieve employ theatre id
+                    String employTheatreId = "";
+                    Object employIdObj = session.getAttribute(S.EMPLOY_THEATRE_ID);
+                    if (employIdObj != null) {
+                        employTheatreId = employIdObj.toString();
+                    }
+                    locationInput = employTheatreId;
+                }
                 String userName = Validation.sanitize(request.getParameter("userName"));
                 String email = Validation.sanitize(request.getParameter("email"));
                 String password = Validation.sanitize(request.getParameter("password"));
 
                 // Validate user inputs
-                String invalidRole = Validation.validateRole(roleInput);
-                String invalidLocation = "";
-                if (invalidRole.isEmpty() && !roleInput.equals("admin")) {
-                    invalidLocation = Validation.validateTheatreLocation(theatreLocation);
+                String errorMessage = Validation.validateStaffSignUpForm(roleInput, locationInput, userName, email, password);
+                if (errorMessage.isEmpty() && !locationInput.isEmpty() && theatreDAO.getTheatreById(locationInput) == null) {
+                    errorMessage = "Theatre location does not exist";
                 }
-                String invalidUserName = Validation.validateUserName(userName);
-                String invalidEmail = Validation.validateEmail(email);
-                if (invalidEmail.isEmpty() && userDAO.getRegisteredUser(email) != null) {
-                    invalidEmail = "Email is already registered\n";
+                if (errorMessage.isEmpty() && userDAO.getRegisteredUser(email) != null) {
+                    errorMessage = "Email is already registered";
                 }
-                String invalidPassword = Validation.validatePassword(password);
-                String invalid = invalidRole + invalidLocation + invalidUserName + invalidEmail + invalidPassword;
 
-                String errorMessage = "";
-                if (invalid.isEmpty() && role.equals("admin")) {
-                    errorMessage = userDAO.signUpProvider(roleInput, theatreLocation, userName, email, password);
-                }
-                if (invalid.isEmpty() && role.equals("manager")
-                        && !(roleInput.equals("admin") || roleInput.equals("manager"))) {
-                    String employTheatreId = session.getAttribute("employTheatreId").toString();
-                    if (employTheatreId.equals(theatreLocation)) {
-                        errorMessage = userDAO.signUpProvider(roleInput, theatreLocation, userName, email, password);
-                    } else {
-                        errorMessage = "Unable to add staff to a different theatre\n";
-                    }
-                }
+                // Create staff account
                 if (errorMessage.isEmpty()) {
-                    response.sendRedirect("managestaff.jsp");
+                    errorMessage = userDAO.createProvider(roleInput, locationInput, userName, email, password);
+                }
+
+                if (errorMessage.isEmpty()) {
+                    // Redirect to Manage Staff page
+                    response.sendRedirect(S.MANAGE_STAFF_PAGE);
                 } else {
-                    session.setAttribute(ROLE, request.getParameter("role"));
-                    session.setAttribute(LOCATION, request.getParameter("theatreLocation"));
-                    session.setAttribute(USERNAME, request.getParameter("userName"));
-                    session.setAttribute(EMAIL, request.getParameter("email"));
-                    session.setAttribute(ROLE_ERROR, invalidRole);
-                    session.setAttribute(LOCATION_ERROR, invalidLocation);
-                    session.setAttribute(USERNAME_ERROR, invalidUserName);
-                    session.setAttribute(EMAIL_ERROR, invalidEmail);
-                    session.setAttribute(PASSWORD_ERROR, invalidPassword);
-                    session.setAttribute("errorMessage", errorMessage);
-                    response.sendRedirect("staffsignup.jsp");
+                    // Back to Staff SignUp page with previous inputs
+                    session.setAttribute(S.SIGN_UP_STAFF_ROLE, roleInput);
+                    session.setAttribute(S.SIGN_UP_STAFF_LOCATION, locationInput);
+                    session.setAttribute(S.SIGN_UP_STAFF_USERNAME, userName);
+                    session.setAttribute(S.SIGN_UP_STAFF_EMAIL, email);
+                    session.setAttribute(S.ERROR_MESSAGE, errorMessage);
+                    response.sendRedirect(S.STAFF_SIGN_UP_PAGE);
                 }
             } else {
-                response.sendRedirect("home.jsp");
+                // Redirect to Home page for unauthorized access
+                response.sendRedirect(S.HOME_PAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

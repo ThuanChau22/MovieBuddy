@@ -1,7 +1,6 @@
 package moviebuddy.db;
 
 public class RegisteredDB {
-
     public static final String TABLE = "registered_user";
     public static final String ACCOUNT_ID = "account_id";
     public static final String NAME = "name";

@@ -12,6 +12,7 @@ import moviebuddy.dao.UserDAO;
 import moviebuddy.model.User;
 import moviebuddy.util.Passwords;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/SignIn")
 public class SignInServlet extends HttpServlet {
@@ -25,29 +26,43 @@ public class SignInServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            HttpSession session = request.getSession();
+
             // Sanitize user inputs
             String email = Validation.sanitize(request.getParameter("email"));
             String password = Validation.sanitize(request.getParameter("password"));
-            User user = userDAO.signInCustomer(email, password);
-            if (user != null) {
-                // Sign in successfully
-                HttpSession session = request.getSession();
-                session.setAttribute("accountId", user.getAccountId());
-                session.setAttribute("userName", user.getUserName());
-                session.setAttribute("email", user.getEmail());
-                session.setAttribute("zip", user.getZip());
-                session.setAttribute("currentSession",
-                        Passwords.applySHA256(session.getId() + request.getRemoteAddr()));
-                response.sendRedirect("home.jsp");
+
+            // Validate user inputs
+            String errorMessage = Validation.validateSignInForm(email, password);
+
+            // Authenticate user
+            if (errorMessage.isEmpty()) {
+                User user = userDAO.signInCustomer(email, password);
+                if (user != null) {
+                    // Sign in successfully
+                    // Set user info in session
+                    session.setAttribute(S.CURRENT_SESSION,
+                            Passwords.applySHA256(session.getId() + request.getRemoteAddr()));
+                    session.setAttribute(S.ACCOUNT_ID, user.getAccountId());
+                    session.setAttribute(S.USERNAME, user.getUserName());
+                    session.setAttribute(S.ZIPCODE, user.getZip());
+                } else {
+                    errorMessage = "Invalid email/password! Please try again";
+                }
+            }
+
+            if (errorMessage.isEmpty()) {
+                // Redirect to Home page
+                response.sendRedirect(S.HOME_PAGE);
             } else {
-                HttpSession session = request.getSession();
-                session.setAttribute("signinEmail", request.getParameter("email"));
-                session.setAttribute("signinMessage", "Invalid email/password! Please try again.");
-                response.sendRedirect("signin.jsp");
+                // Back to SignIn page with previous inputs
+                session.setAttribute(S.SIGN_IN_EMAIL, email);
+                session.setAttribute(S.ERROR_MESSAGE, errorMessage);
+                response.sendRedirect(S.SIGN_IN_PAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

@@ -10,7 +10,8 @@ public class Schedule {
     private int roomNumber;
     private int movieId;
     private LocalDate showDate;
-    private ShowTime showTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
     public Schedule(int scheduleId) {
         this.scheduleId = scheduleId;
@@ -40,8 +41,12 @@ public class Schedule {
         return DateTimeFormatter.ofPattern("MM/dd/yyyy").format(showDate);
     }
 
-    public ShowTime getShowTime() {
-        return showTime;
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
     }
 
     public void setTheatreId(int theatreId) {
@@ -60,8 +65,12 @@ public class Schedule {
         this.showDate = showDate;
     }
 
-    public void setShowTime(LocalTime startTime, LocalTime endTime) {
-        this.showTime = new ShowTime(startTime, endTime);
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
     }
 
 }

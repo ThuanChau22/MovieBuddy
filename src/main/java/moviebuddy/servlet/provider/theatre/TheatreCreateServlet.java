@@ -11,17 +11,11 @@ import java.io.IOException;
 
 import moviebuddy.dao.TheatreDAO;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/TheatreCreate")
 public class TheatreCreateServlet extends HttpServlet {
     private static final long serialVersionUID = 5383246290874129363L;
-
-    private static final String NAME = "theatreNameUpload";
-    private static final String ADDRESS = "theatreAddressUpload";
-    private static final String CITY = "theatreCityUpload";
-    private static final String STATE = "theatreStateUpload";
-    private static final String COUNTRY = "theatreCountryUpload";
-    private static final String ZIP = "theatreZipUpload";
 
     private TheatreDAO theatreDAO;
 
@@ -33,39 +27,49 @@ public class TheatreCreateServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-            Object role = session.getAttribute("role");
-            if (role != null && role.equals("admin")) {
+            Object role = session.getAttribute(S.ROLE);
+            // Check authorized access as admin
+            if (role != null && role.equals(S.ADMIN)) {
+                // Sanitize user inputs
                 String theatreName = Validation.sanitize(request.getParameter("theatreName"));
                 String address = Validation.sanitize(request.getParameter("address"));
                 String city = Validation.sanitize(request.getParameter("city"));
                 String state = Validation.sanitize(request.getParameter("state"));
                 String country = Validation.sanitize(request.getParameter("country"));
                 String zip = Validation.sanitize(request.getParameter("zip"));
-                String errorMessage = "";
-                if (theatreDAO.getTheatreByName(theatreName) != null) {
+
+                // Validate user inputs
+                String errorMessage = Validation.validateTheatreForm(theatreName, address, city, state, country, zip);
+                if(errorMessage.isEmpty() && theatreDAO.getTheatreByName(theatreName) != null){
                     errorMessage = "Theatre name already existed";
                 }
+
+                // Upload theatre information
                 if (errorMessage.isEmpty()) {
                     errorMessage = theatreDAO.createTheatre(theatreName, address, city, state, country, zip);
                 }
+
                 if (errorMessage.isEmpty()) {
-                    response.sendRedirect("managetheatre.jsp");
+                    // Redirect to Manage Theatre page
+                    response.sendRedirect(S.MANAGE_THEATRE_PAGE);
                 } else {
-                    session.setAttribute("errorMessage", errorMessage);
-                    session.setAttribute(NAME, theatreName);
-                    session.setAttribute(ADDRESS, address);
-                    session.setAttribute(CITY, city);
-                    session.setAttribute(STATE, state);
-                    session.setAttribute(COUNTRY, country);
-                    session.setAttribute(ZIP, zip);
-                    response.sendRedirect("theatrecreate.jsp");
+                    // Back to Create Theatre page with previous inputs
+                    session.setAttribute(S.THEATRE_CREATE_NAME, theatreName);
+                    session.setAttribute(S.THEATRE_CREATE_ADDRESS, address);
+                    session.setAttribute(S.THEATRE_CREATE_CITY, city);
+                    session.setAttribute(S.THEATRE_CREATE_STATE, state);
+                    session.setAttribute(S.THEATRE_CREATE_COUNTRY, country);
+                    session.setAttribute(S.THEATRE_CREATE_ZIP, zip);
+                    session.setAttribute(S.ERROR_MESSAGE, errorMessage);
+                    response.sendRedirect(S.THEATRE_CREATE_PAGE);
                 }
             } else {
-                response.sendRedirect("home.jsp");
+                // Redirect to Home page for unauthorized access
+                response.sendRedirect(S.HOME_PAGE);
             }
         } catch (Exception e) {
-            response.sendRedirect("error.jsp");
             e.printStackTrace();
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

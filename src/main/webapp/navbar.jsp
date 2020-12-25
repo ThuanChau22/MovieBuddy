@@ -1,37 +1,41 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="moviebuddy.util.Passwords" %>
+<%@ page import="moviebuddy.util.S" %>
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
     response.setHeader("Pragma", "no-cache"); // HTTP 1.0
     response.setHeader("Expires", "0"); // Proxies
 
+    // Initiate session
     session = request.getSession();
-    if (session.getAttribute("sessionId") == null) {
-        session.setAttribute("sessionId", Passwords.applySHA256(session.getId()));
-    }
-    if (session.getAttribute("count") == null) {
-        session.setAttribute("count", 0);
-    } else {
-        int count = (int) session.getAttribute("count");
-        session.setAttribute("count", count + 1);
+    Object sessionId = session.getAttribute(S.SESSION_ID);
+    if (sessionId == null || !sessionId.equals(Passwords.applySHA256(session.getId()))) {
+        session.invalidate();
+        session = request.getSession();
+        session.setAttribute(S.SESSION_ID, Passwords.applySHA256(session.getId()));
     }
 
-    request.setAttribute("signedOut", true);
+    // Set authentication status
     request.setAttribute("signedIn", false);
     request.setAttribute("isProvider", false);
     request.setAttribute("isAdmin", false);
 
-    if(session.getAttribute("email") != null && session.getAttribute("currentSession").equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr()))){
-        request.setAttribute("signedOut", false);
+    // Check authentication
+    Object accountId = session.getAttribute(S.ACCOUNT_ID);
+    Object currentSession = session.getAttribute(S.CURRENT_SESSION);
+    if(accountId != null && currentSession.equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr()))){
         request.setAttribute("signedIn", true);
-        request.setAttribute("userName", session.getAttribute("userName"));
-        request.setAttribute("zip", session.getAttribute("zip"));
-        if(session.getAttribute("staffId") != null){
-            if(session.getAttribute("role").equals("admin")){
+        request.setAttribute("userName", session.getAttribute(S.USERNAME));
+        request.setAttribute("zipcode", session.getAttribute(S.ZIPCODE));
+        if(session.getAttribute(S.STAFF_ID) != null){
+            // Authentication as admin
+            if(session.getAttribute(S.ROLE).equals(S.ADMIN)){
                 request.setAttribute("isProvider", true);
                 request.setAttribute("isAdmin", true);
-            } else if(session.getAttribute("role").equals("manager")){
+            }
+            // Authentication as manager
+            if(session.getAttribute(S.ROLE).equals(S.MANAGER)){
                 request.setAttribute("isProvider", true);
             }
         }
@@ -42,9 +46,10 @@
         aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="./home.jsp">Movie Buddy</a>
+    <a class="navbar-brand" href="./${S.HOME_PAGE}"><b>Movie Buddy</b></a>
     <div class="collapse navbar-collapse" id="navbarToggler">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <!-- Provider options -->
             <c:if test="${isProvider}">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -53,32 +58,38 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <c:if test="${isAdmin}">
-                            <a class="dropdown-item" href="./managetheatre.jsp">Theatre</a>
+                            <a class="dropdown-item" href="./${S.MANAGE_THEATRE_PAGE}">Theatre</a>
                         </c:if>
-                        <a class="dropdown-item" href="./managemovie.jsp">Movie</a>
-                        <a class="dropdown-item" href="./managestaff.jsp">Staff</a>
+                        <a class="dropdown-item" href="./${S.MANAGE_MOVIE_PAGE}">Movie</a>
+                        <a class="dropdown-item" href="./${S.MANAGE_STAFF_PAGE}">Staff</a>
                     </div>
                 </li>
             </c:if>
             <li class="nav-item active">
+                <!-- Current theatre location form -->
                 <form class="form-inline my-2 my-lg-0">
-                    <label for="theatreName" class="mx-2 navbar-brand">Theatre Name</label>
-                    <input class="form-control mr-sm-2" type="search" placeholder="Zip Code">
+                    <label class="mx-2 navbar-brand">Theatre Name</label>
+                    <input class="form-control mr-sm-2" type="search" placeholder="Zip Code" value="${zipcode}">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Enter</button>
                 </form>
             </li>
         </ul>
-        <c:if test="${signedOut}">
-            <a class="nav-link" href="./signin.jsp">Sign In</a>
-            <a class="nav-link" href="./signup.jsp">Sign Up</a>
-        </c:if>
-        <c:if test="${signedIn}">
-            <form action="" method="POST" class="formAsLink">
-                <input class="inputAsLink" type="submit" value="${userName}">
-            </form>
-            <form action="SignOut" method="POST" class="formAsLink">
-                <input class="inputAsLink" type="submit" value="Sign Out">
-            </form>
-        </c:if>
+        <c:choose>
+            <c:when test="${signedIn}">
+                <!-- Signed In -->
+                <form action="" method="POST" class="formAsLink">
+                    <input class="inputAsLink" type="submit" value="${userName}">
+                </form>
+                <form action="SignOut" method="POST" class="formAsLink">
+                    <input class="inputAsLink" type="submit" value="Sign Out">
+                </form>
+            </c:when>
+            <c:otherwise>
+                <!-- Signed Out -->
+                <a class="nav-link" href="./${S.SIGN_IN_PAGE}">Sign In</a>
+                <a class="nav-link" href="./${S.SIGN_UP_PAGE}">Sign Up</a>
+            </c:otherwise>
+        </c:choose>
     </div>
 </nav>
+<div class="navbarPadding"></div>

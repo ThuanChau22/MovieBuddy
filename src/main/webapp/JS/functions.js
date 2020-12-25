@@ -1,3 +1,4 @@
+// Load previous selected option on reload
 function loadSelectedOption(defaultId, selectId, optionValue) {
     if (optionValue != "") {
         document.getElementById(defaultId).removeAttribute("selected");
@@ -5,6 +6,7 @@ function loadSelectedOption(defaultId, selectId, optionValue) {
     }
 }
 
-function submitOnChange(formId) {
+// Submit a form
+function submitForm(formId) {
     document.getElementById(formId).submit();
 }

@@ -12,15 +12,11 @@ import java.io.IOException;
 import moviebuddy.dao.TheatreDAO;
 import moviebuddy.model.Room;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/RoomLoadEdit")
 public class RoomLoadEditServlet extends HttpServlet {
     private static final long serialVersionUID = 8915502187614190878L;
-
-    private static final String ROOM_ID = "roomIdEdit";
-    private static final String ROOM_NUMBER = "roomNumberEdit";
-    private static final String SECTIONS = "roomSectionsEdit";
-    private static final String SEATS = "roomSeatsEdit";
 
     private TheatreDAO theatreDAO;
 
@@ -32,26 +28,35 @@ public class RoomLoadEditServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-            Object role = session.getAttribute("role");
-            if (role != null && role.equals("admin")) {
+            Object role = session.getAttribute(S.ROLE);
+            // Check authorized access as admin
+            if (role != null && role.equals(S.ADMIN)) {
+                // Sanitize parameters
                 String theatreId = Validation.sanitize(request.getParameter("theatreId"));
                 String roomNumber = Validation.sanitize(request.getParameter("roomNumber"));
+
+                // Retrieve room from theatre id and room number
                 Room room = theatreDAO.getRoomById(theatreId, roomNumber);
                 if (room != null) {
-                    session.setAttribute(ROOM_ID, roomNumber);
-                    session.setAttribute(ROOM_NUMBER, room.getRoomNumber());
-                    session.setAttribute(SECTIONS, room.getNumberOfRows());
-                    session.setAttribute(SEATS, room.getSeatsPerRow());
-                    response.sendRedirect("roomedit.jsp");
+                    // Set room information in session
+                    session.setAttribute(S.ROOM_EDIT_ID, roomNumber);
+                    session.setAttribute(S.ROOM_EDIT_NUMBER, room.getRoomNumber());
+                    session.setAttribute(S.ROOM_EDIT_SECTIONS, room.getNumberOfRows());
+                    session.setAttribute(S.ROOM_EDIT_SEATS, room.getSeatsPerRow());
+
+                    // Redirect to Edit Room page
+                    response.sendRedirect(S.ROOM_EDIT_PAGE);
                 } else {
-                    response.sendRedirect("manageroom.jsp");
+                    // Redirect to Manage Room page
+                    response.sendRedirect(S.MANAGE_ROOM_PAGE);
                 }
             } else {
-                response.sendRedirect("home.jsp");
+                // Redirect to Home page for unauthorized access
+                response.sendRedirect(S.HOME_PAGE);
             }
         } catch (Exception e) {
-            response.sendRedirect("error.jsp");
             e.printStackTrace();
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

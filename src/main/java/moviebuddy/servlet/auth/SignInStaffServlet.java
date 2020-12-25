@@ -12,22 +12,11 @@ import moviebuddy.dao.UserDAO;
 import moviebuddy.model.User;
 import moviebuddy.util.Passwords;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/SignInStaff")
 public class SignInStaffServlet extends HttpServlet {
     private static final long serialVersionUID = -7713354808955052674L;
-
-    private static final String ACCOUNT_ID = "accountId";
-    private static final String USER_NAME = "userName";
-    private static final String EMAIL = "email";
-    private static final String ZIP = "zip";
-    private static final String BUDDY_POINTS = "buddyPoints";
-    private static final String AUTO_RENEW = "autoRenew";
-    private static final String END_DATE = "endDate";
-    private static final String STAFF_ID = "staffId";
-    private static final String ROLE = "role";
-    private static final String THEATRE_ID = "employTheatreId";
-    private static final String STAFF_ID_INPUT = "signinStaffId";
 
     private UserDAO userDAO;
 
@@ -38,39 +27,46 @@ public class SignInStaffServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            User user = null;
+            HttpSession session = request.getSession();
+
             // Sanitize user inputs
             String staffId = Validation.sanitize(request.getParameter("staffId"));
             String password = Validation.sanitize(request.getParameter("password"));
-            String invalidStaffId = Validation.validateStaffId(staffId);
-            if (invalidStaffId.isEmpty()) {
-                user = userDAO.signInProvider(staffId, password);
+
+            // Validate user inputs
+            String errorMessage = Validation.validateStaffSignInForm(staffId, password);
+
+            // Authenticate user
+            if (errorMessage.isEmpty()) {
+                User user = userDAO.signInProvider(staffId, password);
+                if (user != null) {
+                    // Sign in successfully
+                    // Set user info in session
+                    session.setAttribute(S.CURRENT_SESSION,
+                            Passwords.applySHA256(session.getId() + request.getRemoteAddr()));
+                    session.setAttribute(S.ACCOUNT_ID, user.getAccountId());
+                    session.setAttribute(S.USERNAME, user.getUserName());
+                    session.setAttribute(S.ZIPCODE, user.getZip());
+                    session.setAttribute(S.STAFF_ID, user.getStaffId());
+                    session.setAttribute(S.ROLE, user.getRole());
+                    session.setAttribute(S.EMPLOY_THEATRE_ID, user.getTheatre_id());
+                } else {
+                    errorMessage = "Invalid staff ID/password! Please try again";
+                }
             }
 
-            HttpSession session = request.getSession();
-            if (user != null) {
-                // Sign in successfully
-                session.setAttribute(ACCOUNT_ID, user.getAccountId());
-                session.setAttribute(USER_NAME, user.getUserName());
-                session.setAttribute(EMAIL, user.getEmail());
-                session.setAttribute(ZIP, user.getZip());
-                session.setAttribute(BUDDY_POINTS, user.getBuddyPoints());
-                session.setAttribute(AUTO_RENEW, user.getAutoRenew());
-                session.setAttribute(END_DATE, user.getEndDate());
-                session.setAttribute(STAFF_ID, user.getStaffId());
-                session.setAttribute(ROLE, user.getRole());
-                session.setAttribute(THEATRE_ID, user.getTheatre_id());
-                session.setAttribute("currentSession",
-                        Passwords.applySHA256(session.getId() + request.getRemoteAddr()));
-                response.sendRedirect("home.jsp");
+            if (errorMessage.isEmpty()) {
+                // Redirect to Home page
+                response.sendRedirect(S.HOME_PAGE);
             } else {
-                session.setAttribute(STAFF_ID_INPUT, request.getParameter("staffId"));
-                session.setAttribute("errorMessage", "Invalid staff ID/password! Please try again.");
-                response.sendRedirect("staffsignin.jsp");
+                // Back to Staff SignIn page with previous inputs
+                session.setAttribute(S.SIGN_IN_STAFF_ID, staffId);
+                session.setAttribute(S.ERROR_MESSAGE, errorMessage);
+                response.sendRedirect(S.STAFF_SIGN_IN_PAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

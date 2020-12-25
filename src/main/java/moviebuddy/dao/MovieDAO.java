@@ -146,7 +146,7 @@ public class MovieDAO {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            return "Fail to upload movie info";
+            return "Fail to upload movie information";
         } finally {
             conn.setAutoCommit(true);
             DBConnection.close(insertMovie);
@@ -203,7 +203,7 @@ public class MovieDAO {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            return "Fail to update";
+            return "Fail to update movie information";
         } finally {
             conn.setAutoCommit(true);
             DBConnection.close(updateMovie);
@@ -258,7 +258,7 @@ public class MovieDAO {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            return "Fail to delete";
+            return "Fail to delete movie information";
         } finally {
             conn.setAutoCommit(true);
             DBConnection.close(deleteTicket);

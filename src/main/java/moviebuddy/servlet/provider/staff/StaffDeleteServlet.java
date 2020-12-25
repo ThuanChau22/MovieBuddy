@@ -12,6 +12,7 @@ import java.io.IOException;
 import moviebuddy.dao.UserDAO;
 import moviebuddy.model.User;
 import moviebuddy.util.Validation;
+import moviebuddy.util.S;
 
 @WebServlet("/StaffDelete")
 public class StaffDeleteServlet extends HttpServlet {
@@ -27,27 +28,38 @@ public class StaffDeleteServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-            Object role = session.getAttribute("role");
-            if (role != null && (role.equals("admin") || role.equals("manager"))) {
+            Object role = session.getAttribute(S.ROLE);
+            // Check authorized access as admin and manger
+            if (role != null && (role.equals(S.ADMIN) || role.equals(S.MANAGER))) {
+                // Sanitize parameter
                 String staffId = Validation.sanitize(request.getParameter("staffId"));
+
+                // Retrieve staff account
                 User staff = userDAO.getProviderByStaffId(staffId);
+
+                // Check authorized deletion as manager
                 String errorMessage = "";
-                if (staff != null && !staff.getRole().equals("faculty") && role.equals("manager")) {
+                if (role.equals(S.MANAGER) && staff != null && !staff.getRole().equals(S.FACULTY)) {
                     errorMessage = "Unauthorized deletion";
                 }
+
+                // Delete staff account
                 if (errorMessage.isEmpty()) {
                     errorMessage = userDAO.deleteProvider(staffId);
                 }
                 if (!errorMessage.isEmpty()) {
-                    session.setAttribute("errorMessage", errorMessage);
+                    session.setAttribute(S.ERROR_MESSAGE, errorMessage);
                 }
-                response.sendRedirect("managestaff.jsp");
+
+                // Redirect Manage Staff page
+                response.sendRedirect(S.MANAGE_STAFF_PAGE);
             } else {
-                response.sendRedirect("home.jsp");
+                // Redirect to Home page for unauthorized access
+                response.sendRedirect(S.HOME_PAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect(S.ERROR_PAGE);
         }
     }
 }

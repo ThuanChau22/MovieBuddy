@@ -2,13 +2,13 @@ package moviebuddy.util;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
+// import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
-import moviebuddy.model.Schedule;
-import moviebuddy.model.ShowTime;
+// import moviebuddy.model.Schedule;
+// import moviebuddy.model.ShowTime;
 
 public class Validation {
     private static final int USERNAME_MIN_LENGTH = 2;
@@ -20,7 +20,155 @@ public class Validation {
     }
 
     public static String sanitize(String input) {
-        return Jsoup.clean(input, Whitelist.none());
+        return input != null ? Jsoup.clean(input.trim(), Whitelist.none()) : "";
+    }
+
+    public static String validateSignUpForm(String userName, String email, String password, String rePassword) {
+        String errorMessage = validateUserName(userName);
+        if (!errorMessage.isEmpty()) {
+            return errorMessage;
+        }
+        errorMessage = validateEmail(email);
+        if (!errorMessage.isEmpty()) {
+            return errorMessage;
+        }
+        errorMessage = validatePassword(password);
+        if (!errorMessage.isEmpty()) {
+            return errorMessage;
+        }
+        errorMessage = validateRePassword(password, rePassword);
+        if (!errorMessage.isEmpty()) {
+            return errorMessage;
+        }
+        return "";
+    }
+
+    public static String validateStaffSignUpForm(String roleInput, String theatreLocation, String userName,
+            String email, String password) {
+        String errorMessage = validateRole(roleInput);
+        if (!errorMessage.isEmpty()) {
+            return errorMessage;
+        }
+        errorMessage = validateTheatreLocation(theatreLocation);
+        if (!roleInput.equals(S.ADMIN) && !errorMessage.isEmpty()) {
+            return errorMessage;
+        }
+        errorMessage = validateUserName(userName);
+        if (!errorMessage.isEmpty()) {
+            return errorMessage;
+        }
+        errorMessage = validateEmail(email);
+        if (!errorMessage.isEmpty()) {
+            return errorMessage;
+        }
+        errorMessage = validatePassword(password);
+        if (!errorMessage.isEmpty()) {
+            return errorMessage;
+        }
+        return "";
+    }
+
+    public static String validateSignInForm(String email, String password) {
+        if (email.isEmpty()) {
+            return "Please enter your email";
+        }
+        return "";
+    }
+
+    public static String validateStaffSignInForm(String staffId, String password) {
+        if (staffId.isEmpty()) {
+            return "Please enter your staff ID number";
+        }
+        if (!validateStaffId(staffId).isEmpty()) {
+            return "Invalid staff ID/password! Please try again";
+        }
+        return "";
+    }
+
+    public static String validateTheatreForm(String theatreName, String address, String city, String state,
+            String country, String zip) {
+        if (theatreName.isEmpty() || address.isEmpty() || city.isEmpty() || state.isEmpty() || country.isEmpty()
+                || zip.isEmpty()) {
+            return "* required fields";
+        }
+        if (!validateNumber(zip).isEmpty()) {
+            return "Invalid zip code";
+        }
+        return "";
+    }
+
+    public static String validateTicketPriceForm(String startTime, String price) {
+        if (startTime.isEmpty()) {
+            return "Please enter start time";
+        }
+        String errorMessage = validateTime(startTime);
+        if (!errorMessage.isEmpty()) {
+            return errorMessage;
+        }
+        if (price.isEmpty()) {
+            return "Please enter price";
+        }
+        errorMessage = validateDouble(price);
+        if (!errorMessage.isEmpty()) {
+            return "Invalid price";
+        }
+        return "";
+    }
+
+    public static String validateRoomForm(String roomNumber, String sections, String seats) {
+        if (roomNumber.isEmpty() || sections.isEmpty() || seats.isEmpty()) {
+            return "* required fields";
+        }
+        String errorMessage = validateNumber(roomNumber);
+        if (!errorMessage.isEmpty()) {
+            return "Invalid room number";
+        }
+        errorMessage = validateNumber(sections);
+        if (!errorMessage.isEmpty()) {
+            return "Invalid number of secions";
+        }
+        errorMessage = validateNumber(seats);
+        if (!errorMessage.isEmpty()) {
+            return "Invalid number of seats";
+        }
+        return "";
+    }
+
+    public static String validateMovieForm(String title, String releaseDate, String duration, String trailer,
+            String description) {
+        if (title.isEmpty() || releaseDate.isEmpty() || duration.isEmpty() || trailer.isEmpty()
+                || description.isEmpty()) {
+            return "* required fields";
+        }
+        String errorMessage = validateDate(releaseDate);
+        if (!errorMessage.isEmpty()) {
+            return errorMessage;
+        }
+        if (!validateNumber(duration).isEmpty()) {
+            return "Invalid duration";
+        }
+        return "";
+    }
+
+    public static String validateScheduleForm(String showDate, String startTime, String roomNumber) {
+        if(showDate.isEmpty()){
+            return "Please enter show date";
+        }
+        String errorMessage = validateDate(showDate);
+        if(!errorMessage.isEmpty()){
+            return errorMessage;
+        }
+        if(startTime.isEmpty()){
+            return "Please enter start time";
+        }
+        errorMessage = validateTime(startTime);
+        if(!errorMessage.isEmpty()){
+            return errorMessage;
+        }
+        if(roomNumber.isEmpty()){
+            return "Please select a room";
+        }
+        return "";
     }
 
     public static String validateUserName(String userName) {
@@ -82,7 +230,7 @@ public class Validation {
     }
 
     public static String validateRole(String role) {
-        if (role.equals("none")) {
+        if (role.isEmpty()) {
             return "Please select a role\n";
         }
         if (!(role.equals("admin") || role.equals("manager") || role.equals("faculty"))) {
@@ -92,7 +240,7 @@ public class Validation {
     }
 
     public static String validateTheatreLocation(String location) {
-        if (location.isEmpty() || location.equals("none")) {
+        if (location.isEmpty()) {
             return "Please select a theatre location\n";
         }
         return "";
@@ -135,18 +283,6 @@ public class Validation {
             LocalTime.parse(time);
         } catch (Exception e) {
             return "Invalid time input\n";
-        }
-        return "";
-    }
-
-    public static String checkScheduleConflict(List<Schedule> schedule, ShowTime interval) {
-        for (Schedule s : schedule) {
-            ShowTime st = s.getShowTime();
-            if (interval.isConflict(st)) {
-                String message = String.format("Time conflict - Schedule ID: %s on %s at %s-%s room: %s", s.getScheduleId(),
-                        s.displayShowDate(), st.getStartTime(), st.getEndTime(), s.getRoomNumber());
-                return message;
-            }
         }
         return "";
     }

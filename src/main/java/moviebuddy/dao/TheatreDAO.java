@@ -343,9 +343,9 @@ public class TheatreDAO {
             queryRoomById.setString(2, roomNumber);
             ResultSet res = queryRoomById.executeQuery();
             while (res.next()) {
-                room = new Room(res.getInt("theatre_id"), res.getInt("room_number"));
-                room.setNumberOfRows(res.getInt("sections"));
-                room.setSeatsPerRow(res.getInt("seats"));
+                room = new Room(res.getInt(RoomDB.THEATRE_ID), res.getInt(RoomDB.ROOM_NUMBER));
+                room.setNumberOfRows(res.getInt(RoomDB.SECTIONS));
+                room.setSeatsPerRow(res.getInt(RoomDB.SEATS));
             }
         } catch (Exception e) {
             throw e;

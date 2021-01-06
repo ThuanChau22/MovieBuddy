@@ -46,7 +46,7 @@
         aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="./${S.HOME_PAGE}"><b>Movie Buddy</b></a>
+    <a class="navbar-brand" href="./${S.HOME}"><b>Movie Buddy</b></a>
     <div class="collapse navbar-collapse" id="navbarToggler">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <!-- Provider options -->
@@ -58,10 +58,10 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <c:if test="${isAdmin}">
-                            <a class="dropdown-item" href="./${S.MANAGE_THEATRE_PAGE}">Theatre</a>
+                            <a class="dropdown-item" href="./${S.THEATRE}">Theatre</a>
                         </c:if>
-                        <a class="dropdown-item" href="./${S.MANAGE_MOVIE_PAGE}">Movie</a>
-                        <a class="dropdown-item" href="./${S.MANAGE_STAFF_PAGE}">Staff</a>
+                        <a class="dropdown-item" href="./${S.MOVIE}">Movie</a>
+                        <a class="dropdown-item" href="./${S.STAFF}">Staff</a>
                     </div>
                 </li>
             </c:if>
@@ -80,14 +80,14 @@
                 <form action="" method="POST" class="formAsLink">
                     <input class="inputAsLink" type="submit" value="${userName}">
                 </form>
-                <form action="SignOut" method="POST" class="formAsLink">
+                <form action="${S.SIGN_OUT}" method="POST" class="formAsLink">
                     <input class="inputAsLink" type="submit" value="Sign Out">
                 </form>
             </c:when>
             <c:otherwise>
                 <!-- Signed Out -->
-                <a class="nav-link" href="./${S.SIGN_IN_PAGE}">Sign In</a>
-                <a class="nav-link" href="./${S.SIGN_UP_PAGE}">Sign Up</a>
+                <a class="nav-link" href="./${S.SIGN_IN}">Sign In</a>
+                <a class="nav-link" href="./${S.SIGN_UP}">Sign Up</a>
             </c:otherwise>
         </c:choose>
     </div>

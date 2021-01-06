@@ -14,7 +14,7 @@ import moviebuddy.model.Schedule;
 import moviebuddy.util.Validation;
 import moviebuddy.util.S;
 
-@WebServlet("/ScheduleDelete")
+@WebServlet("/" + S.SCHEDULE_DELETE)
 public class ScheduleDeleteServlet extends HttpServlet {
     private static final long serialVersionUID = -8764893949095966660L;
 
@@ -32,9 +32,10 @@ public class ScheduleDeleteServlet extends HttpServlet {
             // Check authorized access as admin and manager
             if (role != null && (role.equals(S.ADMIN) || role.equals(S.MANAGER))) {
                 // Sanitize parameter
-                String scheduleId = Validation.sanitize(request.getParameter("scheduleId"));
+                String movieId = Validation.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
+                String scheduleId = Validation.sanitize(request.getParameter(S.SCHEDULE_ID_PARAM));
 
-                // Check authorized deletion as manager
+                // Check unauthorized deletion
                 String errorMessage = "";
                 if(role.equals(S.MANAGER)) {
                     String theatreId = "";
@@ -43,10 +44,8 @@ public class ScheduleDeleteServlet extends HttpServlet {
                         theatreId = theatreIdObj.toString();
                     }
 
-                    // Retrieve schedule information
                     Schedule schedule = scheduleDAO.getScheduleById(scheduleId);
-
-                    if(theatreId.isEmpty() || !theatreId.equals(schedule.getTheatreId() + "")){
+                    if (theatreId.isEmpty() || !theatreId.equals(schedule.getTheatreId() + "")) {
                         errorMessage = "Unauthorized deletion";
                     }
                 }
@@ -60,14 +59,14 @@ public class ScheduleDeleteServlet extends HttpServlet {
                 }
 
                 // Redirect to Manage Schedule page
-                response.sendRedirect(S.MANAGE_SCHEDULE_PAGE);
+                response.sendRedirect(S.SCHEDULE + "?" + S.MOVIE_ID_PARAM + "=" + movieId);
             } else {
                 // Redirect to Home page for unauthorized access
-                response.sendRedirect(S.HOME_PAGE);
+                response.sendRedirect(S.HOME);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(S.ERROR_PAGE);
+            response.sendRedirect(S.ERROR);
         }
     }
 }

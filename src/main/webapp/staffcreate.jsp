@@ -16,13 +16,19 @@
         session.setAttribute(S.SESSION_ID, Passwords.applySHA256(session.getId()));
     }
 
-    // Check authentication
+    // Check authentication as admin and manager
     Object accountId = session.getAttribute(S.ACCOUNT_ID);
     Object currentSession = session.getAttribute(S.CURRENT_SESSION);
-    if(accountId != null && currentSession.equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr()))) {
+    Object staffId = session.getAttribute(S.STAFF_ID);
+    Object role = session.getAttribute(S.ROLE);
+    if(accountId == null || !currentSession.equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr())) || staffId == null || !(role.equals(S.ADMIN) || role.equals(S.MANAGER))){
         response.sendRedirect(S.HOME);
     }
 
+    // ${theatreList}
+    // ${roleList}
+    // ${roleInput}
+    // ${locationInput}
     // ${userNameInput}
     // ${emailInput}
     // ${errorMessage}
@@ -36,7 +42,7 @@
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="./css/style.css">
     <link rel="icon" href="./images/MovieBuddy.ico">
-    <title>Movie Buddy | Sign Up</title>
+    <title>Movie Buddy | Manage Staff</title>
 </head>
 
 <body>
@@ -46,17 +52,49 @@
         <div class="main">
             <!-- Page content -->
             <div class="container">
-                <h1 class="display-3 text-center">Sign Up</h1>
+                <h1 class="display-3 text-center">Create Staff Account</h1>
                 <hr>
-                <br>
+                <a class="inputAsLink" href="./${S.STAFF}">&lsaquo;<span>Back</span>
+                </a>
                 <div class="row">
                     <div class="col-lg"></div>
                     <div class="col-lg-5">
                         <div class="card">
                             <div class="card-body">
-                                <!-- Sign up form -->
-                                <form id="signUpForm" action="${S.SIGN_UP}" method="POST"
-                                    onsubmit="return validateSignUp(this)">
+                                <!-- Create staff account form -->
+                                <form id="staffCreateForm" action="${S.STAFF_CREATE}" method="POST"
+                                    onsubmit="return validateStaffSignUp(this, '${isAdmin}')">
+                                    <c:if test="${isAdmin}">
+                                        <!-- Input role -->
+                                        <div class="form-group">
+                                            <label>Role</label><br>
+                                            <select id="role" class="inputbox" name="${S.ROLE_PARAM}"
+                                                form="staffCreateForm" onchange="checkRole(this)">
+                                                <option id="defaultRole" hidden value="">Select a role</option>
+                                                <c:forEach items="${roleList}" var="role">
+                                                    <option value="${role.getTitle()}">${role.getTitle()}</option>
+                                                </c:forEach>
+                                            </select>
+                                            <!-- Role error -->
+                                            <span id="roleError" class="errormessage"></span>
+                                        </div>
+                                        <!-- Input location -->
+                                        <div class="form-group" id="locationForm">
+                                            <label>Theatre Location</label><br>
+                                            <select id="theatreLocation" class="inputbox"
+                                                name="${S.THEATRE_LOCATION_PARAM}" form="staffCreateForm"
+                                                onchange="checkLocation(this)">
+                                                <option id="defaultLocation" hidden value="">Select a theatre location
+                                                </option>
+                                                <c:forEach items="${theatreList}" var="theatre">
+                                                    <option value="${theatre.getId()}">${theatre.getTheatreName()}
+                                                    </option>
+                                                </c:forEach>
+                                            </select>
+                                            <!-- Location error -->
+                                            <span id="locationError" class="errormessage"></span>
+                                        </div>
+                                    </c:if>
                                     <!-- Input name -->
                                     <div class="form-group">
                                         <label>Name</label><br>
@@ -70,7 +108,7 @@
                                     <!-- Input email -->
                                     <div class="form-group">
                                         <label>Email</label><br>
-                                        <input class="inputbox" type="text" name="${S.EMAIL_PARAM}"
+                                        <input name="${S.EMAIL_PARAM}" class="inputbox" type="text"
                                             placeholder="Enter email" onkeyup="checkEmail(this)" value="${emailInput}">
                                         <br>
                                         <!-- Email error -->
@@ -79,28 +117,18 @@
                                     <!-- Input password -->
                                     <div class="form-group">
                                         <label>Password</label><br>
-                                        <input class="inputbox" type="password" name="${S.PASSWORD_PARAM}"
+                                        <input name="${S.PASSWORD_PARAM}" class="inputbox" type="password"
                                             placeholder="Enter password" onkeyup="checkPassword(this)">
                                         <br>
                                         <!-- Password error -->
                                         <span id="passwordError" class="errormessage"></span>
                                     </div>
-                                    <!-- Input Re-password -->
-                                    <div class="form-group">
-                                        <label>Confirm Password</label><br>
-                                        <input class="inputbox" type="password" name="${S.RE_PASSWORD_PARAM}"
-                                            placeholder="Re-enter password" onkeyup="checkRePassword('signUpForm')">
-                                        <br>
-                                        <!-- Re-password error -->
-                                        <span id="rePasswordError" class="errormessage"></span>
-                                    </div>
                                     <div class="text-center">
-                                        <input type="submit" class="btn btn-primary" value="Sign Up">
+                                        <input type="submit" class="btn btn-primary" value="Create Account">
                                     </div>
                                 </form>
                                 <!-- Error message -->
-                                <p class="text-center errormessage">${errorMessage}</p>
-                                <a href="./${S.SIGN_IN}">Already have an account? Sign in here</a>
+                                <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
                             </div>
                         </div>
                     </div>
@@ -121,6 +149,16 @@
 
     <script src="./JS/functions.js"></script>
     <script src="./JS/validation.js"></script>
+    <c:if test="${isAdmin}">
+        <!-- Load previous inputs -->
+        <script>
+            loadSelectedOption("defaultRole", "role", "${roleInput}");
+            loadSelectedOption("defaultLocation", "theatreLocation", "${locationInput}");
+            if ("${roleInput}" != "") {
+                checkRole(document.getElementById("role"));
+            }
+        </script>
+    </c:if>
 </body>
 
 </html>

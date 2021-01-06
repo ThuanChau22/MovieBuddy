@@ -22,21 +22,15 @@
     Object staffId = session.getAttribute(S.STAFF_ID);
     Object role = session.getAttribute(S.ROLE);
     if(accountId == null || !currentSession.equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr())) || staffId == null || !(role.equals(S.ADMIN))){
-        response.sendRedirect(S.HOME_PAGE);
+        response.sendRedirect(S.HOME);
     }
 
-    request.setAttribute("titleInput", session.getAttribute(S.MOVIE_CREATE_TITLE));
-    request.setAttribute("releaseDateInput", session.getAttribute(S.MOVIE_CREATE_RELEASE_DATE));
-    request.setAttribute("durationInput", session.getAttribute(S.MOVIE_CREATE_DURATION));
-    request.setAttribute("trailerInput", session.getAttribute(S.MOVIE_CREATE_TRAILER));
-    request.setAttribute("descriptionInput", session.getAttribute(S.MOVIE_CREATE_DESCRIPTION));
-    request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
-    session.removeAttribute(S.MOVIE_CREATE_TITLE);
-    session.removeAttribute(S.MOVIE_CREATE_RELEASE_DATE);
-    session.removeAttribute(S.MOVIE_CREATE_DURATION);
-    session.removeAttribute(S.MOVIE_CREATE_TRAILER);
-    session.removeAttribute(S.MOVIE_CREATE_DESCRIPTION);
-    session.removeAttribute(S.ERROR_MESSAGE);
+    // ${titleInput}
+    // ${releaseDateInput}
+    // ${durationInput}
+    // ${trailerInput}
+    // ${descriptionInput}
+    // ${errorMessage}
 %>
 <html lang="en">
 
@@ -63,49 +57,49 @@
                 <hr>
                 <h1 class="display-3 text-center">Upload Movie Information</h1>
                 <hr>
-                <a class="inputAsLink" href="./${S.MANAGE_MOVIE_PAGE}">&#8249;
-                    <span>Back</span>
-                </a>
+                <a class="inputAsLink" href="./${S.MOVIE}">&lsaquo;<span>Back</span></a>
                 <div class="row">
                     <div class="col-lg-3"></div>
                     <div class="col-lg">
                         <!-- Error message -->
                         <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
                         <!-- Upload movie information form -->
-                        <form id="uploadMovieForm" action="MovieCreate" method="POST" enctype="multipart/form-data"
+                        <form id="uploadMovieForm" action="${S.MOVIE_CREATE}" method="POST" enctype="multipart/form-data"
                             onsubmit="return validateMovieForm(this)">
                             <!-- Input title -->
                             <div class="form-group">
                                 <label>Title</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="title" type="text" placeholder="Enter title"
-                                    value="${titleInput}" />
+                                <input class="inputbox" name="${S.TITLE_PARAM}" type="text"
+                                    placeholder="Enter title" value="${titleInput}" />
                             </div>
                             <!-- Input release date -->
                             <div class="form-group">
                                 <label>Release Date</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="releaseDate" type="date" value="${releaseDateInput}" />
+                                <input class="inputbox" name="${S.RELEASE_DATE_PARAM}" type="date"
+                                    value="${releaseDateInput}" />
                             </div>
                             <!-- Input duration -->
                             <div class="form-group">
                                 <label>Duration</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="duration" type="text" placeholder="Enter duration in minutes"
-                                    value="${durationInput}" />
+                                <input class="inputbox" name="${S.DURATION_PARAM}" type="text"
+                                    placeholder="Enter duration in minutes" value="${durationInput}" />
                             </div>
                             <!-- Input trailer -->
                             <div class="form-group">
                                 <label>Trailer Source</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="trailer" type="text" placeholder="Enter trailer source..."
-                                    value="${trailerInput}" />
+                                <input class="inputbox" name="${S.TRAILER_PARAM}" type="text"
+                                    placeholder="Enter trailer source..." value="${trailerInput}" />
                             </div>
                             <!-- Input poster -->
                             <div class="form-group">
                                 <label>Poster</label><br>
-                                <input class="inputbox" name="poster" type="file" />
+                                <input class="inputbox" name="${S.POSTER_PARAM}" type="file" />
                             </div>
                             <!-- Input description -->
                             <div class="form-group">
                                 <label>Description</label><span class="errormessage">*</span><br>
-                                <textarea class="inputbox" name="description" cols="60" rows="5" maxlength="1000" style="resize: none;"
+                                <textarea class="inputbox" name="${S.DESCRIPTION_PARAM}" cols="60" rows="5"
+                                    maxlength="1000" style="resize: none;"
                                     placeholder="Enter movie description...">${descriptionInput}</textarea>
                             </div>
                             <div class="text-center">
@@ -123,9 +117,7 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>

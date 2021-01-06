@@ -22,23 +22,15 @@
     Object staffId = session.getAttribute(S.STAFF_ID);
     Object role = session.getAttribute(S.ROLE);
     if(accountId == null || !currentSession.equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr())) || staffId == null || !(role.equals(S.ADMIN))){
-        response.sendRedirect(S.HOME_PAGE);
+        response.sendRedirect(S.HOME);
     }
 
-    // Remove selected room id on create
-    session.removeAttribute(S.ROOM_EDIT_ID);
-
-    request.setAttribute("theatreId", session.getAttribute(S.ROOM_THEATRE_ID));
-    request.setAttribute("theatreName", session.getAttribute(S.ROOM_THEATRE_NAME));
-
-    request.setAttribute("roomNumberInput", session.getAttribute(S.ROOM_CREATE_NUMBER));
-    request.setAttribute("sectionsInput", session.getAttribute(S.ROOM_CREATE_SECTIONS));
-    request.setAttribute("seatsInput", session.getAttribute(S.ROOM_CREATE_SEATS));
-    request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
-    session.removeAttribute(S.ROOM_CREATE_NUMBER);
-    session.removeAttribute(S.ROOM_CREATE_SECTIONS);
-    session.removeAttribute(S.ROOM_CREATE_SEATS);
-    session.removeAttribute(S.ERROR_MESSAGE);
+    // ${theatreId}
+    // ${theatreName}
+    // ${roomNumberInput}
+    // ${sectionsInput}
+    // ${seatsInput}
+    // ${errorMessage}
 %>
 <html lang="en">
 
@@ -62,8 +54,7 @@
                 <!-- Current theatre name -->
                 <h3>Theatre: ${theatreName}</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.MANAGE_ROOM_PAGE}">&#8249;
-                    <span>Back</span>
+                <a class="inputAsLink" href="./${S.ROOM}?${S.THEATRE_ID_PARAM}=${theatreId}">&lsaquo;<span>Back</span>
                 </a>
                 <h1 class="display-3 text-center">Create Room</h1>
                 <hr>
@@ -73,30 +64,41 @@
                         <!-- Error message -->
                         <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
                         <!-- Upload room information form -->
-                        <form id="createRoomForm" action="RoomCreate" method="POST" onsubmit="return validateRoomForm(this)">
+                        <form id="createRoomForm" action="${S.ROOM_CREATE}" method="POST"
+                            onsubmit="return validateRoomForm(this)">
+                            <!-- Theatre id -->
+                            <div class="form-group">
+                                <input id="theatreId" type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
+                            </div>
                             <!-- Input room number -->
                             <div class="form-group">
                                 <label>Room Number</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="roomNumber" type="number" min="1" placeholder="Enter room number" onkeyup="checkRoomNumber('theatreId', this, 'roomNumberError')" value="${roomNumberInput}" />
+                                <input class="inputbox" name="${S.ROOM_NUMBER_PARAM}" type="number" min="1"
+                                    placeholder="Enter room number" onkeyup="checkRoomNumber(this)"
+                                    value="${roomNumberInput}" />
                                 <br>
                                 <!-- Room number error -->
                                 <span id="roomNumberError" class="errormessage"></span>
                             </div>
-                            <!-- Input number of secions -->
+                            <!-- Input number of sections -->
                             <div class="form-group">
                                 <label>Sections</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="sections" type="number" min="1" placeholder="Number of sections"
-                                    value="${sectionsInput}" />
+                                <input class="inputbox" name="${S.SECTIONS_PARAM}" type="number" min="1"
+                                    placeholder="Number of sections" value="${sectionsInput}" />
+                                <br>
+                                <!-- Sections error -->
+                                <span id="sectionsError" class="errormessage"></span>
                             </div>
                             <!-- Input seats per section -->
                             <div class="form-group">
                                 <label>Seats</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="seats" type="number" min="1" placeholder="Seats per section"
-                                    value="${seatsInput}" />
+                                <input class="inputbox" name="${S.SEATS_PARAM}" type="number" min="1"
+                                    placeholder="Seats per section" value="${seatsInput}" />
+                                <br>
+                                <!-- Seats error -->
+                                <span id="seatsError" class="errormessage"></span>
                             </div>
                             <div class="text-center">
-                                <!-- Theatre id -->
-                                <input id="theatreId" type="hidden" name="theatreId" value="${theatreId}" />
                                 <input type="submit" class="btn btn-outline-info" value="Create">
                             </div>
                         </form>
@@ -111,9 +113,7 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>

@@ -22,19 +22,17 @@
     Object staffId = session.getAttribute(S.STAFF_ID);
     Object role = session.getAttribute(S.ROLE);
     if(accountId == null || !currentSession.equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr())) || staffId == null || !(role.equals(S.ADMIN))){
-        response.sendRedirect(S.HOME_PAGE);
+        response.sendRedirect(S.HOME);
     }
 
-    request.setAttribute("theatreId", session.getAttribute(S.THEATRE_EDIT_ID));
-    request.setAttribute("nameInput", session.getAttribute(S.THEATRE_EDIT_NAME));
-    request.setAttribute("addressInput", session.getAttribute(S.THEATRE_EDIT_ADDRESS));
-    request.setAttribute("cityInput", session.getAttribute(S.THEATRE_EDIT_CITY));
-    request.setAttribute("stateInput", session.getAttribute(S.THEATRE_EDIT_STATE));
-    request.setAttribute("countryInput", session.getAttribute(S.THEATRE_EDIT_COUNTRY));
-    request.setAttribute("zipInput", session.getAttribute(S.THEATRE_EDIT_ZIP));
-
-    request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
-    session.removeAttribute(S.ERROR_MESSAGE);
+    // ${theatreId}
+    // ${nameInput}
+    // ${addressInput}
+    // ${cityInput}
+    // ${stateInput}
+    // ${countryInput}
+    // ${zipInput}
+    // ${errorMessage}
 %>
 <html lang="en">
 
@@ -59,8 +57,7 @@
                 <hr>
                 <h1 class="display-3 text-center">Update Theatre Information</h1>
                 <hr>
-                <a class="inputAsLink" href="./${S.MANAGE_THEATRE_PAGE}">&#8249;
-                    <span>Back</span>
+                <a class="inputAsLink" href="./${S.THEATRE}">&lsaquo;<span>Back</span>
                 </a>
                 <div class="row">
                     <div class="col-lg-3"></div>
@@ -68,20 +65,21 @@
                         <!-- Error message -->
                         <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
                         <!-- Edit theatre information form -->
-                        <form id="editTheatreForm" action="TheatreEdit" method="POST"
+                        <form id="editTheatreForm" action="${S.THEATRE_EDIT}" method="POST"
                             onsubmit="return validateTheatreForm(this)">
                             <!-- Save hook -->
                             <div class="form-group">
-                                <input type="hidden" name="action" value="save" />
+                                <input type="hidden" name="${S.ACTION_PARAM}" value="${S.ACTION_SAVE}" />
                             </div>
                             <!-- Theatre id -->
                             <div class="form-group">
-                                <input type="hidden" name="theatreId" value="${theatreId}" />
+                                <input id="theatreId" type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
                             </div>
                             <!-- Input theatre name -->
                             <div class="form-group">
                                 <label>Theatre Name</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="theatreName" type="text" placeholder="Buddy###" onkeyup="checkTheatreName(this, 'theatreNameError')" value="${nameInput}" />
+                                <input class="inputbox" name="${S.THEATRE_NAME_PARAM}" type="text"
+                                    placeholder="Buddy###" onkeyup="checkTheatreName(this)" value="${nameInput}" />
                                 <br>
                                 <!-- Theatre name error -->
                                 <span id="theatreNameError" class="errormessage"></span>
@@ -89,19 +87,19 @@
                             <!-- Input address -->
                             <div class="form-group">
                                 <label>Address</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="address" type="text" placeholder="1234 Main St"
+                                <input class="inputbox" name="${S.ADDRESS_PARAM}" type="text" placeholder="1234 Main St"
                                     value="${addressInput}" />
                             </div>
                             <!-- Input city -->
                             <div class="form-group">
                                 <label>City</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="city" type="text" placeholder="San Francisco"
+                                <input class="inputbox" name="${S.CITY_PARAM}" type="text" placeholder="San Francisco"
                                     value="${cityInput}" />
                             </div>
                             <!-- input state -->
                             <div class="form-group">
                                 <label>State</label><span class="errormessage">*</span><br>
-                                <select id="state" class="inputbox" name="state">
+                                <select id="state" class="inputbox" name="${S.STATE_PARAM}">
                                     <option id="default" hidden selected value="">Select a State</option>
                                     <option value="AL">Alabama</option>
                                     <option value="AK">Alaska</option>
@@ -159,23 +157,24 @@
                             <!-- Input country -->
                             <div class="form-group">
                                 <label>Country</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="country" type="text" placeholder="USA"
+                                <input class="inputbox" name="${S.COUNTRY_PARAM}" type="text" placeholder="USA"
                                     value="${countryInput}" />
                             </div>
                             <!-- Input zip code -->
                             <div class="form-group">
                                 <label>Zip Code</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="zip" type="text" placeholder="12345" onkeyup="checkZip(this, 'zipError')" value="${zipInput}" />
+                                <input class="inputbox" name="${S.ZIP_PARAM}" type="text" placeholder="12345"
+                                    onkeyup="checkZip(this)" value="${zipInput}" />
                                 <br>
                                 <!-- Zip code error -->
                                 <span id="zipError" class="errormessage"></span>
                             </div>
                         </form>
                         <!-- Cancel form -->
-                        <form id="cancelTheatreForm" action="TheatreEdit" method="POST">
+                        <form id="cancelTheatreForm" action="${S.THEATRE_EDIT}" method="POST">
                             <!-- Cancel hook -->
                             <div class="form-group">
-                                <input type="hidden" name="action" value="cancel" />
+                                <input type="hidden" name="${S.ACTION_PARAM}" value="${S.ACTION_CANCEL}" />
                             </div>
                         </form>
                         <div class="text-center">
@@ -183,7 +182,8 @@
                                 <input form="editTheatreForm" type="submit" class="btn btn-outline-info" value="Save">
                             </div>
                             <div class="button">
-                                <input form="cancelTheatreForm" type="submit" class="btn btn-outline-info" value="Cancel" />
+                                <input form="cancelTheatreForm" type="submit" class="btn btn-outline-info"
+                                    value="Cancel" />
                             </div>
                         </div>
                     </div>
@@ -197,9 +197,7 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>

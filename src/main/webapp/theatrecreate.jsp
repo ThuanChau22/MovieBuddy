@@ -22,26 +22,16 @@
     Object staffId = session.getAttribute(S.STAFF_ID);
     Object role = session.getAttribute(S.ROLE);
     if(accountId == null || !currentSession.equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr())) || staffId == null || !(role.equals(S.ADMIN))){
-        response.sendRedirect(S.HOME_PAGE);
+        response.sendRedirect(S.HOME);
     }
 
-    // Remove select theatre id on create
-    session.removeAttribute(S.THEATRE_EDIT_ID);
-
-    request.setAttribute("nameInput", session.getAttribute(S.THEATRE_CREATE_NAME));
-    request.setAttribute("addressInput", session.getAttribute(S.THEATRE_CREATE_ADDRESS));
-    request.setAttribute("cityInput", session.getAttribute(S.THEATRE_CREATE_CITY));
-    request.setAttribute("stateInput", session.getAttribute(S.THEATRE_CREATE_STATE));
-    request.setAttribute("countryInput", session.getAttribute(S.THEATRE_CREATE_COUNTRY));
-    request.setAttribute("zipInput", session.getAttribute(S.THEATRE_CREATE_ZIP));
-    request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
-    session.removeAttribute(S.THEATRE_CREATE_NAME);
-    session.removeAttribute(S.THEATRE_CREATE_ADDRESS);
-    session.removeAttribute(S.THEATRE_CREATE_CITY);
-    session.removeAttribute(S.THEATRE_CREATE_STATE);
-    session.removeAttribute(S.THEATRE_CREATE_COUNTRY);
-    session.removeAttribute(S.THEATRE_CREATE_ZIP);
-    session.removeAttribute(S.ERROR_MESSAGE);
+    // ${nameInput}
+    // ${addressInput}
+    // ${cityInput}
+    // ${stateInput}
+    // ${countryInput}
+    // ${zipInput}
+    // ${errorMessage}
 %>
 <html lang="en">
 
@@ -66,8 +56,7 @@
                 <hr>
                 <h1 class="display-3 text-center">Upload Theatre Information</h1>
                 <hr>
-                <a class="inputAsLink" href="./${S.MANAGE_THEATRE_PAGE}">&#8249;
-                    <span>Back</span>
+                <a class="inputAsLink" href="./${S.THEATRE}">&lsaquo;<span>Back</span>
                 </a>
                 <div class="row">
                     <div class="col-lg-3"></div>
@@ -75,12 +64,13 @@
                         <!-- Error message -->
                         <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
                         <!-- Upload theatre information form -->
-                        <form id="uploadTheatreForm" action="TheatreCreate" method="POST"
+                        <form id="uploadTheatreForm" action="${S.THEATRE_CREATE}" method="POST"
                             onsubmit="return validateTheatreForm(this)">
                             <!-- Input theatre name -->
                             <div class="form-group">
                                 <label>Theatre Name</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="theatreName" type="text" placeholder="Buddy###" onkeyup="checkTheatreName(this, 'theatreNameError')" value="${nameInput}" />
+                                <input class="inputbox" name="${S.THEATRE_NAME_PARAM}" type="text"
+                                    placeholder="Buddy###" onkeyup="checkTheatreName(this)" value="${nameInput}" />
                                 <br>
                                 <!-- Theatre name error -->
                                 <span id="theatreNameError" class="errormessage"></span>
@@ -88,19 +78,19 @@
                             <!-- Input address -->
                             <div class="form-group">
                                 <label>Address</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="address" type="text" placeholder="1234 Main St"
+                                <input class="inputbox" name="${S.ADDRESS_PARAM}" type="text" placeholder="1234 Main St"
                                     value="${addressInput}" />
                             </div>
                             <!-- Input city -->
                             <div class="form-group">
                                 <label>City</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="city" type="text" placeholder="San Francisco"
+                                <input class="inputbox" name="${S.CITY_PARAM}" type="text" placeholder="San Francisco"
                                     value="${cityInput}" />
                             </div>
                             <!-- input state -->
                             <div class="form-group">
                                 <label>State</label><span class="errormessage">*</span><br>
-                                <select class="inputbox" id="state" name="state">
+                                <select class="inputbox" id="state" name="${S.STATE_PARAM}">
                                     <option id="default" hidden selected value="">Select a State</option>
                                     <option value="AL">Alabama</option>
                                     <option value="AK">Alaska</option>
@@ -158,13 +148,14 @@
                             <!-- Input country -->
                             <div class="form-group">
                                 <label>Country</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="country" type="text" placeholder="USA"
+                                <input class="inputbox" name="${S.COUNTRY_PARAM}" type="text" placeholder="USA"
                                     value="${countryInput}" />
                             </div>
                             <!-- Input zip code -->
                             <div class="form-group">
                                 <label>Zip Code</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="zip" type="text" placeholder="12345" onkeyup="checkZip(this, 'zipError')" value="${zipInput}" />
+                                <input class="inputbox" name="${S.ZIP_PARAM}" type="text" placeholder="12345"
+                                    onkeyup="checkZip(this)" value="${zipInput}" />
                                 <br>
                                 <!-- Zip code error -->
                                 <span id="zipError" class="errormessage"></span>
@@ -184,9 +175,7 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>

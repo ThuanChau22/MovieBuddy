@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="moviebuddy.util.Passwords" %>
 <%@ page import="moviebuddy.util.S" %>
-<jsp:include page="/TheatreGet" />
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
     response.setHeader("Pragma", "no-cache"); // HTTP 1.0
@@ -23,13 +22,11 @@
     Object staffId = session.getAttribute(S.STAFF_ID);
     Object role = session.getAttribute(S.ROLE);
     if(accountId == null || !currentSession.equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr())) || staffId == null || !(role.equals(S.ADMIN))){
-        response.sendRedirect(S.HOME_PAGE);
+        response.sendRedirect(S.HOME);
     }
 
-    request.setAttribute("theatreList", session.getAttribute(S.THEATRE_LIST));
-    request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
-    session.removeAttribute(S.THEATRE_LIST);
-    session.removeAttribute(S.ERROR_MESSAGE);
+    // ${errorMessage}
+    // ${theatreList}
 %>
 <html lang="en">
 
@@ -56,7 +53,7 @@
                 <div class="row">
                     <div class="col"></div>
                     <div class="col-6 text-center">
-                        <a href="./${S.THEATRE_CREATE_PAGE}">
+                        <a href="./${S.THEATRE_CREATE}">
                             <button type="button" class="btn btn-outline-info">Add Theatre</button>
                         </a>
                     </div>
@@ -87,24 +84,24 @@
                             <td>
                                 <div class="container">
                                     <!-- Manange ticket price -->
-                                    <form action="TicketPriceGet" method="POST" class="button">
-                                        <input type="hidden" name="theatreId" value="${theatre.getId()}" />
+                                    <form action="${S.TICKET_PRICE}" method="GET" class="button">
+                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatre.getId()}" />
                                         <input type="submit" class="btn btn-outline-info" value="Ticket Price" />
                                     </form>
                                     <!-- Manage room -->
-                                    <form action="RoomGet" method="POST" class="button">
-                                        <input type="hidden" name="theatreId" value="${theatre.getId()}" />
+                                    <form action="${S.ROOM}" method="GET" class="button">
+                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatre.getId()}" />
                                         <input type="submit" class="btn btn-outline-info" value="Room" />
                                     </form>
                                     <!-- Edit theatre information -->
-                                    <form action="TheatreLoadEdit" method="POST" class="button">
-                                        <input type="hidden" name="theatreId" value="${theatre.getId()}" />
+                                    <form action="${S.THEATRE_EDIT}" method="GET" class="button">
+                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatre.getId()}" />
                                         <input type="submit" class="btn btn-outline-info" value="Edit" />
                                     </form>
                                     <!-- Delete theatre information -->
-                                    <form action="TheatreDelete" method="POST" class="button">
-                                        <input type="hidden" name="theatreId" value="${theatre.getId()}" />
-                                        <input type="submit" class="btn btn-outline-info" value="Delete" />
+                                    <form action="${S.THEATRE_DELETE}" method="POST" class="button">
+                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatre.getId()}" />
+                                        <input type="submit" class="btn btn-outline-danger" value="Delete" />
                                     </form>
                                 </div>
                             </td>
@@ -119,9 +116,7 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>

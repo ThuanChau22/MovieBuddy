@@ -5,7 +5,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.io.IOException;
 
@@ -14,7 +13,7 @@ import moviebuddy.model.Room;
 import moviebuddy.util.Validation;
 import moviebuddy.util.S;
 
-@WebServlet("/FindRoomNumber")
+@WebServlet("/" + S.FIND_ROOM_NUMBER)
 public class FindRoomNumberServlet extends HttpServlet {
     private static final long serialVersionUID = 7974334247351203743L;
 
@@ -31,13 +30,10 @@ public class FindRoomNumberServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
 
-            // Retrieve current room number
-            HttpSession session = request.getSession();
-            Object roomId = session.getAttribute(S.ROOM_EDIT_ID);
-
             // Sanitize paramaters
-            String theatreId = Validation.sanitize(request.getParameter("theatreId"));
-            String roomNumber = Validation.sanitize(request.getParameter("roomNumber"));
+            String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
+            String roomId = Validation.sanitize(request.getParameter(S.ROOM_ID_PARAM));
+            String roomNumber = Validation.sanitize(request.getParameter(S.ROOM_NUMBER_PARAM));
 
             // Retrieve room from theatre id and room number
             Room room = theatreDAO.getRoomById(theatreId, roomNumber);
@@ -56,7 +52,7 @@ public class FindRoomNumberServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(S.ERROR_PAGE);
+            response.sendRedirect(S.ERROR);
         }
     }
 }

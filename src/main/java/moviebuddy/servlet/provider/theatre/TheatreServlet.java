@@ -1,4 +1,4 @@
-package moviebuddy.servlet.provider.staff;
+package moviebuddy.servlet.provider.theatre;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
@@ -8,21 +8,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.util.List;
 
-import moviebuddy.dao.UserDAO;
-import moviebuddy.model.Role;
 import moviebuddy.util.S;
 
-@WebServlet("/" + S.ROLE_GET)
-public class RoleGetServlet extends HttpServlet {
-    private static final long serialVersionUID = -8371206317700891681L;
-
-    private UserDAO userDAO;
-
-    public void init() {
-        userDAO = new UserDAO();
-    }
+@WebServlet("/" + S.THEATRE)
+public class TheatreServlet extends HttpServlet {
+    private static final long serialVersionUID = 4125460097351343919L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -30,9 +21,16 @@ public class RoleGetServlet extends HttpServlet {
             HttpSession session = request.getSession();
             Object role = session.getAttribute(S.ROLE);
             // Check authorized access as admin
-            if (role != null && (role.equals(S.ADMIN))) {
-                List<Role> roles = userDAO.listRoles();
-                request.setAttribute("roleList", roles);
+            if (role != null && role.equals(S.ADMIN)) {
+                // Set and remove errormessage from session
+                request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
+                session.removeAttribute(S.ERROR_MESSAGE);
+
+                // Retrieve list of theatres
+                request.getRequestDispatcher(S.THEATRE_GET).include(request, response);
+
+                // Forward to Manage Theatre page
+                request.getRequestDispatcher(S.THEATRE_PAGE).forward(request, response);
             } else {
                 // Redirect to Home page for unauthorized access
                 response.sendRedirect(S.HOME);

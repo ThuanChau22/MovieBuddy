@@ -5,7 +5,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
 import java.io.PrintWriter;
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ import moviebuddy.model.Theatre;
 import moviebuddy.util.Validation;
 import moviebuddy.util.S;
 
-@WebServlet("/FindTheatreName")
+@WebServlet("/" + S.FIND_THEATRE_NAME)
 public class FindTheatreNameServlet extends HttpServlet {
     private static final long serialVersionUID = -917262803356930245L;
 
@@ -31,12 +31,9 @@ public class FindTheatreNameServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
 
-            // Retrieve current theatre id
-            HttpSession session = request.getSession();
-            Object theatreId = session.getAttribute(S.THEATRE_EDIT_ID);
-
             // Sanitize parameter
-            String theatreName = Validation.sanitize(request.getParameter("theatreName"));
+            String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
+            String theatreName = Validation.sanitize(request.getParameter(S.THEATRE_NAME_PARAM));
 
             // Retrieve theater information
             Theatre theatre = theatreDAO.getTheatreByName(theatreName);
@@ -56,7 +53,7 @@ public class FindTheatreNameServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(S.ERROR_PAGE);
+            response.sendRedirect(S.ERROR);
         }
     }
 }

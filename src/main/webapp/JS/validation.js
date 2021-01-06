@@ -1,304 +1,322 @@
-const username_min_length = 2;
-const username_max_length = 20;
-const password_min_length = 8;
+// Element IDs
+const USER_NAME_ERROR = "userNameError";
+const EMAIL_ERROR = "emailError";
+const PASSWORD_ERROR = "passwordError";
+const RE_PASSWORD_ERROR = "rePasswordError";
+const STAFF_ID_ERROR = "staffIdError";
+const ROLE_ERROR = "roleError";
+const LOCATION_FORM = "locationForm";
+const LOCATION_ERROR = "locationError";
+const THEATRE_ID = "theatreId";
+const THEATRE_NAME_ERROR = "theatreNameError";
+const ZIP_ERROR = "zipError";
+const ROOM_ID = "roomId";
+const ROOM_NUMBER_ERROR = "roomNumberError";
+const SECTIONS_ERROR = "sectionsError";
+const SEATS_ERROR = "seatsError";
+const ERROR_MESSAGE = "errorMessage";
 
+// Ajax URLs
+const FIND_REGISTERED_EMAIL = "FindRegisteredEmail";
+const FIND_THEATRE_NAME = "FindTheatreName";
+const FIND_ROOM_NUMBER = "FindRoomNumber";
+
+// Input limits
+const USERNAME_MIN_LENGTH = 2;
+const USER_NAME_MAX_LENGTH = 20;
+const PASSWORD_MIN_LENGTH = 8;
+
+
+// Validate customer signup form
 function validateSignUp(form) {
-    fail = "";
-
-    invalidUserName = validateUserName(form.userName.value);
-    document.getElementById("userNameError").innerHTML = invalidUserName;
-    fail += invalidUserName;
-
-    invalidEmail = validateEmail(form.email.value);
-    document.getElementById('emailError').innerHTML = invalidEmail;
-    fail += invalidEmail;
-    if (invalidEmail == "") {
-        findRegisteredEmail(form.email.name + "=" + form.email.value).then((result => {
-            document.getElementById('emailError').innerHTML = result;
-            fail += result;
-            if (fail == "") {
-                document.getElementById(form.id).submit();
-            }
-        }));
-    }
-
-    invalidPassword = validatePassword(form.password.value);
-    document.getElementById("passwordError").innerHTML = invalidPassword;
-    fail += invalidPassword;
-
-    invalidRePassword = validateRePassword(form.password.value, form.rePassword.value);
-    document.getElementById("rePasswordError").innerHTML = invalidRePassword;
-    fail += invalidRePassword;
+    fail = checkName(form.user_name);
+    checkEmail(form.email).then(invalidInput => {
+        fail += invalidInput;
+        if (fail == "") {
+            document.getElementById(form.id).submit();
+        }
+    });
+    fail += checkPassword(form.password);
+    fail += checkRePassword(form.id);
     return false;
 }
 
-function checkName(nameInput, errorId) {
-    invalidUserName = validateUserName(nameInput.value);
-    document.getElementById(errorId).innerHTML = invalidUserName;
-    return invalidUserName;
-}
-
-async function checkEmail(emailInput, errorId) {
-    invalidEmail = validateEmail(emailInput.value);
-    if (invalidEmail == "") {
-        invalidEmail = await findRegisteredEmail(emailInput.name + "=" + emailInput.value);
-    }
-    document.getElementById(errorId).innerHTML = invalidEmail;
-    return invalidEmail;
-}
-
-function findRegisteredEmail(args) {
-    return new Promise((resolve) => {
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "FindRegisteredUser");
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send(args);
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                resolve(this.responseText);
-            }
-        };
-    });
-}
-
-function checkPassword(passwordInput, errorId) {
-    invalidPassword = validatePassword(passwordInput.value)
-    document.getElementById(errorId).innerHTML = invalidPassword;
-    return invalidPassword;
-}
-
-function checkRePassword(formId, errorId) {
-    form = document.getElementById(formId);
-    invalidRePassword = validateRePassword(form.password.value, form.rePassword.value);
-    document.getElementById(errorId).innerHTML = invalidRePassword;
-    return invalidRePassword;
-}
-
+// Validate staff signup form
 function validateStaffSignUp(form, isAdmin) {
     fail = "";
-
-    if (isAdmin){
-        invalidRole = validateRole(form.role.value);
-        document.getElementById("roleError").innerHTML = invalidRole;
-        fail += invalidRole;
-
+    if (isAdmin) {
+        fail += checkRole(form.role);
         invalidLocation = "";
-        if (invalidRole == "" && form.role.value != "admin") {
-            invalidLocation = validateTheatreLocation(form.theatreLocation.value);
+        if (form.role.value != "admin") {
+            fail += checkLocation(form.theatre_location);
         }
-        document.getElementById("theatreLocationError").innerHTML = invalidLocation;
-        fail += invalidLocation;
     }
-
-    invalidUserName = validateUserName(form.userName.value);
-    document.getElementById("userNameError").innerHTML = invalidUserName;
-    fail += invalidUserName;
-
-    invalidEmail = validateEmail(form.email.value);
-    document.getElementById('emailError').innerHTML = invalidEmail;
-    fail += invalidEmail;
-    if (invalidEmail == "") {
-        findRegisteredEmail(form.email.name + "=" + form.email.value).then((result => {
-            document.getElementById('emailError').innerHTML = result;
-            fail += result;
-            if (fail == "") {
-                document.getElementById(form.id).submit();
-            }
-        }));
-    }
-
-    invalidPassword = validatePassword(form.password.value);
-    document.getElementById("passwordError").innerHTML = invalidPassword;
-    fail += invalidPassword;
+    fail += checkName(form.user_name);
+    checkEmail(form.email).then(invalidInput => {
+        fail += invalidInput;
+        if (fail == "") {
+            document.getElementById(form.id).submit();
+        }
+    });
+    fail += checkPassword(form.password);
     return false;
 }
 
-function checkRole(roleInput, errorId, theatreLocationInputId) {
-    invalidRole = validateRole(roleInput.value)
-    document.getElementById(errorId).innerHTML = invalidRole;
-    if (invalidRole == "" && roleInput.value == "admin") {
-        document.getElementById(theatreLocationInputId).setAttribute("hidden", "");
-    } else {
-        document.getElementById(theatreLocationInputId).removeAttribute("hidden");
-    }
-    return invalidRole;
-}
-
-function checkTheatreLocation(locationInput, errorId) {
-    invalidLocation = validateTheatreLocation(locationInput.value)
-    document.getElementById(errorId).innerHTML = invalidLocation;
-    return invalidLocation;
-}
-
+// Validate customer signin form
 function validateSignIn(form) {
-    fail = checkSignInEmail(form.email, "emailError");
-    fail += checkSignInPassword(form.password, "passwordError");
+    fail = checkSignInEmail(form.email);
+    fail += checkSignInPassword(form.password);
     return fail == "";
 }
 
-function checkSignInEmail(emailInput, errorId) {
+// Validate staff signin form
+function validateStaffSignIn(form) {
+    fail = checkSignInStaffId(form.staff_id);
+    fail += checkSignInPassword(form.password);
+    return fail == "";
+}
+
+// Validate theatre form
+function validateTheatreForm(form) {
+    errorId = document.getElementById(ERROR_MESSAGE);
+    errorId.innerHTML = fail = "";
+    if (form.theatre_name.value == "" || form.address.value == ""
+        || form.city.value == "" || form.state.value == ""
+        || form.country.value == "" || form.zip.value == "") {
+        errorId.innerHTML = fail += "* required fields\n";
+    }
+    if (form.theatre_name.value != "") {
+        checkTheatreName(form.theatre_name).then(invalidInput => {
+            fail += invalidInput;
+            if (fail == "") {
+                document.getElementById(form.id).submit();
+            }
+        });
+    }
+    if (form.zip.value != "") {
+        fail += checkZip(form.zip);
+    }
+    return false;
+}
+
+// Validate ticket price form
+function validateTicketPriceForm(form) {
+    errorId = document.getElementById(ERROR_MESSAGE);
+    errorId.innerHTML = "";
+    if (form.start_time.value == "") {
+        errorId.innerHTML = "Please enter start time\n";
+        return false;
+    }
+    if (form.price.value == "") {
+        errorId.innerHTML = "Please enter price\n";
+        return false;
+    }
+    return true;
+}
+
+// Validate room form
+function validateRoomForm(form) {
+    errorId = document.getElementById(ERROR_MESSAGE);
+    errorId.innerHTML = fail = "";
+    if (form.room_number.value == "" || form.sections.value == "" || form.seats.value == "") {
+        errorId.innerHTML = fail += "* required fields\n";
+    }
+    if (form.room_number.value != "") {
+        checkRoomNumber(form.room_number).then(invalidInput => {
+            fail += invalidInput;
+            if (fail == "") {
+                document.getElementById(form.id).submit();
+            }
+        });
+    }
+    if (form.sections.value != "") {
+        fail += checkSections(form.sections);
+    }
+    if (form.seats.value != "") {
+        fail += checkSeats(form.seats);
+    }
+    return false;
+}
+
+// Validate movie form
+function validateMovieForm(form) {
+    errorId = document.getElementById(ERROR_MESSAGE);
+    errorId.innerHTML = "";
+    if (form.title.value == "" || form.release_date.value == ""
+        || form.duration.value == "" || form.trailer.value == "" || form.description.value == "") {
+        errorId.innerHTML = "* required fields\n";
+        return false;
+    }
+    if (validateNumber(form.duration.value) != "") {
+        errorId.innerHTML = "Invalid duration\n";
+        return false;
+    }
+    return true;
+}
+
+// Validate schedule form
+function validateScheduleForm(form) {
+    errorId = document.getElementById(ERROR_MESSAGE);
+    errorId.innerHTML = "";
+    if (form.show_date.value == "") {
+        errorId.innerHTML = "Please enter show date\n";
+        return false;
+    }
+    if (form.start_time.value == "") {
+        errorId.innerHTML = "Please enter start time\n";
+        return false;
+    }
+    if (form.room_number.value == "") {
+        errorId.innerHTML = "Please select a room\n";
+        return false;
+    }
+    return true;
+}
+
+function checkName(nameInput) {
+    invalidInput = validateUserName(nameInput.value);
+    document.getElementById(USER_NAME_ERROR).innerHTML = invalidInput;
+    return invalidInput;
+}
+
+async function checkEmail(emailInput) {
+    invalidInput = validateEmail(emailInput.value);
+    if (invalidInput == "") {
+        args = emailInput.name + "=" + emailInput.value;
+        invalidInput = await ajaxFunction(args, FIND_REGISTERED_EMAIL);
+    }
+    document.getElementById(EMAIL_ERROR).innerHTML = invalidInput;
+    return invalidInput;
+}
+
+function checkPassword(passwordInput) {
+    invalidInput = validatePassword(passwordInput.value)
+    document.getElementById(PASSWORD_ERROR).innerHTML = invalidInput;
+    return invalidInput;
+}
+
+function checkRePassword(formId) {
+    form = document.getElementById(formId);
+    invalidInput = validateRePassword(form.password.value, form.re_password.value);
+    document.getElementById(RE_PASSWORD_ERROR).innerHTML = invalidInput;
+    return invalidInput;
+}
+
+function checkRole(roleInput) {
+    invalidInput = validateRole(roleInput.value)
+    document.getElementById(ROLE_ERROR).innerHTML = invalidInput;
+    if (invalidInput == "" && roleInput.value == "admin") {
+        document.getElementById(LOCATION_FORM).setAttribute("hidden", "");
+    } else {
+        document.getElementById(LOCATION_FORM).removeAttribute("hidden");
+    }
+    return invalidInput;
+}
+
+function checkLocation(locationInput) {
+    invalidInput = "";
+    if (locationInput.value == "") {
+        invalidInput = "Please select a theatre location\n";
+    }
+    document.getElementById(LOCATION_ERROR).innerHTML = invalidInput;
+    return invalidInput;
+}
+
+function checkSignInEmail(emailInput) {
     invalidInput = "";
     if (emailInput.value == "") {
-        invalidInput = "Please enter your email";
+        invalidInput = "Please enter your email\n";
     }
-    document.getElementById(errorId).innerHTML = invalidInput;
+    document.getElementById(EMAIL_ERROR).innerHTML = invalidInput;
     return invalidInput;
 }
 
-function checkSignInPassword(passwordInput, errorId) {
+function checkSignInPassword(passwordInput) {
     invalidInput = "";
     if (passwordInput.value == "") {
-        invalidInput = "Please enter your password";
+        invalidInput = "Please enter your password\n";
     }
-    document.getElementById(errorId).innerHTML = invalidInput;
+    document.getElementById(PASSWORD_ERROR).innerHTML = invalidInput;
     return invalidInput;
 }
 
-function validateStaffSignIn(form) {
-    fail = checkSignInStaffId(form.staffId, "staffIdError");
-    fail += checkSignInPassword(form.password, "passwordError");
-    return fail == "";
-}
-
-function checkSignInStaffId(staffIdInput, errorId) {
+function checkSignInStaffId(staffIdInput) {
     invalidInput = "";
     if (staffIdInput.value == "") {
-        invalidInput = "Please enter your staff ID number";
+        invalidInput = "Please enter your staff ID number\n";
     }
-    document.getElementById(errorId).innerHTML = invalidInput;
+    document.getElementById(STAFF_ID_ERROR).innerHTML = invalidInput;
     return invalidInput;
 }
 
-function validateTheatreForm(form) {
-    theatreName = form.theatreName.value;
-    address = form.address.value;
-    city = form.city.value;
-    state = form.state.value;
-    country = form.country.value;
-    zip = form.zip.value;
-    errorId = document.getElementById("errorMessage");
-    errorId.innerHTML = fail = "";
-    if (theatreName == "" || address == "" || city == "" || state == "" || country == "" || zip == "") {
-        errorId.innerHTML = errorMessage = "* required fields";
-        fail += errorMessage;
-    }
-    if (theatreName != "") {
-        findTheatreName(form.theatreName.name + "=" + theatreName).then((result => {
-            document.getElementById('theatreNameError').innerHTML = result;
-            fail += result;
-            if (fail == "") {
-                document.getElementById(form.id).submit();
-            }
-        }));
-    }
-    if (zip != "" && validateNumber(zip) != "") {
-        document.getElementById('zipError').innerHTML = errorMessage = "Invalid zip code";
-        fail += errorMessage;
-    }
-    return false;
-}
-
-async function checkTheatreName(theatreNameInput, errorId) {
-    errorMessage = "";
+async function checkTheatreName(theatreNameInput) {
+    invalidInput = "";
     if (theatreNameInput.value != "") {
-        errorMessage = await findTheatreName(theatreNameInput.name + "=" + theatreNameInput.value);
+        args = "";
+        theatreIdInput = document.getElementById(THEATRE_ID);
+        if (theatreIdInput != null) {
+            args += theatreIdInput.name + "=" + theatreIdInput.value + "&";
+        }
+        args += theatreNameInput.name + "=" + theatreNameInput.value;
+        invalidInput = await ajaxFunction(args, FIND_THEATRE_NAME);
     }
-    document.getElementById(errorId).innerHTML = errorMessage;
-    return errorMessage;
+    document.getElementById(THEATRE_NAME_ERROR).innerHTML = invalidInput;
+    return invalidInput;
 }
 
-function findTheatreName(args) {
-    return new Promise((resolve) => {
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "FindTheatreName");
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send(args);
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                resolve(this.responseText);
-            }
-        };
-    });
-}
-
-function checkZip(zipInput, errorId) {
+function checkZip(zipInput) {
     invalidInput = "";
     if (zipInput.value != "" && validateNumber(zipInput.value) != "") {
-        invalidInput = "Invalid zip code";
+        invalidInput = "Invalid zip code\n";
     }
-    document.getElementById(errorId).innerHTML = invalidInput;
+    document.getElementById(ZIP_ERROR).innerHTML = invalidInput;
     return invalidInput;
 }
 
-function validateTicketPriceForm(form) {
-    startTime = form.startTime.value;
-    price = form.price.value;
-    errorId = document.getElementById("errorMessage");
-    errorId.innerHTML = "";
-    if (startTime == "") {
-        errorId.innerHTML = "Please enter start time";
-        return false;
+async function checkRoomNumber(roomNumberInput) {
+    invalidInput = "";
+    if (roomNumberInput.value != "" && validateNumber(roomNumberInput.value) != "") {
+        invalidInput = "Invalid room number\n";
     }
-    if (price == "") {
-        errorId.innerHTML = "Please enter price";
-        return false;
+    if (invalidInput == "") {
+        args = "";
+        theatreIdInput = document.getElementById(THEATRE_ID);
+        if (theatreIdInput != null) {
+            args += theatreIdInput.name + "=" + theatreIdInput.value + "&";
+        }
+        roomIdInput = document.getElementById(ROOM_ID);
+        if (roomIdInput != null) {
+            args += roomIdInput.name + "=" + roomIdInput.value + "&";
+        }
+        args += roomNumberInput.name + "=" + roomNumberInput.value;
+        invalidInput = await ajaxFunction(args, FIND_ROOM_NUMBER);
     }
-    return true;
+    document.getElementById(ROOM_NUMBER_ERROR).innerHTML = invalidInput;
+    return invalidInput;
 }
 
-function validateRoomForm(form) {
-    roomNumber = form.roomNumber.value;
-    sections = form.sections.value;
-    seats = form.seats.value;
-    errorId = document.getElementById("errorMessage");
-    errorId.innerHTML = fail = "";
-    if (roomNumber == "" || sections == "" || seats == "") {
-        errorId.innerHTML = errorMessage = "* required fields";
-        fail += errorMessage;
+function checkSections(sectionsInput) {
+    invalidInput = "";
+    if (sectionsInput.value != "" && validateNumber(sectionsInput.value) != "") {
+        invalidInput = "Invalid number of secions\n";
     }
-    invalidRoomNumber = "";
-    if (validateNumber(roomNumber) != "") {
-        errorId.innerHTML = invalidRoomNumber = "Invalid room number";
-        fail += invalidRoomNumber;
-    }
-    if (invalidRoomNumber == "") {
-        theatreId = form.theatreId.name + "=" + form.theatreId.value;
-        roomNumber = form.roomNumber.name + "=" + roomNumber;
-        findRoomNumber(theatreId + "&" + roomNumber).then((result => {
-            document.getElementById('roomNumberError').innerHTML = result;
-            fail += result;
-            if (fail == "") {
-                document.getElementById(form.id).submit();
-            }
-        }));
-    }
-    if (validateNumber(sections) != "") {
-        errorId.innerHTML = errorMessage = "Invalid number of secions";
-        fail += errorMessage;
-    }
-    if (validateNumber(seats) != "") {
-        errorId.innerHTML = errorMessage = "Invalid number of seats";
-        fail += errorMessage;
-    }
-    return false;
+    document.getElementById(SECTIONS_ERROR).innerHTML = invalidInput;
+    return invalidInput;
 }
 
-async function checkRoomNumber(theatreId, roomNumber, errorId) {
-    theatreInput = document.getElementById(theatreId);
-    theatreParam = theatreInput.name + "=" + theatreInput.value;
-    roomNumberParam = roomNumber.name + "=" + roomNumber.value;
-    errorMessage = "";
-    if (roomNumber.value != "") {
-        errorMessage = await findRoomNumber(theatreParam + "&" + roomNumberParam);
+function checkSeats(seatsInput) {
+    invalidInput = "";
+    if (seatsInput.value != "" && validateNumber(seatsInput.value) != "") {
+        invalidInput = "Invalid number of seats\n";
     }
-    document.getElementById(errorId).innerHTML = errorMessage;
-    return errorMessage;
+    document.getElementById(SEATS_ERROR).innerHTML = invalidInput;
+    return invalidInput;
 }
 
-function findRoomNumber(args) {
+function ajaxFunction(args, url) {
     return new Promise((resolve) => {
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "FindRoomNumber");
+        xhttp.open("POST", url);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(args);
         xhttp.onreadystatechange = function () {
@@ -307,53 +325,14 @@ function findRoomNumber(args) {
             }
         };
     });
-}
-
-function validateMovieForm(form) {
-    title = form.title.value;
-    releaseDate = form.releaseDate.value;
-    duration = form.duration.value;
-    trailer = form.trailer.value;
-    description = form.description.value
-    errorId = document.getElementById("errorMessage");
-    if (title == "" || releaseDate == "" || duration == "" || trailer == "" || description == "") {
-        errorId.innerHTML = "* required fields";
-        return false;
-    }
-    if (validateNumber(duration) != "") {
-        errorId.innerHTML = "Invalid duration";
-        return false;
-    }
-    return true;
-}
-
-function validateScheduleForm(form) {
-    showDate = form.showDate.value;
-    startTime = form.startTime.value;
-    roomNumber = form.roomNumber.value;
-    errorId = document.getElementById("errorMessage");
-    errorId.innerHTML = "";
-    if (showDate == "") {
-        errorId.innerHTML = "Please enter show date";
-        return false;
-    }
-    if (startTime == "") {
-        errorId.innerHTML = "Please enter start time";
-        return false;
-    }
-    if (roomNumber == "") {
-        errorId.innerHTML = "Please select a room";
-        return false;
-    }
-    return true;
 }
 
 function validateUserName(userName) {
     if (userName == "") return "Username field cannot be empty\n";
     if (/[^a-zA-Z0-9]/.test(userName)) return "Username must contain only letters and numbers\n";
     if (!/^[a-zA-Z]/.test(userName)) return "Username must contain a letter as first character\n";
-    if (userName.length < username_min_length) return "Username must contain at least " + username_min_length + " characters\n";
-    if (userName.length > username_max_length) return "Username must not contain more than " + username_max_length + " characters\n";
+    if (userName.length < USERNAME_MIN_LENGTH) return "Username must contain at least " + USERNAME_MIN_LENGTH + " characters\n";
+    if (userName.length > USER_NAME_MAX_LENGTH) return "Username must not contain more than " + USER_NAME_MAX_LENGTH + " characters\n";
     return "";
 }
 
@@ -368,7 +347,7 @@ function validatePassword(password) {
     if (!/[a-z]/.test(password)) return "Passwords must contain at least a lowercase letter\n";
     if (!/[A-Z]/.test(password)) return "Passwords must contain at least an uppercase letter\n";
     if (!/[0-9]/.test(password)) return "Passwords must contain at least a number\n";
-    if (password.length < password_min_length) return "Passwords must be at least " + password_min_length + " characters\n";
+    if (password.length < PASSWORD_MIN_LENGTH) return "Passwords must be at least " + PASSWORD_MIN_LENGTH + " characters\n";
     return "";
 }
 
@@ -384,13 +363,6 @@ function validateRole(role) {
     }
     if (!(role == "admin" || role == "manager" || role == "faculty")) {
         return "Invalid role selected\n";
-    }
-    return "";
-}
-
-function validateTheatreLocation(location) {
-    if (location == "") {
-        return "Please select a theatre location\n";
     }
     return "";
 }

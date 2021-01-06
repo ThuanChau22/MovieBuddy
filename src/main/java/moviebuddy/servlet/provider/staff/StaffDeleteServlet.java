@@ -14,7 +14,7 @@ import moviebuddy.model.User;
 import moviebuddy.util.Validation;
 import moviebuddy.util.S;
 
-@WebServlet("/StaffDelete")
+@WebServlet("/" + S.STAFF_DELETE)
 public class StaffDeleteServlet extends HttpServlet {
     private static final long serialVersionUID = -8552363830506676929L;
 
@@ -32,15 +32,22 @@ public class StaffDeleteServlet extends HttpServlet {
             // Check authorized access as admin and manger
             if (role != null && (role.equals(S.ADMIN) || role.equals(S.MANAGER))) {
                 // Sanitize parameter
-                String staffId = Validation.sanitize(request.getParameter("staffId"));
+                String staffId = Validation.sanitize(request.getParameter(S.STAFF_ID_PARAM));
 
-                // Retrieve staff account
-                User staff = userDAO.getProviderByStaffId(staffId);
-
-                // Check authorized deletion as manager
+                // Check unauthorized deletion
                 String errorMessage = "";
-                if (role.equals(S.MANAGER) && staff != null && !staff.getRole().equals(S.FACULTY)) {
-                    errorMessage = "Unauthorized deletion";
+                if (role.equals(S.MANAGER)) {
+                    String theatreId = "";
+                    Object theatreIdObj = session.getAttribute(S.EMPLOY_THEATRE_ID);
+                    if (theatreIdObj != null) {
+                        theatreId = theatreIdObj.toString();
+                    }
+
+                    User staff = userDAO.getProviderByStaffId(staffId);
+                    if (staff != null
+                            && (!theatreId.equals(staff.getTheatre_id() + "") || !staff.getRole().equals(S.FACULTY))) {
+                        errorMessage = "Unauthorized deletion";
+                    }
                 }
 
                 // Delete staff account
@@ -52,14 +59,14 @@ public class StaffDeleteServlet extends HttpServlet {
                 }
 
                 // Redirect Manage Staff page
-                response.sendRedirect(S.MANAGE_STAFF_PAGE);
+                response.sendRedirect(S.STAFF);
             } else {
                 // Redirect to Home page for unauthorized access
-                response.sendRedirect(S.HOME_PAGE);
+                response.sendRedirect(S.HOME);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(S.ERROR_PAGE);
+            response.sendRedirect(S.ERROR);
         }
     }
 }

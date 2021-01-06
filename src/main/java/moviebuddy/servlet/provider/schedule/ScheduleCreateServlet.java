@@ -18,8 +18,8 @@ import moviebuddy.model.Schedule;
 import moviebuddy.util.Validation;
 import moviebuddy.util.S;
 
-@WebServlet("/ScheduleAdd")
-public class ScheduleAddServlet extends HttpServlet {
+@WebServlet("/" + S.SCHEDULE_CREATE)
+public class ScheduleCreateServlet extends HttpServlet {
     private static final long serialVersionUID = -9166508971254120994L;
 
     private TheatreDAO theatreDAO;
@@ -39,34 +39,27 @@ public class ScheduleAddServlet extends HttpServlet {
             Object role = session.getAttribute(S.ROLE);
             // Check authorized access as admin and manager
             if (role != null && (role.equals(S.ADMIN) || role.equals(S.MANAGER))) {
-                // Retrieve current theatre id
+                // Sanitize user inputs
+                String movieId = Validation.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
+                String showDate = Validation.sanitize(request.getParameter(S.SHOW_DATE_PARAM));
+                String startTime = Validation.sanitize(request.getParameter(S.START_TIME_PARAM));
+                String roomNumber = Validation.sanitize(request.getParameter(S.ROOM_NUMBER_PARAM));
+
+                // Retrieve theatre id
                 String theatreId = "";
-
-                // Set theatre id as admin
-                if (role.equals(S.ADMIN)) {
-                    Object theatreIdObj = session.getAttribute(S.SELECTED_THEATRE_ID);
-                    if (theatreIdObj != null) {
-                        theatreId = theatreIdObj.toString();
-                    }
+                if (role.equals(S.ADMIN)) { // as admin
+                    theatreId = session.getAttribute(S.SELECTED_THEATRE_ID).toString();
                 }
-
-                // Set theatre id as manager
-                if (role.equals(S.MANAGER)) {
-                    theatreId = "";
+                if (role.equals(S.MANAGER)) { // as manager
                     Object theatreIdObj = session.getAttribute(S.EMPLOY_THEATRE_ID);
                     if (theatreIdObj != null) {
                         theatreId = theatreIdObj.toString();
                     }
                 }
 
-                // Sanitize user inputs
-                String movieId = Validation.sanitize(request.getParameter("movieId"));
-                String showDate = Validation.sanitize(request.getParameter("showDate"));
-                String startTime = Validation.sanitize(request.getParameter("startTime"));
-                String roomNumber = Validation.sanitize(request.getParameter("roomNumber"));
-
                 // Validate user inputs
                 String errorMessage = Validation.validateScheduleForm(showDate, startTime, roomNumber);
+                // System.out.println(theatreDAO.getRoomById(theatreId, roomNumber));
                 if (errorMessage.isEmpty() && theatreDAO.getRoomById(theatreId, roomNumber) == null) {
                     errorMessage = "Room number does not exist";
                 }
@@ -98,21 +91,21 @@ public class ScheduleAddServlet extends HttpServlet {
 
                 // Return previous inputs
                 if (!errorMessage.isEmpty()) {
-                    session.setAttribute(S.SCHEDULE_SHOW_DATE_CREATE, showDate);
-                    session.setAttribute(S.SCHEDULE_START_TIME_CREATE, startTime);
-                    session.setAttribute(S.SCHEDULE_ROOM_NUMBER_CREATE, roomNumber);
+                    session.setAttribute(S.SCHEDULE_SHOW_DATE_INPUT, showDate);
+                    session.setAttribute(S.SCHEDULE_START_TIME_INPUT, startTime);
+                    session.setAttribute(S.SCHEDULE_ROOM_NUMBER_INPUT, roomNumber);
                     session.setAttribute(S.ERROR_MESSAGE, errorMessage);
                 }
 
                 // Redirect to Manage Schedule page
-                response.sendRedirect(S.MANAGE_SCHEDULE_PAGE);
+                response.sendRedirect(S.SCHEDULE + "?" + S.MOVIE_ID_PARAM + "=" + movieId);
             } else {
                 // Redirect to Home page for unauthorized access
-                response.sendRedirect(S.HOME_PAGE);
+                response.sendRedirect(S.HOME);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(S.ERROR_PAGE);
+            response.sendRedirect(S.ERROR);
         }
     }
 }

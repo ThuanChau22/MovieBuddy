@@ -16,7 +16,7 @@ import moviebuddy.dao.MovieDAO;
 import moviebuddy.util.Validation;
 import moviebuddy.util.S;
 
-@WebServlet("/MovieCreate")
+@WebServlet("/" + S.MOVIE_CREATE)
 @MultipartConfig
 public class MovieCreateSevlet extends HttpServlet {
     private static final long serialVersionUID = 3223494789974884818L;
@@ -27,6 +27,40 @@ public class MovieCreateSevlet extends HttpServlet {
         movieDAO = new MovieDAO();
     }
 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            HttpSession session = request.getSession();
+            Object role = session.getAttribute(S.ROLE);
+            // Check authorized access as admin
+            if (role != null && role.equals(S.ADMIN)) {
+                // Redirected from movie-create
+                // Set and remove previous inputs from session
+                request.setAttribute("titleInput", session.getAttribute(S.MOVIE_TITLE_INPUT));
+                request.setAttribute("releaseDateInput", session.getAttribute(S.MOVIE_RELEASE_DATE_INPUT));
+                request.setAttribute("durationInput", session.getAttribute(S.MOVIE_DURATION_INPUT));
+                request.setAttribute("trailerInput", session.getAttribute(S.MOVIE_TRAILER_INPUT));
+                request.setAttribute("descriptionInput", session.getAttribute(S.MOVIE_DESCRIPTION_INPUT));
+                request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
+                session.removeAttribute(S.MOVIE_TITLE_INPUT);
+                session.removeAttribute(S.MOVIE_RELEASE_DATE_INPUT);
+                session.removeAttribute(S.MOVIE_DURATION_INPUT);
+                session.removeAttribute(S.MOVIE_TRAILER_INPUT);
+                session.removeAttribute(S.MOVIE_DESCRIPTION_INPUT);
+                session.removeAttribute(S.ERROR_MESSAGE);
+
+                // Forward to Create Movie page
+                request.getRequestDispatcher(S.MOVIE_CREATE_PAGE).forward(request, response);
+            } else {
+                // Redirect to Home page for unauthorized access
+                response.sendRedirect(S.HOME);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect(S.ERROR);
+        }
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -35,44 +69,43 @@ public class MovieCreateSevlet extends HttpServlet {
             // Check authorized access as admin
             if (role != null && role.equals(S.ADMIN)) {
                 // Sanitize user inputs
-                String title = Validation.sanitize(request.getParameter("title"));
-                String releaseDate = Validation.sanitize(request.getParameter("releaseDate"));
-                String duration = Validation.sanitize(request.getParameter("duration"));
-                String trailer = Validation.sanitize(request.getParameter("trailer"));
-                Part partPoster = request.getPart("poster");
+                String title = Validation.sanitize(request.getParameter(S.TITLE_PARAM));
+                String releaseDate = Validation.sanitize(request.getParameter(S.RELEASE_DATE_PARAM));
+                String duration = Validation.sanitize(request.getParameter(S.DURATION_PARAM));
+                String trailer = Validation.sanitize(request.getParameter(S.TRAILER_PARAM));
+                Part partPoster = request.getPart(S.POSTER_PARAM);
                 InputStream streamPoster = partPoster.getInputStream();
                 long posterSize = partPoster.getSize();
-                String description = Validation.sanitize(request.getParameter("description"));
+                String description = Validation.sanitize(request.getParameter(S.DESCRIPTION_PARAM));
 
                 // Validate user inputs
                 String errorMessage = Validation.validateMovieForm(title, releaseDate, duration, trailer, description);
 
                 // Upload movie information
                 if (errorMessage.isEmpty()) {
-                    errorMessage = movieDAO.uploadMovie(title, releaseDate, duration, trailer, streamPoster, posterSize,
-                            description);
+                    errorMessage = movieDAO.uploadMovie(title, releaseDate, duration, trailer, streamPoster, posterSize, description);
                 }
 
                 if (errorMessage.isEmpty()) {
                     // Redirect to Manage Movie page
-                    response.sendRedirect(S.MANAGE_MOVIE_PAGE);
+                    response.sendRedirect(S.MOVIE);
                 } else {
                     // Back to Upload Movie Information page
-                    session.setAttribute(S.MOVIE_CREATE_TITLE, title);
-                    session.setAttribute(S.MOVIE_CREATE_RELEASE_DATE, releaseDate);
-                    session.setAttribute(S.MOVIE_CREATE_DURATION, duration);
-                    session.setAttribute(S.MOVIE_CREATE_TRAILER, trailer);
-                    session.setAttribute(S.MOVIE_CREATE_DESCRIPTION, description);
+                    session.setAttribute(S.MOVIE_TITLE_INPUT, title);
+                    session.setAttribute(S.MOVIE_RELEASE_DATE_INPUT, releaseDate);
+                    session.setAttribute(S.MOVIE_DURATION_INPUT, duration);
+                    session.setAttribute(S.MOVIE_TRAILER_INPUT, trailer);
+                    session.setAttribute(S.MOVIE_DESCRIPTION_INPUT, description);
                     session.setAttribute(S.ERROR_MESSAGE, errorMessage);
-                    response.sendRedirect(S.MOVIE_CREATE_PAGE);
+                    response.sendRedirect(S.MOVIE_CREATE);
                 }
             } else {
                 // Redirect to Home page for unauthorized access
-                response.sendRedirect(S.HOME_PAGE);
+                response.sendRedirect(S.HOME);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(S.ERROR_PAGE);
+            response.sendRedirect(S.ERROR);
         }
     }
 }

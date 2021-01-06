@@ -13,7 +13,7 @@ import moviebuddy.dao.TheatreDAO;
 import moviebuddy.util.Validation;
 import moviebuddy.util.S;
 
-@WebServlet("/TicketPriceDelete")
+@WebServlet("/" + S.TICKET_PRICE_DELETE)
 public class TicketPriceDeleteServlet extends HttpServlet {
     private static final long serialVersionUID = -4687243445163545649L;
 
@@ -31,8 +31,8 @@ public class TicketPriceDeleteServlet extends HttpServlet {
             // // Check authorized access as admin
             if (role != null && role.equals(S.ADMIN)) {
                 // Sanitize parameters
-                String theatreId = Validation.sanitize(request.getParameter("theatreId"));
-                String startTime = Validation.sanitize(request.getParameter("startTime"));
+                String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
+                String startTime = Validation.sanitize(request.getParameter(S.START_TIME_PARAM));
 
                 // Delete ticket price
                 String errorMessage = theatreDAO.deleteTicketPrice(theatreId, startTime);
@@ -41,14 +41,14 @@ public class TicketPriceDeleteServlet extends HttpServlet {
                 }
 
                 // Redirect to Manage Ticket Price page
-                response.sendRedirect(S.MANAGE_TICKET_PRICE_PAGE);
+                response.sendRedirect(S.TICKET_PRICE + "?" + S.THEATRE_ID_PARAM + "=" + theatreId);
             } else {
                 // Redirect to Home page for unauthorized access
-                response.sendRedirect(S.HOME_PAGE);
+                response.sendRedirect(S.HOME);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(S.ERROR_PAGE);
+            response.sendRedirect(S.ERROR);
         }
     }
 }

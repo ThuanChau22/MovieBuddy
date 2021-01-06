@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="moviebuddy.util.Passwords" %>
 <%@ page import="moviebuddy.util.S" %>
-<jsp:include page="/MovieGet" />
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
     response.setHeader("Pragma", "no-cache"); // HTTP 1.0
@@ -23,13 +22,11 @@
     Object staffId = session.getAttribute(S.STAFF_ID);
     Object role = session.getAttribute(S.ROLE);
     if(accountId == null || !currentSession.equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr())) || staffId == null || !(role.equals(S.ADMIN) || role.equals(S.MANAGER))){
-        response.sendRedirect(S.HOME_PAGE);
+        response.sendRedirect(S.HOME);
     }
 
-    request.setAttribute("movieList", session.getAttribute(S.MOVIE_LIST));
-    request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
-    session.removeAttribute(S.MOVIE_LIST);
-    session.removeAttribute(S.ERROR_MESSAGE);
+    // ${errorMessage}
+    // ${movieList}
 %>
 <html lang="en">
 
@@ -57,7 +54,7 @@
                     <div class="row">
                         <div class="col"></div>
                         <div class="col-6 text-center">
-                            <a href="./${S.MOVIE_CREATE_PAGE}">
+                            <a href="./${S.MOVIE_CREATE}">
                                 <button type="button" class="btn btn-outline-info">Add Movie</button>
                             </a>
                         </div>
@@ -111,20 +108,22 @@
                                 <div class="col">
                                     <div class="container">
                                         <!-- Schedule movie -->
-                                        <form action="ScheduleGet" method="POST" class="button">
-                                            <input type="hidden" name="movieId" value=${movie.getId()} />
+                                        <form action="${S.SCHEDULE}" method="GET" class="button">
+                                            <input type="hidden" name="${S.MOVIE_ID_PARAM}" value=${movie.getId()} />
                                             <input type="submit" class="btn btn-outline-info" value="Schedule" />
                                         </form>
                                         <c:if test="${isAdmin}">
                                             <!-- Edit movie information -->
-                                            <form action="MovieLoadEdit" method="POST" class="button">
-                                                <input type="hidden" name="movieId" value=${movie.getId()} />
+                                            <form action="${S.MOVIE_EDIT}" method="GET" class="button">
+                                                <input type="hidden" name="${S.MOVIE_ID_PARAM}"
+                                                    value=${movie.getId()} />
                                                 <input type="submit" class="btn btn-outline-info" value="Edit" />
                                             </form>
                                             <!-- Delete movie information -->
-                                            <form action="MovieDelete" method="POST" class="button">
-                                                <input type="hidden" name="movieId" value=${movie.getId()} />
-                                                <input type="submit" class="btn btn-outline-info" value="Delete" />
+                                            <form action="${S.MOVIE_DELETE}" method="POST" class="button">
+                                                <input type="hidden" name="${S.MOVIE_ID_PARAM}"
+                                                    value=${movie.getId()} />
+                                                <input type="submit" class="btn btn-outline-danger" value="Delete" />
                                             </form>
                                         </c:if>
                                     </div>
@@ -142,9 +141,7 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>

@@ -20,13 +20,11 @@
     Object accountId = session.getAttribute(S.ACCOUNT_ID);
     Object currentSession = session.getAttribute(S.CURRENT_SESSION);
     if(accountId != null && currentSession.equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr()))) {
-        response.sendRedirect(S.HOME_PAGE);
+        response.sendRedirect(S.HOME);
     }
 
-    request.setAttribute("staffIdInput", session.getAttribute(S.SIGN_IN_STAFF_ID));
-    request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
-    session.removeAttribute(S.SIGN_IN_STAFF_ID);
-    session.removeAttribute(S.ERROR_MESSAGE);
+    // ${staffIdInput}
+    // ${errorMessage}
 %>
 <html lang="en">
 
@@ -52,16 +50,18 @@
                 <br>
                 <div class="row">
                     <div class="col-lg"></div>
-                    <div class="col-lg">
+                    <div class="col-lg-4">
                         <div class="card">
                             <div class="card-body ">
                                 <!-- Sign in as staff form -->
-                                <form action="SignInStaff" method="POST" onsubmit="return validateStaffSignIn(this)">
+                                <form action="${S.STAFF_SIGN_IN}" method="POST"
+                                    onsubmit="return validateStaffSignIn(this)">
                                     <!-- Input staff id -->
                                     <div class="form-group ">
                                         <label>Staff ID Number</label><br>
-                                        <input class="inputbox" type="text" name="staffId" placeholder="Enter staff ID number"
-                                            onkeyup="checkSignInStaffId(this, 'staffIdError')" value="${staffIdInput}">
+                                        <input class="inputbox" type="text" name="${S.STAFF_ID_PARAM}"
+                                            placeholder="Enter staff ID number" onkeyup="checkSignInStaffId(this)"
+                                            value="${staffIdInput}">
                                         <br>
                                         <!-- Staff id error -->
                                         <span id="staffIdError" class="errormessage"></span>
@@ -69,8 +69,8 @@
                                     <!-- Input password -->
                                     <div class="form-group">
                                         <label>Password</label><br>
-                                        <input class="inputbox" type="password" name="password" placeholder="Enter password"
-                                            onkeyup="checkSignInPassword(this, 'passwordError')">
+                                        <input class="inputbox" type="password" name="${S.PASSWORD_PARAM}"
+                                            placeholder="Enter password" onkeyup="checkSignInPassword(this)">
                                         <br>
                                         <!-- Password error -->
                                         <span id="passwordError" class="errormessage"></span>
@@ -81,7 +81,7 @@
                                 </form>
                                 <!-- Error message -->
                                 <p class="text-center errormessage">${errorMessage}</p>
-                                <a href="./${S.SIGN_IN_PAGE}">Not a staff? Sign in as customer here</a>
+                                <a href="./${S.SIGN_IN}">Not a staff? Sign in as customer here</a>
                             </div>
                         </div>
                     </div>
@@ -95,9 +95,7 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>

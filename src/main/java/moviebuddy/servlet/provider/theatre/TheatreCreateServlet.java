@@ -13,7 +13,7 @@ import moviebuddy.dao.TheatreDAO;
 import moviebuddy.util.Validation;
 import moviebuddy.util.S;
 
-@WebServlet("/TheatreCreate")
+@WebServlet("/" + S.THEATRE_CREATE)
 public class TheatreCreateServlet extends HttpServlet {
     private static final long serialVersionUID = 5383246290874129363L;
 
@@ -21,6 +21,42 @@ public class TheatreCreateServlet extends HttpServlet {
 
     public void init() {
         theatreDAO = new TheatreDAO();
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            HttpSession session = request.getSession();
+            Object role = session.getAttribute(S.ROLE);
+            // Check authorized access as admin
+            if (role != null && role.equals(S.ADMIN)) {
+                // Redirected from theatre-create
+                // Set and remove previous inputs from session
+                request.setAttribute("nameInput", session.getAttribute(S.THEATRE_NAME_INPUT));
+                request.setAttribute("addressInput", session.getAttribute(S.THEATRE_ADDRESS_INPUT));
+                request.setAttribute("cityInput", session.getAttribute(S.THEATRE_CITY_INPUT));
+                request.setAttribute("stateInput", session.getAttribute(S.THEATRE_STATE_INPUT));
+                request.setAttribute("countryInput", session.getAttribute(S.THEATRE_COUNTRY_INPUT));
+                request.setAttribute("zipInput", session.getAttribute(S.THEATRE_ZIP_INPUT));
+                request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
+                session.removeAttribute(S.THEATRE_NAME_INPUT);
+                session.removeAttribute(S.THEATRE_ADDRESS_INPUT);
+                session.removeAttribute(S.THEATRE_CITY_INPUT);
+                session.removeAttribute(S.THEATRE_STATE_INPUT);
+                session.removeAttribute(S.THEATRE_COUNTRY_INPUT);
+                session.removeAttribute(S.THEATRE_ZIP_INPUT);
+                session.removeAttribute(S.ERROR_MESSAGE);
+
+                // Forward to Create Theatre page
+                request.getRequestDispatcher(S.THEATRE_CREATE_PAGE).forward(request, response);
+            } else {
+                // Redirect to Home page for unauthorized access
+                response.sendRedirect(S.HOME);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect(S.ERROR);
+        }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -31,12 +67,12 @@ public class TheatreCreateServlet extends HttpServlet {
             // Check authorized access as admin
             if (role != null && role.equals(S.ADMIN)) {
                 // Sanitize user inputs
-                String theatreName = Validation.sanitize(request.getParameter("theatreName"));
-                String address = Validation.sanitize(request.getParameter("address"));
-                String city = Validation.sanitize(request.getParameter("city"));
-                String state = Validation.sanitize(request.getParameter("state"));
-                String country = Validation.sanitize(request.getParameter("country"));
-                String zip = Validation.sanitize(request.getParameter("zip"));
+                String theatreName = Validation.sanitize(request.getParameter(S.THEATRE_NAME_PARAM));
+                String address = Validation.sanitize(request.getParameter(S.ADDRESS_PARAM));
+                String city = Validation.sanitize(request.getParameter(S.CITY_PARAM));
+                String state = Validation.sanitize(request.getParameter(S.STATE_PARAM));
+                String country = Validation.sanitize(request.getParameter(S.COUNTRY_PARAM));
+                String zip = Validation.sanitize(request.getParameter(S.ZIP_PARAM));
 
                 // Validate user inputs
                 String errorMessage = Validation.validateTheatreForm(theatreName, address, city, state, country, zip);
@@ -51,25 +87,25 @@ public class TheatreCreateServlet extends HttpServlet {
 
                 if (errorMessage.isEmpty()) {
                     // Redirect to Manage Theatre page
-                    response.sendRedirect(S.MANAGE_THEATRE_PAGE);
+                    response.sendRedirect(S.THEATRE);
                 } else {
                     // Back to Create Theatre page with previous inputs
-                    session.setAttribute(S.THEATRE_CREATE_NAME, theatreName);
-                    session.setAttribute(S.THEATRE_CREATE_ADDRESS, address);
-                    session.setAttribute(S.THEATRE_CREATE_CITY, city);
-                    session.setAttribute(S.THEATRE_CREATE_STATE, state);
-                    session.setAttribute(S.THEATRE_CREATE_COUNTRY, country);
-                    session.setAttribute(S.THEATRE_CREATE_ZIP, zip);
+                    session.setAttribute(S.THEATRE_NAME_INPUT, theatreName);
+                    session.setAttribute(S.THEATRE_ADDRESS_INPUT, address);
+                    session.setAttribute(S.THEATRE_CITY_INPUT, city);
+                    session.setAttribute(S.THEATRE_STATE_INPUT, state);
+                    session.setAttribute(S.THEATRE_COUNTRY_INPUT, country);
+                    session.setAttribute(S.THEATRE_ZIP_INPUT, zip);
                     session.setAttribute(S.ERROR_MESSAGE, errorMessage);
-                    response.sendRedirect(S.THEATRE_CREATE_PAGE);
+                    response.sendRedirect(S.THEATRE_CREATE);
                 }
             } else {
                 // Redirect to Home page for unauthorized access
-                response.sendRedirect(S.HOME_PAGE);
+                response.sendRedirect(S.HOME);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(S.ERROR_PAGE);
+            response.sendRedirect(S.ERROR);
         }
     }
 }

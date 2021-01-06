@@ -2,8 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="moviebuddy.util.Passwords" %>
 <%@ page import="moviebuddy.util.S" %>
-<jsp:include page="/TheatreGet" />
-<jsp:include page="/ScheduleGet" />
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
     response.setHeader("Pragma", "no-cache"); // HTTP 1.0
@@ -24,30 +22,20 @@
     Object staffId = session.getAttribute(S.STAFF_ID);
     Object role = session.getAttribute(S.ROLE);
     if(accountId == null || !currentSession.equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr())) || staffId == null || !(role.equals(S.ADMIN) || role.equals(S.MANAGER))){
-        response.sendRedirect(S.HOME_PAGE);
+        response.sendRedirect(S.HOME);
     }
 
-    request.setAttribute("selectTheatreId", session.getAttribute(S.SELECTED_THEATRE_ID));
-    request.setAttribute("movieId", session.getAttribute(S.SCHEDULE_MOVIE_ID));
-
-    request.setAttribute("theatreName", session.getAttribute(S.SELECTED_THEATRE_NAME));
-    request.setAttribute("movie", session.getAttribute(S.SCHEDULE_MOVIE_INFO));
-    request.setAttribute("theatreList", session.getAttribute(S.THEATRE_LIST));
-    request.setAttribute("roomList", session.getAttribute(S.ROOM_LIST));
-    request.setAttribute("scheduleList", session.getAttribute(S.SCHEDULE_LIST));
-    request.setAttribute("showDateInput", session.getAttribute(S.SCHEDULE_SHOW_DATE_CREATE));
-    request.setAttribute("startTimeInput", session.getAttribute(S.SCHEDULE_START_TIME_CREATE));
-    request.setAttribute("roomNumberInput", session.getAttribute(S.SCHEDULE_ROOM_NUMBER_CREATE));
-    request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
-    session.removeAttribute(S.SELECTED_THEATRE_NAME);
-    session.removeAttribute(S.SCHEDULE_MOVIE_INFO);
-    session.removeAttribute(S.THEATRE_LIST);
-    session.removeAttribute(S.ROOM_LIST);
-    session.removeAttribute(S.SCHEDULE_LIST);
-    session.removeAttribute(S.SCHEDULE_SHOW_DATE_CREATE);
-    session.removeAttribute(S.SCHEDULE_START_TIME_CREATE);
-    session.removeAttribute(S.SCHEDULE_ROOM_NUMBER_CREATE);
-    session.removeAttribute(S.ERROR_MESSAGE);
+    // ${theatreId}
+    // ${theatreName}
+    // ${theatreList}
+    // ${movieId}
+    // ${movieTitle}
+    // ${roomList}
+    // ${scheduleList}
+    // ${showDateInput}
+    // ${startTimeInput}
+    // ${roomNumberInput}
+    // ${errorMessage}
 %>
 <html lang="en">
 
@@ -71,26 +59,25 @@
                 <!-- Current theatre name -->
                 <h3>Theatre: ${theatreName}</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.MANAGE_MOVIE_PAGE}">&#8249;
-                    <span>Back</span>
+                <a class="inputAsLink" href="./${S.MOVIE}">&lsaquo;<span>Back</span>
                 </a>
                 <!-- Current movie information -->
                 <div class="row">
                     <div class="col-sm-2">
-                        <h4 style="margin-top:20px">#${movie.getId()}</h4>
+                        <h4 style="margin-top:20px">#${movieId}</h4>
                     </div>
                     <div class="col-sm">
-                        <h1 class="display-5 text-center">${movie.getTitle()}</h1>
+                        <h1 class="display-5 text-center">${movieTitle}</h1>
                     </div>
                     <div class="col-sm-2"></div>
                 </div>
                 <hr>
                 <!-- List of theatre options -->
                 <c:if test="${isAdmin}">
-                    <form id="selectTheatreForm" action="SelectTheatre" method="POST">
+                    <form id="selectTheatreForm" action="${S.THEATRE_SELECT}" method="POST">
                         <div class="form-group">
                             <label>Theatre: </label>
-                            <select id="selectTheatreOption" name="selectTheatreOption" form="selectTheatreForm"
+                            <select id="theatreOption" name="${S.THEATRE_OPTION_PARAM}" form="selectTheatreForm"
                                 onchange="submitForm('selectTheatreForm')">
                                 <option id="defaultLocation" hidden value="">Select a theatre location</option>
                                 <c:forEach items="${theatreList}" var="theatre">
@@ -119,31 +106,32 @@
                                 <th>Actions</th>
                             </tr>
                             <tr>
-                                <td>#</td>
-                                <td>
+                                <td class="inputCell">#</td>
+                                <td class="inputCell">
                                     <!-- Input show date -->
-                                    <input form="addScheduleForm" style="width: 150px;" name="showDate" type="date"
-                                        value="${showDateInput}" />
+                                    <input form="addScheduleForm" style="width: 150px;" name="${S.SHOW_DATE_PARAM}"
+                                        type="date" value="${showDateInput}" />
                                 </td>
-                                <td>
+                                <td class="inputCell">
                                     <!-- Input start time -->
-                                    <input form="addScheduleForm" style="width: 80px;" name="startTime" type="time"
-                                        value="${startTimeInput}" />
+                                    <input form="addScheduleForm" style="width: 80px;" name="${S.START_TIME_PARAM}"
+                                        type="time" value="${startTimeInput}" />
                                 </td>
-                                <td>
+                                <td class="inputCell">
                                     <!-- List of room options -->
-                                    <select id="roomNumber" name="roomNumber" form="addScheduleForm">
+                                    <select id="roomNumber" name="${S.ROOM_NUMBER_PARAM}" form="addScheduleForm">
                                         <option id="defaultRoom" hidden value="">Select a room</option>
                                         <c:forEach items="${roomList}" var="room">
-                                            <option value="${room.getRoomNumber()}">Room ${room.getRoomNumber()}</option>
+                                            <option value="${room.getRoomNumber()}">Room ${room.getRoomNumber()}
+                                            </option>
                                         </c:forEach>
                                     </select>
                                 </td>
-                                <td>
+                                <td class="inputCell">
                                     <!-- Add schedule form -->
-                                    <form id="addScheduleForm" action="ScheduleAdd" method="POST" class="button"
+                                    <form id="addScheduleForm" action="${S.SCHEDULE_CREATE}" method="POST" class="button"
                                         onsubmit="return validateScheduleForm(this)">
-                                        <input type="hidden" name="movieId" value="${movieId}" />
+                                        <input type="hidden" name="${S.MOVIE_ID_PARAM}" value="${movieId}" />
                                         <input type="submit" class="btn btn-outline-info" value="Add" />
                                     </form>
                                 </td>
@@ -161,9 +149,11 @@
                                     <td>Room ${schedule.getRoomNumber()}</td>
                                     <td>
                                         <!-- Delete schedule -->
-                                        <form action="ScheduleDelete" method="POST" class="button">
-                                            <input type="hidden" name="scheduleId" value="${schedule.getScheduleId()}" />
-                                            <input type="submit" class="btn btn-outline-info" value="Delete" />
+                                        <form action="${S.SCHEDULE_DELETE}" method="POST" class="button">
+                                            <input type="hidden" name="${S.MOVIE_ID_PARAM}" value="${movieId}" />
+                                            <input type="hidden" name="${S.SCHEDULE_ID_PARAM}"
+                                                value="${schedule.getScheduleId()}" />
+                                            <input type="submit" class="btn btn-outline-danger" value="Delete" />
                                         </form>
                                     </td>
                                 </tr>
@@ -180,9 +170,7 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
@@ -192,7 +180,7 @@
     <c:if test="${isAdmin}">
         <!-- Load selected theatre -->
         <script>
-            loadSelectedOption("defaultLocation", "selectTheatreOption", "${selectTheatreId}");
+            loadSelectedOption("defaultLocation", "theatreOption", "${theatreId}");
         </script>
     </c:if>
     <!-- Load previous room number input -->

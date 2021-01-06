@@ -22,19 +22,16 @@
     Object staffId = session.getAttribute(S.STAFF_ID);
     Object role = session.getAttribute(S.ROLE);
     if(accountId == null || !currentSession.equals(Passwords.applySHA256(session.getId() + request.getRemoteAddr())) || staffId == null || !(role.equals(S.ADMIN))){
-        response.sendRedirect(S.HOME_PAGE);
+        response.sendRedirect(S.HOME);
     }
 
-    request.setAttribute("theatreId", session.getAttribute(S.ROOM_THEATRE_ID));
-    request.setAttribute("theatreName", session.getAttribute(S.ROOM_THEATRE_NAME));
-
-    request.setAttribute("roomId", session.getAttribute(S.ROOM_EDIT_ID));
-    request.setAttribute("roomNumberInput", session.getAttribute(S.ROOM_EDIT_NUMBER));
-    request.setAttribute("sectionsInput", session.getAttribute(S.ROOM_EDIT_SECTIONS));
-    request.setAttribute("seatsInput", session.getAttribute(S.ROOM_EDIT_SEATS));
-
-    request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
-    session.removeAttribute(S.ERROR_MESSAGE);
+    // ${theatreId}
+    // ${theatreName}
+    // ${roomId}
+    // ${roomNumberInput}
+    // ${sectionsInput}
+    // ${seatsInput}
+    // ${errorMessage}
 %>
 <html lang="en">
 
@@ -58,8 +55,7 @@
                 <!-- Current theatre name -->
                 <h3>Theatre: ${theatreName}</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.MANAGE_ROOM_PAGE}">&#8249;
-                    <span>Back</span>
+                <a class="inputAsLink" href="./${S.ROOM}?${S.THEATRE_ID_PARAM}=${theatreId}">&lsaquo;<span>Back</span>
                 </a>
                 <h1 class="display-3 text-center">Update Room Information</h1>
                 <hr>
@@ -69,23 +65,26 @@
                         <!-- Error message -->
                         <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
                         <!-- Edit room information form -->
-                        <form id="editRoomForm" action="RoomEdit" method="POST" onsubmit="return validateRoomForm(this)">
+                        <form id="editRoomForm" action="${S.ROOM_EDIT}" method="POST"
+                            onsubmit="return validateRoomForm(this)">
                             <!-- Save hook -->
                             <div class="form-group">
-                                <input type="hidden" name="action" value="save" />
+                                <input type="hidden" name="${S.ACTION_PARAM}" value="${S.ACTION_SAVE}" />
                             </div>
                             <!-- Theatre id -->
                             <div class="form-group">
-                                <input id="theatreId" type="hidden" name="theatreId" value="${theatreId}" />
+                                <input id="theatreId" type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
                             </div>
                             <!-- Room id -->
                             <div class="form-group">
-                                <input type="hidden" name="roomId" value="${roomId}" />
+                                <input id="roomId" type="hidden" name="${S.ROOM_ID_PARAM}" value="${roomId}" />
                             </div>
                             <!-- Input room number -->
                             <div class="form-group">
                                 <label>Room Number</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="roomNumber" type="number" min="1" placeholder="Enter room number" onkeyup="checkRoomNumber('theatreId', this, 'roomNumberError')" value="${roomNumberInput}" />
+                                <input class="inputbox" name="${S.ROOM_NUMBER_PARAM}" type="number" min="1"
+                                    placeholder="Enter room number" onkeyup="checkRoomNumber(this)"
+                                    value="${roomNumberInput}" />
                                 <br>
                                 <!-- Room number error -->
                                 <span id="roomNumberError" class="errormessage"></span>
@@ -93,21 +92,31 @@
                             <!-- Input number of sections -->
                             <div class="form-group">
                                 <label>Sections</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="sections" type="number" min="1" placeholder="Number of sections"
-                                    value="${sectionsInput}" />
+                                <input class="inputbox" name="${S.SECTIONS_PARAM}" type="number" min="1"
+                                    placeholder="Number of sections" value="${sectionsInput}" />
+                                <br>
+                                <!-- Sections error -->
+                                <span id="sectionsError" class="errormessage"></span>
                             </div>
                             <!-- Input seats per section -->
                             <div class="form-group">
                                 <label>Seats</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="seats" type="number" min="1" placeholder="Seats per section"
-                                    value="${seatsInput}" />
+                                <input class="inputbox" name="${S.SEATS_PARAM}" type="number" min="1"
+                                    placeholder="Seats per section" value="${seatsInput}" />
+                                <br>
+                                <!-- Seats error -->
+                                <span id="seatsError" class="errormessage"></span>
                             </div>
                         </form>
                         <!-- Cancel form -->
-                        <form id="cancelRoomForm" action="RoomEdit" method="POST">
+                        <form id="cancelRoomForm" action="${S.ROOM_EDIT}" method="POST">
                             <!-- Cancel hook -->
                             <div class="form-group">
-                                <input type="hidden" name="action" value="cancel" />
+                                <input type="hidden" name="${S.ACTION_PARAM}" value="${S.ACTION_CANCEL}" />
+                            </div>
+                            <!-- Theatre id -->
+                            <div class="form-group">
+                                <input id="theatreId" type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
                             </div>
                         </form>
                         <div class="text-center">
@@ -115,7 +124,8 @@
                                 <input form="editRoomForm" type="submit" class="btn btn-outline-info" value="Save">
                             </div>
                             <div class="button">
-                                <input form="cancelRoomForm" type="submit" class="btn btn-outline-info" value="Cancel" />
+                                <input form="cancelRoomForm" type="submit" class="btn btn-outline-info"
+                                    value="Cancel" />
                             </div>
                         </div>
                     </div>
@@ -129,9 +139,7 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>

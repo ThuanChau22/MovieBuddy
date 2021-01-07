@@ -53,12 +53,11 @@
         <div class="main">
             <!-- Page content -->
             <div class="container">
-                <h3>Theatre</h3>
+                <h3>Manage Theatre</h3>
                 <hr>
-                <h1 class="display-3 text-center">Update Theatre Information</h1>
+                <a class="inputAsLink" href="./${S.THEATRE}#${theatreId}">&lsaquo;<span>Back</span></a>
+                <h1 class="display-4 text-center">Edit Theatre Information</h1>
                 <hr>
-                <a class="inputAsLink" href="./${S.THEATRE}">&lsaquo;<span>Back</span>
-                </a>
                 <div class="row">
                     <div class="col-lg-3"></div>
                     <div class="col-lg">
@@ -175,6 +174,10 @@
                             <!-- Cancel hook -->
                             <div class="form-group">
                                 <input type="hidden" name="${S.ACTION_PARAM}" value="${S.ACTION_CANCEL}" />
+                            </div>
+                            <!-- Theatre id -->
+                            <div class="form-group">
+                                <input id="theatreId" type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
                             </div>
                         </form>
                         <div class="text-center">

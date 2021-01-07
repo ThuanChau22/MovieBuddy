@@ -55,9 +55,10 @@
                 <!-- Current theatre name -->
                 <h3>Theatre: ${theatreName}</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.ROOM}?${S.THEATRE_ID_PARAM}=${theatreId}">&lsaquo;<span>Back</span>
-                </a>
-                <h1 class="display-3 text-center">Update Room Information</h1>
+                <a class="inputAsLink"
+                    href="./${S.ROOM}?${S.THEATRE_ID_PARAM}=${theatreId}#${roomId}">&lsaquo;
+                    <span>Back</span></a>
+                <h1 class="display-4 text-center">Edit Room Information</h1>
                 <hr>
                 <div class="row">
                     <div class="col-md-4"></div>
@@ -117,6 +118,10 @@
                             <!-- Theatre id -->
                             <div class="form-group">
                                 <input id="theatreId" type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
+                            </div>
+                            <!-- Room id -->
+                            <div class="form-group">
+                                <input id="roomId" type="hidden" name="${S.ROOM_ID_PARAM}" value="${roomId}" />
                             </div>
                         </form>
                         <div class="text-center">

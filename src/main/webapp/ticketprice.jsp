@@ -54,9 +54,8 @@
                 <!-- Current theatre name -->
                 <h3>Theatre: ${theatreName}</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.THEATRE}">&lsaquo;<span>Back</span>
-                </a>
-                <h1 class="display-3 text-center">Ticket Prices</h1>
+                <a class="inputAsLink" href="./${S.THEATRE}#${theatreId}">&lsaquo;<span>Back</span></a>
+                <h1 class="display-4 text-center">Ticket Prices</h1>
                 <hr>
                 <!-- Error message -->
                 <div class="errormessagePadding">

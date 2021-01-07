@@ -26,10 +26,11 @@
     }
 
     // ${theatreId}
-    // ${theatreName}
+    // ${theatreListEmpty}
     // ${theatreList}
     // ${movieId}
     // ${movieTitle}
+    // ${roomListEmpty}
     // ${roomList}
     // ${scheduleList}
     // ${showDateInput}
@@ -57,10 +58,9 @@
             <!-- Page content -->
             <div class="container">
                 <!-- Current theatre name -->
-                <h3>Theatre: ${theatreName}</h3>
+                <h3>Manage Schedule</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.MOVIE}">&lsaquo;<span>Back</span>
-                </a>
+                <a class="inputAsLink" href="./${S.MOVIE}#${movieId}">&lsaquo;<span>Back</span></a>
                 <!-- Current movie information -->
                 <div class="row">
                     <div class="col-sm-2">
@@ -79,10 +79,17 @@
                             <label>Theatre: </label>
                             <select id="theatreOption" name="${S.THEATRE_OPTION_PARAM}" form="selectTheatreForm"
                                 onchange="submitForm('selectTheatreForm')">
-                                <option id="defaultLocation" hidden value="">Select a theatre location</option>
-                                <c:forEach items="${theatreList}" var="theatre">
-                                    <option value="${theatre.getId()}">${theatre.getTheatreName()}</option>
-                                </c:forEach>
+                                <option id="defaultLocation" hidden value="">Select a theatre</option>
+                                <c:choose>
+                                    <c:when test="${!theatreListEmpty}">
+                                        <c:forEach items="${theatreList}" var="theatre">
+                                            <option value="${theatre.getId()}">${theatre.getTheatreName()}</option>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option disabled value="">empty</option>
+                                    </c:otherwise>
+                                </c:choose>
                             </select>
                         </div>
                     </form>
@@ -121,16 +128,23 @@
                                     <!-- List of room options -->
                                     <select id="roomNumber" name="${S.ROOM_NUMBER_PARAM}" form="addScheduleForm">
                                         <option id="defaultRoom" hidden value="">Select a room</option>
-                                        <c:forEach items="${roomList}" var="room">
-                                            <option value="${room.getRoomNumber()}">Room ${room.getRoomNumber()}
-                                            </option>
-                                        </c:forEach>
+                                        <c:choose>
+                                            <c:when test="${!roomListEmpty}">
+                                                <c:forEach items="${roomList}" var="room">
+                                                    <option value="${room.getRoomNumber()}">Room ${room.getRoomNumber()}
+                                                    </option>
+                                                </c:forEach>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <option disabled value="">empty</option>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </select>
                                 </td>
                                 <td class="inputCell">
                                     <!-- Add schedule form -->
-                                    <form id="addScheduleForm" action="${S.SCHEDULE_CREATE}" method="POST" class="button"
-                                        onsubmit="return validateScheduleForm(this)">
+                                    <form id="addScheduleForm" action="${S.SCHEDULE_CREATE}" method="POST"
+                                        class="button" onsubmit="return validateScheduleForm(this)">
                                         <input type="hidden" name="${S.MOVIE_ID_PARAM}" value="${movieId}" />
                                         <input type="submit" class="btn btn-outline-info" value="Add" />
                                     </form>

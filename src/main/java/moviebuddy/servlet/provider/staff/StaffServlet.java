@@ -56,7 +56,6 @@ public class StaffServlet extends HttpServlet {
                 Theatre theatre = theatreDAO.getTheatreById(theatreId);
                 if (theatre != null) {
                     request.setAttribute("theatreId", theatre.getId());
-                    request.setAttribute("theatreName", theatre.getTheatreName());
 
                     // Retrieve list of staff
                     request.getRequestDispatcher(S.STAFF_GET).include(request, response);

@@ -26,6 +26,7 @@
     }
 
     // ${errorMessage}
+    // ${theatreListEmpty}
     // ${theatreList}
 %>
 <html lang="en">
@@ -47,7 +48,7 @@
         <div class="main">
             <!-- Page content -->
             <div class="container">
-                <h3>Theatre</h3>
+                <h3>Manage Theatre</h3>
                 <hr>
                 <!-- Upload theatre information -->
                 <div class="row">
@@ -62,52 +63,67 @@
                 <hr>
                 <!-- Error message -->
                 <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
-                <table>
-                    <tr>
-                        <th>Theatre Name</th>
-                        <th>Address</th>
-                        <th>City</th>
-                        <th>State</th>
-                        <th>Country</th>
-                        <th>Zip</th>
-                        <th>Actions</th>
-                    </tr>
-                    <!-- List of theatres -->
-                    <c:forEach items="${theatreList}" var="theatre">
-                        <tr>
-                            <td>${theatre.getTheatreName()}</td>
-                            <td>${theatre.getAddress()}</td>
-                            <td>${theatre.getCity()}</td>
-                            <td>${theatre.getState()}</td>
-                            <td>${theatre.getCountry()}</td>
-                            <td>${theatre.getZip()}</td>
-                            <td>
-                                <div class="container">
-                                    <!-- Manange ticket price -->
-                                    <form action="${S.TICKET_PRICE}" method="GET" class="button">
-                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatre.getId()}" />
-                                        <input type="submit" class="btn btn-outline-info" value="Ticket Price" />
-                                    </form>
-                                    <!-- Manage room -->
-                                    <form action="${S.ROOM}" method="GET" class="button">
-                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatre.getId()}" />
-                                        <input type="submit" class="btn btn-outline-info" value="Room" />
-                                    </form>
-                                    <!-- Edit theatre information -->
-                                    <form action="${S.THEATRE_EDIT}" method="GET" class="button">
-                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatre.getId()}" />
-                                        <input type="submit" class="btn btn-outline-info" value="Edit" />
-                                    </form>
-                                    <!-- Delete theatre information -->
-                                    <form action="${S.THEATRE_DELETE}" method="POST" class="button">
-                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatre.getId()}" />
-                                        <input type="submit" class="btn btn-outline-danger" value="Delete" />
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                </table>
+                <c:choose>
+                    <c:when test="${!theatreListEmpty}">
+                        <table>
+                            <tr>
+                                <th>Theatre Name</th>
+                                <th>Address</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Country</th>
+                                <th>Zip</th>
+                                <th>Actions</th>
+                            </tr>
+                            <!-- List of theatres -->
+                            <c:forEach items="${theatreList}" var="theatre">
+                                <tr class="anchor" id="${theatre.getId()}">
+                                    <td>${theatre.getTheatreName()}</td>
+                                    <td>${theatre.getAddress()}</td>
+                                    <td>${theatre.getCity()}</td>
+                                    <td>${theatre.getState()}</td>
+                                    <td>${theatre.getCountry()}</td>
+                                    <td>${theatre.getZip()}</td>
+                                    <td>
+                                        <div class="container">
+                                            <!-- Manange ticket price -->
+                                            <form action="${S.TICKET_PRICE}" method="GET" class="button">
+                                                <input type="hidden" name="${S.THEATRE_ID_PARAM}"
+                                                    value="${theatre.getId()}" />
+                                                <input type="submit" class="btn btn-outline-info"
+                                                    value="Ticket Price" />
+                                            </form>
+                                            <!-- Manage room -->
+                                            <form action="${S.ROOM}" method="GET" class="button">
+                                                <input type="hidden" name="${S.THEATRE_ID_PARAM}"
+                                                    value="${theatre.getId()}" />
+                                                <input type="submit" class="btn btn-outline-info" value="Room" />
+                                            </form>
+                                            <!-- Edit theatre information -->
+                                            <form action="${S.THEATRE_EDIT}" method="GET" class="button">
+                                                <input type="hidden" name="${S.THEATRE_ID_PARAM}"
+                                                    value="${theatre.getId()}" />
+                                                <input type="submit" class="btn btn-outline-info" value="Edit" />
+                                            </form>
+                                            <!-- Delete theatre information -->
+                                            <form action="${S.THEATRE_DELETE}" method="POST" class="button">
+                                                <input type="hidden" name="${S.THEATRE_ID_PARAM}"
+                                                    value="${theatre.getId()}" />
+                                                <input type="submit" class="btn btn-outline-danger" value="Delete" />
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="text-center">
+                            <h5>No theatres</h5>
+                            <span>Theatres created will appear here</span>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
         <!-- Footer -->

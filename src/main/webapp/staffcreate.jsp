@@ -25,6 +25,7 @@
         response.sendRedirect(S.HOME);
     }
 
+    // ${theatreListEmpty}
     // ${theatreList}
     // ${roleList}
     // ${roleInput}
@@ -52,10 +53,11 @@
         <div class="main">
             <!-- Page content -->
             <div class="container">
-                <h1 class="display-3 text-center">Create Staff Account</h1>
+                <h3>Manage Staff</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.STAFF}">&lsaquo;<span>Back</span>
-                </a>
+                <a class="inputAsLink" href="./${S.STAFF}">&lsaquo;<span>Back</span></a>
+                <h1 class="display-4 text-center">Create Staff Account</h1>
+                <hr>
                 <div class="row">
                     <div class="col-lg"></div>
                     <div class="col-lg-5">
@@ -86,10 +88,19 @@
                                                 onchange="checkLocation(this)">
                                                 <option id="defaultLocation" hidden value="">Select a theatre location
                                                 </option>
-                                                <c:forEach items="${theatreList}" var="theatre">
-                                                    <option value="${theatre.getId()}">${theatre.getTheatreName()}
-                                                    </option>
-                                                </c:forEach>
+                                                <c:choose>
+                                                    <c:when test="${!theatreListEmpty}">
+                                                        <c:forEach items="${theatreList}" var="theatre">
+                                                            <option value="${theatre.getId()}">
+                                                                ${theatre.getTheatreName()}
+                                                            </option>
+                                                        </c:forEach>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <option disabled value="">empty</option>
+                                                    </c:otherwise>
+                                                </c:choose>
+
                                             </select>
                                             <!-- Location error -->
                                             <span id="locationError" class="errormessage"></span>

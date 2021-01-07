@@ -28,7 +28,11 @@ public class TheatreGetServlet extends HttpServlet {
         try {
             // Retrieve list of theatres
             List<Theatre> theatres = theatreDAO.listTheatres();
-            request.setAttribute("theatreList", theatres);
+            request.setAttribute("theatreListEmpty", true);
+            if (!theatres.isEmpty()) {
+                request.setAttribute("theatreListEmpty", false);
+                request.setAttribute("theatreList", theatres);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect(S.ERROR);

@@ -54,9 +54,9 @@
                 <!-- Current theatre name -->
                 <h3>Theatre: ${theatreName}</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.ROOM}?${S.THEATRE_ID_PARAM}=${theatreId}">&lsaquo;<span>Back</span>
-                </a>
-                <h1 class="display-3 text-center">Create Room</h1>
+                <a class="inputAsLink"
+                    href="./${S.ROOM}?${S.THEATRE_ID_PARAM}=${theatreId}">&lsaquo;<span>Back</span></a>
+                <h1 class="display-4 text-center">Upload Room Information</h1>
                 <hr>
                 <div class="row">
                     <div class="col-md-4"></div>
@@ -99,7 +99,7 @@
                                 <span id="seatsError" class="errormessage"></span>
                             </div>
                             <div class="text-center">
-                                <input type="submit" class="btn btn-outline-info" value="Create">
+                                <input type="submit" class="btn btn-outline-info" value="Upload">
                             </div>
                         </form>
                     </div>

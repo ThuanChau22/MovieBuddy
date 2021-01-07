@@ -89,12 +89,14 @@ public class MovieEditServlet extends HttpServlet {
             Object role = session.getAttribute(S.ROLE);
             // Check authorized access as admin
             if (role != null && role.equals(S.ADMIN)) {
+                // Sanitize user input
+                String movieId = Validation.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
+
                 String action = request.getParameter(S.ACTION_PARAM);
                 switch (action) {
                     // Save action
                     case S.ACTION_SAVE:
                         // Sanitize user inputs
-                        String movieId = Validation.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
                         String title = Validation.sanitize(request.getParameter(S.TITLE_PARAM));
                         String releaseDate = Validation.sanitize(request.getParameter(S.RELEASE_DATE_PARAM));
                         String duration = Validation.sanitize(request.getParameter(S.DURATION_PARAM));
@@ -116,7 +118,7 @@ public class MovieEditServlet extends HttpServlet {
 
                         if (errorMessage.isEmpty()) {
                             // Redirect to Manage Movie page
-                            response.sendRedirect(S.MOVIE);
+                            response.sendRedirect(S.MOVIE + "#" + movieId);
                         } else {
                             // Back to Edit Movie page with previous inputs
                             session.setAttribute(S.MOVIE_TITLE_INPUT, title);
@@ -132,7 +134,7 @@ public class MovieEditServlet extends HttpServlet {
                     // Cancel action
                     case S.ACTION_CANCEL:
                         // Redirect to Manage Movie page
-                        response.sendRedirect(S.MOVIE);
+                        response.sendRedirect(S.MOVIE + "#" + movieId);
                         break;
                 
                     default:

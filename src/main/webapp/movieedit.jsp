@@ -54,12 +54,11 @@
         <div class="main">
             <!-- Page content -->
             <div class="container">
-                <h3>Movie</h3>
+                <h3>Manage Movie</h3>
                 <hr>
-                <h1 class="display-3 text-center">Update Movie Information</h1>
+                <a class="inputAsLink" href="./${S.MOVIE}#${movieId}">&lsaquo;<span>Back</span></a>
+                <h1 class="display-4 text-center">Edit Movie Information</h1>
                 <hr>
-                <a class="inputAsLink" href="./${S.MOVIE}">&lsaquo;<span>Back</span>
-                </a>
                 <div class="row">
                     <div class="col-lg-3"></div>
                     <div class="col-lg">
@@ -79,8 +78,8 @@
                             <!-- Input title -->
                             <div class="form-group">
                                 <label>Title</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.TITLE_PARAM}" type="text"
-                                    placeholder="Enter title" value="${titleInput}" />
+                                <input class="inputbox" name="${S.TITLE_PARAM}" type="text" placeholder="Enter title"
+                                    value="${titleInput}" />
                             </div>
                             <!-- Input release date -->
                             <div class="form-group">
@@ -118,6 +117,10 @@
                             <!-- Cancel hook -->
                             <div class="form-group">
                                 <input type="hidden" name="${S.ACTION_PARAM}" value="${S.ACTION_CANCEL}" />
+                            </div>
+                            <!-- Movie id -->
+                            <div class="form-group">
+                                <input type="hidden" name="${S.MOVIE_ID_PARAM}" value="${movieId}" />
                             </div>
                         </form>
                         <div class="text-center">

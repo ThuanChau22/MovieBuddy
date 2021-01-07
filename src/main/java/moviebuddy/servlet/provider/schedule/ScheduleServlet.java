@@ -72,7 +72,6 @@ public class ScheduleServlet extends HttpServlet {
                 if (theatre != null && movie != null) {
                     // Retrieve theatre information
                     request.setAttribute("theatreId", theatre.getId());
-                    request.setAttribute("theatreName", theatre.getTheatreName());
 
                     // Retrieve list of rooms
                     request.getRequestDispatcher(S.ROOM_GET).include(request, response);

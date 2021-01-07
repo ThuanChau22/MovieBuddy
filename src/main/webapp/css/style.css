@@ -119,6 +119,10 @@ tr:nth-child(even) {
     background-color: #dddddd;
 }
 
+.anchor:target {
+    scroll-margin-top: 42px;
+}
+
 .error-box-wrapper {
     position: relative;
     width: 100%;

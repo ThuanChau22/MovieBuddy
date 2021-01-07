@@ -89,12 +89,14 @@ public class TheatreEditServlet extends HttpServlet {
             Object role = session.getAttribute(S.ROLE);
             // Check authorized access as admin
             if (role != null && role.equals(S.ADMIN)) {
+                // Sanitize user input
+                String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
+
                 String action = request.getParameter(S.ACTION_PARAM);
                 switch (action) {
                     // Save action
                     case S.ACTION_SAVE:
                         // Sanitize user inputs
-                        String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
                         String theatreName = Validation.sanitize(request.getParameter(S.THEATRE_NAME_PARAM));
                         String address = Validation.sanitize(request.getParameter(S.ADDRESS_PARAM));
                         String city = Validation.sanitize(request.getParameter(S.CITY_PARAM));
@@ -118,7 +120,7 @@ public class TheatreEditServlet extends HttpServlet {
 
                         if (errorMessage.isEmpty()) {
                             // Redirect to Manage Theatre page
-                            response.sendRedirect(S.THEATRE);
+                            response.sendRedirect(S.THEATRE + "#" + theatreId);
                         } else {
                             // Back to Edit Theatre page with previous inputs
                             session.setAttribute(S.THEATRE_NAME_INPUT, theatreName);
@@ -135,7 +137,7 @@ public class TheatreEditServlet extends HttpServlet {
                     // Cancel action
                     case S.ACTION_CANCEL:
                         // Redirect to Manage Theatre page
-                        response.sendRedirect(S.THEATRE);
+                        response.sendRedirect(S.THEATRE + "#" + theatreId);
                         break;
 
                     default:

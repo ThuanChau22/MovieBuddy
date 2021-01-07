@@ -60,7 +60,7 @@
                 <!-- Current theatre name -->
                 <h3>Manage Schedule</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.MOVIE}">&lsaquo;<span>Back</span></a>
+                <a class="inputAsLink" href="./${S.MOVIE}#${movieId}">&lsaquo;<span>Back</span></a>
                 <!-- Current movie information -->
                 <div class="row">
                     <div class="col-sm-2">

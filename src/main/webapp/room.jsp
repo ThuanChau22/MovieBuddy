@@ -53,8 +53,7 @@
                 <!-- Current theatre name -->
                 <h3>Theatre: ${theatreName}</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.THEATRE}">&lsaquo;<span>Back</span>
-                </a>
+                <a class="inputAsLink" href="./${S.THEATRE}#${theatreId}">&lsaquo;<span>Back</span></a>
                 <!-- Upload room information -->
                 <div class="row">
                     <div class="col"></div>
@@ -82,7 +81,7 @@
                                         <th>Actions</th>
                                     </tr>
                                     <c:forEach items="${roomList}" var="room">
-                                        <tr>
+                                        <tr class="anchor" id="${room.getRoomNumber()}">
                                             <!-- Room number -->
                                             <td>${room.getRoomNumber()}</td>
                                             <!-- Number of sections -->

@@ -90,13 +90,13 @@ public class RoomEditServlet extends HttpServlet {
             if (role != null && role.equals(S.ADMIN)) {
                 // Sanitize user input
                 String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
+                String roomId = Validation.sanitize(request.getParameter(S.ROOM_ID_PARAM));
 
                 String action = request.getParameter(S.ACTION_PARAM);
                 switch (action) {
                     // Save action
                     case S.ACTION_SAVE:
                         // Sanitize user inputs
-                        String roomId = Validation.sanitize(request.getParameter(S.ROOM_ID_PARAM));
                         String roomNumber = Validation.sanitize(request.getParameter(S.ROOM_NUMBER_PARAM));
                         String sections = Validation.sanitize(request.getParameter(S.SECTIONS_PARAM));
                         String seats = Validation.sanitize(request.getParameter(S.SEATS_PARAM));
@@ -117,7 +117,7 @@ public class RoomEditServlet extends HttpServlet {
 
                         if (errorMessage.isEmpty()) {
                             // Redirect to Manage Room page
-                            response.sendRedirect(S.ROOM + "?" + S.THEATRE_ID_PARAM + "=" + theatreId);
+                            response.sendRedirect(S.ROOM + "?" + S.THEATRE_ID_PARAM + "=" + theatreId + "#" + roomId);
                         } else {
                             // Back to Edit Room page with previous inputs
                             session.setAttribute(S.ROOM_NUMBER_INPUT, roomNumber);
@@ -132,7 +132,7 @@ public class RoomEditServlet extends HttpServlet {
                     // Cancel action
                     case S.ACTION_CANCEL:
                         // Redirect to Manage Room page
-                        response.sendRedirect(S.ROOM + "?" + S.THEATRE_ID_PARAM + "=" + theatreId);
+                        response.sendRedirect(S.ROOM + "?" + S.THEATRE_ID_PARAM + "=" + theatreId + "#" + roomId);
                         break;
 
                     default:

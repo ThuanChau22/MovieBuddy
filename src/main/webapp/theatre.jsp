@@ -77,7 +77,7 @@
                             </tr>
                             <!-- List of theatres -->
                             <c:forEach items="${theatreList}" var="theatre">
-                                <tr>
+                                <tr class="anchor" id="${theatre.getId()}">
                                     <td>${theatre.getTheatreName()}</td>
                                     <td>${theatre.getAddress()}</td>
                                     <td>${theatre.getCity()}</td>

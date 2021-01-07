@@ -101,7 +101,7 @@
                     <!-- List of admins -->
                     <c:if test="${isAdmin}">
                         <c:forEach items="${adminList}" var="admin">
-                            <tr>
+                            <tr class="anchor" id="${admin.getStaffId()}">
                                 <td>${admin.getStaffId()}</td>
                                 <td>${admin.getUserName()}</td>
                                 <td>${admin.getRole()}</td>
@@ -112,7 +112,7 @@
                     </c:if>
                     <!-- List of staffs -->
                     <c:forEach items="${staffList}" var="staff">
-                        <tr>
+                        <tr class="anchor" id="${staff.getStaffId()}">
                             <!-- Staff id -->
                             <td>${staff.getStaffId()}</td>
                             <!-- User name -->

@@ -28,6 +28,7 @@
     // ${theatreId}
     // ${theatreName}
     // ${errorMessage}
+    // ${roomListEmpty}
     // ${roomList}
 %>
 <html lang="en">
@@ -71,44 +72,56 @@
                 <div class="row">
                     <div class="col-lg-1"></div>
                     <div class="col-lg">
-                        <table>
-                            <tr>
-                                <th>Room Number</th>
-                                <th>Number of Sections</th>
-                                <th>Seats per Section</th>
-                                <th>Actions</th>
-                            </tr>
-                            <c:forEach items="${roomList}" var="room">
-                                <tr>
-                                    <!-- Room number -->
-                                    <td>${room.getRoomNumber()}</td>
-                                    <!-- Number of sections -->
-                                    <td>${room.getNumberOfRows()}</td>
-                                    <!-- Number of seats per section -->
-                                    <td>${room.getSeatsPerRow()}</td>
-                                    <td>
-                                        <div class="container">
-                                            <!-- Edit room information -->
-                                            <form action="${S.ROOM_EDIT}" method="GET" class="button">
-                                                <input type="hidden" name="${S.THEATRE_ID_PARAM}"
-                                                    value="${theatreId}" />
-                                                <input type="hidden" name="${S.ROOM_NUMBER_PARAM}"
-                                                    value="${room.getRoomNumber()}" />
-                                                <input type="submit" class="btn btn-outline-info" value="Edit" />
-                                            </form>
-                                            <!-- Delete room information -->
-                                            <form action="${S.ROOM_DELETE}" method="POST" class="button">
-                                                <input type="hidden" name="${S.THEATRE_ID_PARAM}"
-                                                    value="${theatreId}" />
-                                                <input type="hidden" name="${S.ROOM_NUMBER_PARAM}"
-                                                    value="${room.getRoomNumber()}" />
-                                                <input type="submit" class="btn btn-outline-danger" value="Delete" />
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                        </table>
+                        <c:choose>
+                            <c:when test="${!roomListEmpty}">
+                                <table>
+                                    <tr>
+                                        <th>Room Number</th>
+                                        <th>Number of Sections</th>
+                                        <th>Seats per Section</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    <c:forEach items="${roomList}" var="room">
+                                        <tr>
+                                            <!-- Room number -->
+                                            <td>${room.getRoomNumber()}</td>
+                                            <!-- Number of sections -->
+                                            <td>${room.getNumberOfRows()}</td>
+                                            <!-- Number of seats per section -->
+                                            <td>${room.getSeatsPerRow()}</td>
+                                            <td>
+                                                <div class="container">
+                                                    <!-- Edit room information -->
+                                                    <form action="${S.ROOM_EDIT}" method="GET" class="button">
+                                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}"
+                                                            value="${theatreId}" />
+                                                        <input type="hidden" name="${S.ROOM_NUMBER_PARAM}"
+                                                            value="${room.getRoomNumber()}" />
+                                                        <input type="submit" class="btn btn-outline-info"
+                                                            value="Edit" />
+                                                    </form>
+                                                    <!-- Delete room information -->
+                                                    <form action="${S.ROOM_DELETE}" method="POST" class="button">
+                                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}"
+                                                            value="${theatreId}" />
+                                                        <input type="hidden" name="${S.ROOM_NUMBER_PARAM}"
+                                                            value="${room.getRoomNumber()}" />
+                                                        <input type="submit" class="btn btn-outline-danger"
+                                                            value="Delete" />
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="text-center">
+                                    <h5>No rooms</h5>
+                                    <span>Rooms created will appear here</span>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <div class="col-lg-1"></div>
                 </div>

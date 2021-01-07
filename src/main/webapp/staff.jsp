@@ -26,7 +26,7 @@
     }
 
     // ${theatreId}
-    // ${theatreName}
+    // ${theatreListEmpty}
     // ${theatreList}
     // ${adminList}
     // ${staffList}
@@ -52,14 +52,14 @@
             <!-- Page content -->
             <div class="container">
                 <!-- Current theatre name -->
-                <h3>Theatre: ${theatreName}</h3>
+                <h3>Manage Staff</h3>
                 <hr>
                 <!-- Create staff account -->
                 <div class="row">
                     <div class="col"></div>
                     <div class="col-6 text-center">
                         <a href="./${S.STAFF_CREATE}">
-                            <button type="button" class="btn btn-outline-info">Create Staff Account</button>
+                            <button type="button" class="btn btn-outline-info">Add Staff Account</button>
                         </a>
                     </div>
                     <div class="col"></div>
@@ -72,10 +72,17 @@
                             <label>Theatre: </label>
                             <select id="theatreOption" name="${S.THEATRE_OPTION_PARAM}" form="selectTheatreForm"
                                 onchange="submitForm('selectTheatreForm')">
-                                <option id="defaultLocation" hidden value="">Select a theatre location</option>
-                                <c:forEach items="${theatreList}" var="theatre">
-                                    <option value="${theatre.getId()}">${theatre.getTheatreName()}</option>
-                                </c:forEach>
+                                <option id="defaultLocation" hidden value="">Select a theatre</option>
+                                <c:choose>
+                                    <c:when test="${!theatreListEmpty}">
+                                        <c:forEach items="${theatreList}" var="theatre">
+                                            <option value="${theatre.getId()}">${theatre.getTheatreName()}</option>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option disabled value="">empty</option>
+                                    </c:otherwise>
+                                </c:choose>
                             </select>
                         </div>
                     </form>

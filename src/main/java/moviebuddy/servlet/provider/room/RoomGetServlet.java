@@ -36,7 +36,11 @@ public class RoomGetServlet extends HttpServlet {
 
             // Retrieve list of rooms
             List<Room> rooms = theatreDAO.listRooms(theatreId);
-            request.setAttribute("roomList", rooms);
+            request.setAttribute("roomListEmpty", true);
+            if (!rooms.isEmpty()) {
+                request.setAttribute("roomListEmpty", false);
+                request.setAttribute("roomList", rooms);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect(S.ERROR);

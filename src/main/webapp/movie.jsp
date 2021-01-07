@@ -26,6 +26,7 @@
     }
 
     // ${errorMessage}
+    // ${movieListEmpty}
     // ${movieList}
 %>
 <html lang="en">
@@ -47,7 +48,7 @@
         <div class="main">
             <!-- Page content -->
             <div class="container">
-                <h3>Movie</h3>
+                <h3>Manage Movie</h3>
                 <hr>
                 <!-- Upload movie information -->
                 <c:if test="${isAdmin}">
@@ -64,75 +65,91 @@
                 </c:if>
                 <!-- Error message -->
                 <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
-                <c:forEach items="${movieList}" var="movie">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <!-- Movie title -->
-                                <div class="col-lg">
-                                    <h5>#${movie.getId()}</h5>
-                                    <h4>${movie.getTitle()}</h4>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <!-- Movie poster -->
-                                <div class="col-lg-5">
-                                    <div class="text-center">
-                                        <img src=${movie.getPoster()} class="rounded mx-auto w-100" alt="poster">
-                                    </div>
-                                </div>
-                                <div class="col-lg">
-                                    <ul class="list-inline">
-                                        <!-- Movie length -->
-                                        <p><b>Length:</b> ${movie.getDuration()} minutes</p>
-                                        <!-- Movie release date -->
-                                        <p><b>Release Date:</b> ${movie.displayReleaseDate()}</p>
-                                    </ul>
-                                    <hr>
-                                    <!-- Movie trailer -->
-                                    <h3>Trailer</h3>
-                                    <div class="embed-responsive embed-responsive-16by9">
-                                        <iframe width="907" height="510" src="${movie.getTrailer()}" frameborder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowfullscreen></iframe>
+                <c:choose>
+                    <c:when test="${!movieListEmpty}">
+                        <c:forEach items="${movieList}" var="movie">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- Movie title -->
+                                        <div class="col-lg">
+                                            <h5>#${movie.getId()}</h5>
+                                            <h4>${movie.getTitle()}</h4>
+                                        </div>
                                     </div>
                                     <hr>
-                                    <!-- Movie description -->
-                                    <h3>Description</h3>
-                                    <p>${movie.getDescription()}</p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="container">
-                                        <!-- Schedule movie -->
-                                        <form action="${S.SCHEDULE}" method="GET" class="button">
-                                            <input type="hidden" name="${S.MOVIE_ID_PARAM}" value=${movie.getId()} />
-                                            <input type="submit" class="btn btn-outline-info" value="Schedule" />
-                                        </form>
-                                        <c:if test="${isAdmin}">
-                                            <!-- Edit movie information -->
-                                            <form action="${S.MOVIE_EDIT}" method="GET" class="button">
-                                                <input type="hidden" name="${S.MOVIE_ID_PARAM}"
-                                                    value=${movie.getId()} />
-                                                <input type="submit" class="btn btn-outline-info" value="Edit" />
-                                            </form>
-                                            <!-- Delete movie information -->
-                                            <form action="${S.MOVIE_DELETE}" method="POST" class="button">
-                                                <input type="hidden" name="${S.MOVIE_ID_PARAM}"
-                                                    value=${movie.getId()} />
-                                                <input type="submit" class="btn btn-outline-danger" value="Delete" />
-                                            </form>
-                                        </c:if>
+                                    <div class="row">
+                                        <!-- Movie poster -->
+                                        <div class="col-lg-5">
+                                            <div class="text-center">
+                                                <img src=${movie.getPoster()} class="rounded mx-auto w-100"
+                                                    alt="poster">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg">
+                                            <ul class="list-inline">
+                                                <!-- Movie length -->
+                                                <p><b>Length:</b> ${movie.getDuration()} minutes</p>
+                                                <!-- Movie release date -->
+                                                <p><b>Release Date:</b> ${movie.displayReleaseDate()}</p>
+                                            </ul>
+                                            <hr>
+                                            <!-- Movie trailer -->
+                                            <h3>Trailer</h3>
+                                            <div class="embed-responsive embed-responsive-16by9">
+                                                <iframe width="907" height="510" src="${movie.getTrailer()}"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowfullscreen></iframe>
+                                            </div>
+                                            <hr>
+                                            <!-- Movie description -->
+                                            <h3>Description</h3>
+                                            <p>${movie.getDescription()}</p>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="container">
+                                                <!-- Schedule movie -->
+                                                <form action="${S.SCHEDULE}" method="GET" class="button">
+                                                    <input type="hidden" name="${S.MOVIE_ID_PARAM}"
+                                                        value=${movie.getId()} />
+                                                    <input type="submit" class="btn btn-outline-info"
+                                                        value="Schedule" />
+                                                </form>
+                                                <c:if test="${isAdmin}">
+                                                    <!-- Edit movie information -->
+                                                    <form action="${S.MOVIE_EDIT}" method="GET" class="button">
+                                                        <input type="hidden" name="${S.MOVIE_ID_PARAM}"
+                                                            value=${movie.getId()} />
+                                                        <input type="submit" class="btn btn-outline-info"
+                                                            value="Edit" />
+                                                    </form>
+                                                    <!-- Delete movie information -->
+                                                    <form action="${S.MOVIE_DELETE}" method="POST" class="button">
+                                                        <input type="hidden" name="${S.MOVIE_ID_PARAM}"
+                                                            value=${movie.getId()} />
+                                                        <input type="submit" class="btn btn-outline-danger"
+                                                            value="Delete" />
+                                                    </form>
+                                                </c:if>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <br>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="text-center">
+                            <h5>No movies</h5>
+                            <span>Movies created will appear here</span>
                         </div>
-                    </div>
-                    <br>
-                </c:forEach>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
         <!-- Footer -->

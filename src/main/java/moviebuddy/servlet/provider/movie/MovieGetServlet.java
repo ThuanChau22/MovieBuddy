@@ -28,7 +28,11 @@ public class MovieGetServlet extends HttpServlet {
         try {
             // Retrieve list of movies
             List<Movie> movies = movieDAO.listMovies();
-            request.setAttribute("movieList", movies);
+            request.setAttribute("movieListEmpty", true);
+            if (!movies.isEmpty()) {
+                request.setAttribute("movieListEmpty", false);
+                request.setAttribute("movieList", movies);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect(S.ERROR);

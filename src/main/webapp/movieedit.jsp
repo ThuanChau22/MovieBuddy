@@ -56,7 +56,7 @@
             <div class="container">
                 <h3>Manage Movie</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.MOVIE}">&lsaquo;<span>Back</span></a>
+                <a class="inputAsLink" href="./${S.MOVIE}#${movieId}">&lsaquo;<span>Back</span></a>
                 <h1 class="display-4 text-center">Edit Movie Information</h1>
                 <hr>
                 <div class="row">
@@ -117,6 +117,10 @@
                             <!-- Cancel hook -->
                             <div class="form-group">
                                 <input type="hidden" name="${S.ACTION_PARAM}" value="${S.ACTION_CANCEL}" />
+                            </div>
+                            <!-- Movie id -->
+                            <div class="form-group">
+                                <input type="hidden" name="${S.MOVIE_ID_PARAM}" value="${movieId}" />
                             </div>
                         </form>
                         <div class="text-center">

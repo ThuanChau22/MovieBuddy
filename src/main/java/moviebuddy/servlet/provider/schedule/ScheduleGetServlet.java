@@ -48,7 +48,7 @@ public class ScheduleGetServlet extends HttpServlet {
                 }
 
                 // Retrieve list of schedules
-                List<Schedule> schedules = scheduleDAO.listSchedule(theatreId, movieId);
+                List<Schedule> schedules = scheduleDAO.listSchedules(theatreId, movieId);
                 request.setAttribute("scheduleList", schedules);
             } else {
                 // Redirect to Home page for unauthorized access

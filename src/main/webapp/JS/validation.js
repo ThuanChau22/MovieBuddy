@@ -362,7 +362,7 @@ function validateRole(role) {
         return "Please select a role\n";
     }
     if (!(role == "admin" || role == "manager" || role == "faculty")) {
-        return "Invalid role selected\n";
+        return "Invalid role\n";
     }
     return "";
 }

@@ -71,7 +71,7 @@
                         <div class="form-group">
                             <label>Theatre: </label>
                             <select id="theatreOption" name="${S.THEATRE_OPTION_PARAM}" form="selectTheatreForm"
-                                onchange="submitForm('selectTheatreForm')">
+                                onchange="submitForm('#selectTheatreForm')">
                                 <option id="defaultLocation" hidden value="">Select a theatre</option>
                                 <c:choose>
                                     <c:when test="${!theatreListEmpty}">
@@ -159,7 +159,7 @@
     <c:if test="${isAdmin}">
         <!-- Load selected theatre -->
         <script>
-            loadSelectedOption("defaultLocation", "theatreOption", "${theatreId}");
+            loadSelectedOption("#defaultLocation", "#theatreOption", "${theatreId}");
         </script>
     </c:if>
 </body>

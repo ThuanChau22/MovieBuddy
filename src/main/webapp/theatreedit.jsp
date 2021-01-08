@@ -208,7 +208,7 @@
     <script src="./JS/functions.js"></script>
     <script src="./JS/validation.js"></script>
     <script>
-        loadSelectedOption("default", "state", "${stateInput}");
+        loadSelectedOption("#default", "#state", "${stateInput}");
     </script>
 </body>
 

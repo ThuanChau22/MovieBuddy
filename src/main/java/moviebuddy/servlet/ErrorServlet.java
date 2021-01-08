@@ -21,7 +21,7 @@ public class ErrorServlet extends HttpServlet {
 
         // Set request's address as return link
         String returnLink = request.getHeader("referer");
-        if (returnLink != null) {
+        if (returnLink != null && !returnLink.contains(S.ERROR)) {
             request.setAttribute("returnLink", returnLink);
         }
 

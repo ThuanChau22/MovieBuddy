@@ -2,7 +2,6 @@ package moviebuddy.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class Schedule {
     private int scheduleId;
@@ -35,10 +34,6 @@ public class Schedule {
 
     public LocalDate getShowDate() {
         return showDate;
-    }
-
-    public String displayShowDate() {
-        return DateTimeFormatter.ofPattern("MM/dd/yyyy").format(showDate);
     }
 
     public LocalTime getStartTime() {

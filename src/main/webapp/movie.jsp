@@ -92,7 +92,8 @@
                                                     <!-- Movie length -->
                                                     <p><b>Length:</b> ${movie.getDuration()} minutes</p>
                                                     <!-- Movie release date -->
-                                                    <p><b>Release Date:</b> ${movie.displayReleaseDate()}</p>
+                                                    <p><b>Release Date:</b> ${S.date("MMM dd yyyy",
+                                                        movie.getReleaseDate())}</p>
                                                 </ul>
                                                 <hr>
                                                 <!-- Movie trailer -->

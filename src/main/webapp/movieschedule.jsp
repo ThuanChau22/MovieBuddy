@@ -156,7 +156,7 @@
                                     <!-- Schedule id -->
                                     <td>${schedule.getScheduleId()}</td>
                                     <!-- Show date -->
-                                    <td>${schedule.displayShowDate()}</td>
+                                    <td>${S.date("MM/dd/yyyy", schedule.getShowDate())}</td>
                                     <!-- Show time -->
                                     <td>${schedule.getStartTime()}-${schedule.getEndTime()}</td>
                                     <!-- Room number -->

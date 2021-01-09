@@ -154,8 +154,8 @@
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
 
-    <script src="./JS/functions.js"></script>
-    <script src="./JS/validation.js"></script>
+    <script src="./js/functions.js"></script>
+    <script src="./js/validation.js"></script>
     <c:if test="${isAdmin}">
         <!-- Load selected theatre -->
         <script>

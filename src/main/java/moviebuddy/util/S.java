@@ -1,5 +1,8 @@
 package moviebuddy.util;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class S {
 
     // Servlets
@@ -100,6 +103,7 @@ public class S {
     public static final String ACTION_PARAM = "action";
     public static final String ACTION_SAVE = "save";
     public static final String ACTION_CANCEL = "cancel";
+    public static final String DATE_PARAM = "date";
 
     // Session
     public static final String SESSION_ID = "sessionId";
@@ -155,4 +159,9 @@ public class S {
 
     // Error
     public static final String ERROR_MESSAGE = "prevErrorMessage";
+
+    // Format date with given pattern
+    public static String date(String pattern, LocalDate date) {
+        return DateTimeFormatter.ofPattern(pattern).format(date);
+    }
 }

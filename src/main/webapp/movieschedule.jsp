@@ -78,7 +78,7 @@
                         <div class="form-group">
                             <label>Theatre: </label>
                             <select id="theatreOption" name="${S.THEATRE_OPTION_PARAM}" form="selectTheatreForm"
-                                onchange="submitForm('selectTheatreForm')">
+                                onchange="submitForm('#selectTheatreForm')">
                                 <option id="defaultLocation" hidden value="">Select a theatre</option>
                                 <c:choose>
                                     <c:when test="${!theatreListEmpty}">
@@ -156,7 +156,7 @@
                                     <!-- Schedule id -->
                                     <td>${schedule.getScheduleId()}</td>
                                     <!-- Show date -->
-                                    <td>${schedule.displayShowDate()}</td>
+                                    <td>${S.date("MM/dd/yyyy", schedule.getShowDate())}</td>
                                     <!-- Show time -->
                                     <td>${schedule.getStartTime()}-${schedule.getEndTime()}</td>
                                     <!-- Room number -->
@@ -194,12 +194,12 @@
     <c:if test="${isAdmin}">
         <!-- Load selected theatre -->
         <script>
-            loadSelectedOption("defaultLocation", "theatreOption", "${theatreId}");
+            loadSelectedOption("#defaultLocation", "#theatreOption", "${theatreId}");
         </script>
     </c:if>
     <!-- Load previous room number input -->
     <script>
-        loadSelectedOption("defaultRoom", "roomNumber", "${roomNumberInput}");
+        loadSelectedOption("#defaultRoom", "#roomNumber", "${roomNumberInput}");
     </script>
 </body>
 

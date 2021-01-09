@@ -69,7 +69,7 @@
                     <c:choose>
                         <c:when test="${!movieListEmpty}">
                             <c:forEach items="${movieList}" var="movie">
-                                <div class="card" id="${movie.getId()}">
+                                <div class="card">
                                     <div class="card-body">
                                         <div class="row">
                                             <!-- Movie title -->
@@ -92,7 +92,8 @@
                                                     <!-- Movie length -->
                                                     <p><b>Length:</b> ${movie.getDuration()} minutes</p>
                                                     <!-- Movie release date -->
-                                                    <p><b>Release Date:</b> ${movie.displayReleaseDate()}</p>
+                                                    <p><b>Release Date:</b> ${S.date("MMM dd yyyy",
+                                                        movie.getReleaseDate())}</p>
                                                 </ul>
                                                 <hr>
                                                 <!-- Movie trailer -->
@@ -145,9 +146,11 @@
                             </c:forEach>
                         </c:when>
                         <c:otherwise>
-                            <div class="text-center">
-                                <h5>No movies</h5>
-                                <span>Movies created will appear here</span>
+                            <div class="element-center" style="height: 50%;">
+                                <div class="text-center">
+                                    <h5>No movies</h5>
+                                    <span>Movies created will appear here</span>
+                                </div>
                             </div>
                         </c:otherwise>
                     </c:choose>

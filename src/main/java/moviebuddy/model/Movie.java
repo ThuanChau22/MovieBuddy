@@ -1,8 +1,8 @@
 package moviebuddy.model;
 
 import java.util.List;
+import java.util.LinkedList;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class Movie {
     private int id;
@@ -12,10 +12,11 @@ public class Movie {
     private String trailer;
     private String poster;
     private String description;
-    private List<Schedule> schedule;
+    private List<Schedule> schedules;
 
     public Movie(int id) {
         this.id = id;
+        schedules = new LinkedList<>();
     }
 
     public int getId() {
@@ -34,10 +35,6 @@ public class Movie {
         return releaseDate;
     }
 
-    public String displayReleaseDate() {
-        return DateTimeFormatter.ofPattern("MMM dd yyy").format(releaseDate);
-    }
-
     public String getTrailer() {
         return trailer;
     }
@@ -50,12 +47,8 @@ public class Movie {
         return description;
     }
 
-    public List<Schedule> getSchedule() {
-        return schedule;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public List<Schedule> getSchedules() {
+        return schedules;
     }
 
     public void setTitle(String title) {
@@ -82,7 +75,7 @@ public class Movie {
         this.description = description;
     }
 
-    public void setSchedule(List<Schedule> schedule) {
-        this.schedule = schedule;
+    public void addSchedule(Schedule s){
+        schedules.add(s);
     }
 }

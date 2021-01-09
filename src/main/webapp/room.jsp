@@ -68,11 +68,11 @@
                 <hr>
                 <!-- Error message -->
                 <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
-                <div class="row">
-                    <div class="col-lg-1"></div>
-                    <div class="col-lg">
-                        <c:choose>
-                            <c:when test="${!roomListEmpty}">
+                <c:choose>
+                    <c:when test="${!roomListEmpty}">
+                        <div class="row">
+                            <div class="col-lg-1"></div>
+                            <div class="col-lg">
                                 <table>
                                     <tr>
                                         <th>Room Number</th>
@@ -92,38 +92,36 @@
                                                 <div class="container">
                                                     <!-- Edit room information -->
                                                     <form action="${S.ROOM_EDIT}" method="GET" class="button">
-                                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}"
-                                                            value="${theatreId}" />
+                                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
                                                         <input type="hidden" name="${S.ROOM_NUMBER_PARAM}"
                                                             value="${room.getRoomNumber()}" />
-                                                        <input type="submit" class="btn btn-outline-info"
-                                                            value="Edit" />
+                                                        <input type="submit" class="btn btn-outline-info" value="Edit" />
                                                     </form>
                                                     <!-- Delete room information -->
                                                     <form action="${S.ROOM_DELETE}" method="POST" class="button">
-                                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}"
-                                                            value="${theatreId}" />
+                                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
                                                         <input type="hidden" name="${S.ROOM_NUMBER_PARAM}"
                                                             value="${room.getRoomNumber()}" />
-                                                        <input type="submit" class="btn btn-outline-danger"
-                                                            value="Delete" />
+                                                        <input type="submit" class="btn btn-outline-danger" value="Delete" />
                                                     </form>
                                                 </div>
                                             </td>
                                         </tr>
                                     </c:forEach>
                                 </table>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="text-center">
-                                    <h5>No rooms</h5>
-                                    <span>Rooms created will appear here</span>
-                                </div>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
-                    <div class="col-lg-1"></div>
-                </div>
+                            </div>
+                            <div class="col-lg-1"></div>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="element-center" style="height: 50%;">
+                            <div class="text-center">
+                                <h5>No rooms</h5>
+                                <span>Rooms created will appear here</span>
+                            </div>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
         <!-- Footer -->

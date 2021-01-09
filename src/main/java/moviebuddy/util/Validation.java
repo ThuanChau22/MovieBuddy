@@ -2,13 +2,9 @@ package moviebuddy.util;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-// import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
-
-// import moviebuddy.model.Schedule;
-// import moviebuddy.model.ShowTime;
 
 public class Validation {
     private static final int USERNAME_MIN_LENGTH = 2;

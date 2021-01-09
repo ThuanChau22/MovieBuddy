@@ -163,8 +163,8 @@
     <c:if test="${isAdmin}">
         <!-- Load previous inputs -->
         <script>
-            loadSelectedOption("defaultRole", "role", "${roleInput}");
-            loadSelectedOption("defaultLocation", "theatreLocation", "${locationInput}");
+            loadSelectedOption("#defaultRole", "#role", "${roleInput}");
+            loadSelectedOption("#defaultLocation", "#theatreLocation", "${locationInput}");
             if ("${roleInput}" != "") {
                 checkRole(document.getElementById("role"));
             }

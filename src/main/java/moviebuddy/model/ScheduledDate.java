@@ -2,9 +2,7 @@ package moviebuddy.model;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.ArrayList;
-
-
+import java.util.LinkedList;
 
 public class ScheduledDate {
     private LocalDate showDate;
@@ -12,7 +10,7 @@ public class ScheduledDate {
 
     public ScheduledDate(LocalDate showDate){
         this.showDate = showDate;
-        movies = new ArrayList<>();
+        movies = new LinkedList<>();
     }
 
     public LocalDate getShowDate() {

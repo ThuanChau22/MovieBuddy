@@ -20,22 +20,18 @@
     <div id="custom-scroll">
         <div class="main">
             <div class="container">
-                <div class="error-box-wrapper">
-                    <div class="error-component-box">
-                        <div class="row">
-                            <div class="col-md-6">
+                <div class="element-center">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="./images/error.png" class="rounded mx-auto w-100" alt="saitama">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="element-center">
                                 <div class="text-center">
-                                    <img src="./images/error.png" class="rounded mx-auto w-100" alt="saitama">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="error-box-wrapper">
-                                    <div class="error-text-box text-center">
-                                        <h1>Oops!!!</h1>
-                                        <span>It seems like something just went wrong.</span><br>
-                                        <span>Please <a class="error-link" href="${returnLink}">click here</a> to
-                                            return.</span>
-                                    </div>
+                                    <h1>Oops!!!</h1>
+                                    <span>It seems like something just went wrong.</span><br>
+                                    <span>Please <a class="error-link" href="${returnLink}">click here</a> to
+                                        return.</span>
                                 </div>
                             </div>
                         </div>

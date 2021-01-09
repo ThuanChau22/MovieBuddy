@@ -146,9 +146,11 @@
                             </c:forEach>
                         </c:when>
                         <c:otherwise>
-                            <div class="text-center">
-                                <h5>No movies</h5>
-                                <span>Movies created will appear here</span>
+                            <div class="element-center" style="height: 50%;">
+                                <div class="text-center">
+                                    <h5>No movies</h5>
+                                    <span>Movies created will appear here</span>
+                                </div>
                             </div>
                         </c:otherwise>
                     </c:choose>

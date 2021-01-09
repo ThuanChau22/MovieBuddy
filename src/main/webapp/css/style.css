@@ -204,6 +204,8 @@ tr:nth-child(even) {
     background: #595959;
     color: #fff;
     display: block;
+    text-decoration: none;
+    cursor: default;
 }
 
 .dayOfWeek, .month-date {

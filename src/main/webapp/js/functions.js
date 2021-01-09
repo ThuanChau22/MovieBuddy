@@ -15,6 +15,7 @@ function submitForm(formId) {
 function loadDates(selectedDateIndex) {
     let a = $("#dateItem-" + selectedDateIndex).children("a.date-picker-link");
     a.removeClass("date-picker-link");
+    a.removeAttr("href");
     a.addClass("selected-link");
     a.children("span.dayOfWeek").addClass("selected-day");
 

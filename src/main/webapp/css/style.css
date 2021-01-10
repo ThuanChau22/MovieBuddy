@@ -196,12 +196,12 @@ tr:nth-child(even) {
 }
 
 .date-picker-link:active {
-    background: #929292;
+    background: #b3b3b3;
     color: #fff;
 }
 
 .selected-link, .selected-link:hover {
-    background: #595959;
+    background: #b3b3b3;
     color: #fff;
     display: block;
     text-decoration: none;

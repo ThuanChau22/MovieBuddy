@@ -1,3 +1,14 @@
+// Collapse navbar when click away
+$(document).ready(function () {
+    $(document).click(function (event) {
+        var clickover = $(event.target);
+        var _opened = $(".navbar-collapse").hasClass("show");
+        if (_opened === true && !clickover.hasClass("navbar-toggler")) {
+            $(".navbar-toggler").click();
+        }
+    });
+});
+
 // Load previous selected option on reload
 function loadSelectedOption(defaultId, selectId, optionValue) {
     if (optionValue != "") {
@@ -11,7 +22,7 @@ function submitForm(formId) {
     $(formId).submit();
 }
 
-// JCarousel
+// Load list of dates with JCarousel
 function loadDates(selectedDateIndex) {
     let a = $("#dateItem-" + selectedDateIndex).children("a.date-picker-link");
     a.removeClass("date-picker-link");

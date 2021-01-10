@@ -65,24 +65,20 @@
                     </div>
                 </li>
             </c:if>
-            <li class="nav-item active">
-                <!-- Current theatre location form -->
-                <form class="form-inline my-2 my-lg-0">
+            <!-- Current theatre location -->
+            <!-- <li class="nav-item active">
+                <form action="#" class="form-inline my-2 my-lg-0">
                     <label class="mx-2 navbar-brand">Theatre Name</label>
-                    <input class="form-control mr-sm-2" type="search" placeholder="Zip Code" value="${zipcode}">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Enter</button>
+                    <input class="form-control mr-sm-2" type="text" placeholder="Zip Code" value="${zipcode}">
+                    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Enter</button>
                 </form>
-            </li>
+            </li> -->
         </ul>
         <c:choose>
             <c:when test="${signedIn}">
                 <!-- Signed In -->
-                <form action="" method="POST" class="formAsLink">
-                    <input class="inputAsLink" type="submit" value="${userName}">
-                </form>
-                <form action="${S.SIGN_OUT}" method="POST" class="formAsLink">
-                    <input class="inputAsLink" type="submit" value="Sign Out">
-                </form>
+                <a class="nav-link" href="#">${userName}</a>
+                <a class="nav-link" href="./${S.SIGN_OUT}">Sign Out</a>
             </c:when>
             <c:otherwise>
                 <!-- Signed Out -->

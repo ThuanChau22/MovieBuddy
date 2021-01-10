@@ -69,7 +69,8 @@
                     <c:choose>
                         <c:when test="${!movieListEmpty}">
                             <c:forEach items="${movieList}" var="movie">
-                                <div class="card">
+                                <!-- Movie id for anchor -->
+                                <div class="card" id="${movie.getId()}">
                                     <div class="card-body">
                                         <div class="row">
                                             <!-- Movie title -->

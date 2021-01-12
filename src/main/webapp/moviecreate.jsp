@@ -63,8 +63,8 @@
                             <!-- Input title -->
                             <div class="form-group">
                                 <label>Title</label><span class="errormessage">*</span><br>
-                                <input class="form-control" name="${S.TITLE_PARAM}" type="text" placeholder="Enter title"
-                                    value="${titleInput}" />
+                                <input class="form-control" name="${S.TITLE_PARAM}" type="text"
+                                    placeholder="Enter title" value="${titleInput}" />
                             </div>
                             <!-- Input release date -->
                             <div class="form-group">
@@ -76,7 +76,10 @@
                             <div class="form-group">
                                 <label>Duration</label><span class="errormessage">*</span><br>
                                 <input class="form-control" name="${S.DURATION_PARAM}" type="text"
-                                    placeholder="Enter duration in minutes" value="${durationInput}" />
+                                    placeholder="Enter duration in minutes" onkeyup="checkDuration(this)"
+                                    value="${durationInput}" />
+                                <!-- Duration error -->
+                                <span id="durationError" class="errormessage"></span>
                             </div>
                             <!-- Input trailer -->
                             <div class="form-group">

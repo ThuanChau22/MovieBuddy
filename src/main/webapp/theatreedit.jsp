@@ -73,22 +73,28 @@
                             <!-- Input theatre name -->
                             <div class="form-group">
                                 <label>Theatre Name</label><span class="errormessage">*</span><br>
-                                <input class="form-control" name="${S.THEATRE_NAME_PARAM}" type="text"
-                                    placeholder="Buddy###" onkeyup="checkTheatreName(this)" value="${nameInput}" />
+                                <div style="position: relative">
+                                    <input class="form-control" name="${S.THEATRE_NAME_PARAM}" type="text"
+                                        placeholder="Buddy###" onkeyup="checkTheatreName(this)" value="${nameInput}"
+                                        style="padding-right: 30px;" />
+                                    <div class="spinner-wrapper">
+                                        <span id="theatreNameSpinner"></span>
+                                    </div>
+                                </div>
                                 <!-- Theatre name error -->
                                 <span id="theatreNameError" class="errormessage"></span>
                             </div>
                             <!-- Input address -->
                             <div class="form-group">
                                 <label>Address</label><span class="errormessage">*</span><br>
-                                <input class="form-control" name="${S.ADDRESS_PARAM}" type="text" placeholder="1234 Main St"
-                                    value="${addressInput}" />
+                                <input class="form-control" name="${S.ADDRESS_PARAM}" type="text"
+                                    placeholder="1234 Main St" value="${addressInput}" />
                             </div>
                             <!-- Input city -->
                             <div class="form-group">
                                 <label>City</label><span class="errormessage">*</span><br>
-                                <input class="form-control" name="${S.CITY_PARAM}" type="text" placeholder="San Francisco"
-                                    value="${cityInput}" />
+                                <input class="form-control" name="${S.CITY_PARAM}" type="text"
+                                    placeholder="San Francisco" value="${cityInput}" />
                             </div>
                             <!-- input state -->
                             <div class="form-group">
@@ -197,7 +203,7 @@
     <!-- Script import -->
     <jsp:include page="./components/script.jsp" />
 
-    
+
     <!-- Load previous state input -->
     <script>
         loadSelectedOption("#default", "#state", "${stateInput}");

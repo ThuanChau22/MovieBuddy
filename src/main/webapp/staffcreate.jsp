@@ -113,8 +113,14 @@
                                     <!-- Input email -->
                                     <div class="form-group">
                                         <label>Email</label><br>
-                                        <input name="${S.EMAIL_PARAM}" class="form-control" type="text"
-                                            placeholder="Enter email" onkeyup="checkEmail(this)" value="${emailInput}">
+                                        <div style="position: relative">
+                                            <input class="form-control" name="${S.EMAIL_PARAM}" type="text"
+                                                placeholder="Enter email" onkeyup="checkEmail(this)"
+                                                value="${emailInput}" style="padding-right: 30px;">
+                                            <div class="spinner-wrapper">
+                                                <span id="emailSpinner"></span>
+                                            </div>
+                                        </div>
                                         <!-- Email error -->
                                         <span id="emailError" class="errormessage"></span>
                                     </div>

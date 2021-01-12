@@ -69,6 +69,21 @@ body {
     box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, .25);
 }
 
+.spinner-wrapper {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.spinner-border {
+    width: 1.2rem;
+    height: 1.2rem;
+    border: .1em solid currentColor;
+    border-right-color: transparent;
+}
+
 .errormessagePadding {
     position: relative;
     padding-bottom: 24px;

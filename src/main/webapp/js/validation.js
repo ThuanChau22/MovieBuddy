@@ -1,5 +1,6 @@
 // Element IDs
 const USER_NAME_ERROR = "userNameError";
+const EMAIL_SPINNER = "emailSpinner";
 const EMAIL_ERROR = "emailError";
 const PASSWORD_ERROR = "passwordError";
 const RE_PASSWORD_ERROR = "rePasswordError";
@@ -8,12 +9,15 @@ const ROLE_ERROR = "roleError";
 const LOCATION_FORM = "locationForm";
 const LOCATION_ERROR = "locationError";
 const THEATRE_ID = "theatreId";
+const THEATRE_SPINNER = "theatreNameSpinner";
 const THEATRE_NAME_ERROR = "theatreNameError";
 const ZIP_ERROR = "zipError";
 const ROOM_ID = "roomId";
+const ROOM_SPINNER = "roomNumberSpinner";
 const ROOM_NUMBER_ERROR = "roomNumberError";
 const SECTIONS_ERROR = "sectionsError";
 const SEATS_ERROR = "seatsError";
+const DURATION_ERROR = "durationError";
 const ERROR_MESSAGE = "errorMessage";
 
 // Ajax URLs
@@ -93,9 +97,7 @@ function validateTheatreForm(form) {
             }
         });
     }
-    if (form.zip.value != "") {
-        fail += checkZip(form.zip);
-    }
+    fail += checkZip(form.zip);
     return false;
 }
 
@@ -121,37 +123,27 @@ function validateRoomForm(form) {
     if (form.room_number.value == "" || form.sections.value == "" || form.seats.value == "") {
         errorId.innerHTML = fail += "* required fields\n";
     }
-    if (form.room_number.value != "") {
-        checkRoomNumber(form.room_number).then(invalidInput => {
-            fail += invalidInput;
-            if (fail == "") {
-                document.getElementById(form.id).submit();
-            }
-        });
-    }
-    if (form.sections.value != "") {
-        fail += checkSections(form.sections);
-    }
-    if (form.seats.value != "") {
-        fail += checkSeats(form.seats);
-    }
+    checkRoomNumber(form.room_number).then(invalidInput => {
+        fail += invalidInput;
+        if (fail == "") {
+            document.getElementById(form.id).submit();
+        }
+    });
+    fail += checkSections(form.sections);
+    fail += checkSeats(form.seats);
     return false;
 }
 
 // Validate movie form
 function validateMovieForm(form) {
     errorId = document.getElementById(ERROR_MESSAGE);
-    errorId.innerHTML = "";
+    errorId.innerHTML = fail = "";
     if (form.title.value == "" || form.release_date.value == ""
         || form.duration.value == "" || form.trailer.value == "" || form.description.value == "") {
-        errorId.innerHTML = "* required fields\n";
-        return false;
+        errorId.innerHTML = fail += "* required fields\n";
     }
-    if (validateNumber(form.duration.value) != "") {
-        errorId.innerHTML = "Invalid duration\n";
-        return false;
-    }
-    return true;
+    fail += checkDuration(form.duration);
+    return fail == "";
 }
 
 // Validate schedule form
@@ -183,7 +175,9 @@ async function checkEmail(emailInput) {
     invalidInput = validateEmail(emailInput.value);
     if (invalidInput == "") {
         args = emailInput.name + "=" + emailInput.value;
+        document.getElementById(EMAIL_SPINNER).classList.add("spinner-border", "text-info");
         invalidInput = await ajaxFunction(args, FIND_REGISTERED_EMAIL);
+        document.getElementById(EMAIL_SPINNER).classList.remove("spinner-border", "text-info");
     }
     document.getElementById(EMAIL_ERROR).innerHTML = invalidInput;
     return invalidInput;
@@ -258,7 +252,9 @@ async function checkTheatreName(theatreNameInput) {
             args += theatreIdInput.name + "=" + theatreIdInput.value + "&";
         }
         args += theatreNameInput.name + "=" + theatreNameInput.value;
+        document.getElementById(THEATRE_SPINNER).classList.add("spinner-border", "text-info");
         invalidInput = await ajaxFunction(args, FIND_THEATRE_NAME);
+        document.getElementById(THEATRE_SPINNER).classList.remove("spinner-border", "text-info");
     }
     document.getElementById(THEATRE_NAME_ERROR).innerHTML = invalidInput;
     return invalidInput;
@@ -266,7 +262,8 @@ async function checkTheatreName(theatreNameInput) {
 
 function checkZip(zipInput) {
     invalidInput = "";
-    if (zipInput.value != "" && validateNumber(zipInput.value) != "") {
+    input = zipInput.value;
+    if (input != "" && validateNumber(input) != "") {
         invalidInput = "Invalid zip code\n";
     }
     document.getElementById(ZIP_ERROR).innerHTML = invalidInput;
@@ -275,10 +272,11 @@ function checkZip(zipInput) {
 
 async function checkRoomNumber(roomNumberInput) {
     invalidInput = "";
-    if (roomNumberInput.value != "" && validateNumber(roomNumberInput.value) != "") {
+    input = roomNumberInput.value;
+    if (input != "" && (validateNumber(input) != "" || input < 1)) {
         invalidInput = "Invalid room number\n";
     }
-    if (invalidInput == "") {
+    if (input != "" && invalidInput == "") {
         args = "";
         theatreIdInput = document.getElementById(THEATRE_ID);
         if (theatreIdInput != null) {
@@ -289,7 +287,9 @@ async function checkRoomNumber(roomNumberInput) {
             args += roomIdInput.name + "=" + roomIdInput.value + "&";
         }
         args += roomNumberInput.name + "=" + roomNumberInput.value;
+        document.getElementById(ROOM_SPINNER).classList.add("spinner-border", "text-info");
         invalidInput = await ajaxFunction(args, FIND_ROOM_NUMBER);
+        document.getElementById(ROOM_SPINNER).classList.remove("spinner-border", "text-info");
     }
     document.getElementById(ROOM_NUMBER_ERROR).innerHTML = invalidInput;
     return invalidInput;
@@ -297,8 +297,9 @@ async function checkRoomNumber(roomNumberInput) {
 
 function checkSections(sectionsInput) {
     invalidInput = "";
-    if (sectionsInput.value != "" && validateNumber(sectionsInput.value) != "") {
-        invalidInput = "Invalid number of secions\n";
+    input = sectionsInput.value;
+    if (input != "" && (validateNumber(input) != "" || input < 1)) {
+        invalidInput = "Invalid number of sections\n";
     }
     document.getElementById(SECTIONS_ERROR).innerHTML = invalidInput;
     return invalidInput;
@@ -306,10 +307,21 @@ function checkSections(sectionsInput) {
 
 function checkSeats(seatsInput) {
     invalidInput = "";
-    if (seatsInput.value != "" && validateNumber(seatsInput.value) != "") {
+    input = seatsInput.value;
+    if (input != "" && (validateNumber(input) != "" || input < 1)) {
         invalidInput = "Invalid number of seats\n";
     }
     document.getElementById(SEATS_ERROR).innerHTML = invalidInput;
+    return invalidInput;
+}
+
+function checkDuration(durationInput) {
+    invalidInput = "";
+    input = durationInput.value;
+    if (input != "" && (validateNumber(input) != "" || input < 1)) {
+        invalidInput = "Invalid duration\n";
+    }
+    document.getElementById(DURATION_ERROR).innerHTML = invalidInput;
     return invalidInput;
 }
 

@@ -65,12 +65,21 @@
                     </div>
                 </li>
             </c:if>
+            <!-- Search bar -->
+            <li class="nav-item">
+                <div class="search-bar" id="searchBar">
+                    <form action="#" class="my-lg-0">
+                        <input type="text" class="nav-element form-control" placeholder="Search by movie title">
+                        <button type="button" class="search-button"><i class="nav-element fa fa-search"></i></button>
+                    </form>
+                </div>
+            </li>
             <!-- Current theatre location -->
-            <!-- <li class="nav-item active">
-                <form action="#" class="form-inline my-2 my-lg-0">
+            <!-- <li class="nav-item">
+                <form action="#" class="form-inline my-lg-0">
                     <label class="mx-2 navbar-brand">Theatre Name</label>
-                    <input class="form-control mr-sm-2" type="text" placeholder="Zip Code" value="${zipcode}">
-                    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Enter</button>
+                    <input class="form-control" type="text" placeholder="Zip Code" value="${zipcode}">
+                    <button class="btn btn-outline-info my-sm-0" type="submit">Enter</button>
                 </form>
             </li> -->
         </ul>

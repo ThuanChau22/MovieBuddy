@@ -47,8 +47,6 @@ public class S {
 
     // JSP pages
     public static final String HOME_PAGE = "home.jsp";
-    public static final String NAV_BAR_PAGE = "navbar.jsp";
-    public static final String FOOTER_PAGE = "footer.jsp";
     public static final String SIGN_UP_PAGE = "signup.jsp";
     public static final String SIGN_IN_PAGE = "signin.jsp";
     public static final String STAFF_SIGN_IN_PAGE = "staffsignin.jsp";

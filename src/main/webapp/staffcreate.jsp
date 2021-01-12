@@ -66,7 +66,7 @@
                                         <!-- Input role -->
                                         <div class="form-group">
                                             <label>Role</label><br>
-                                            <select id="role" class="inputbox" name="${S.ROLE_PARAM}"
+                                            <select id="role" class="form-control" name="${S.ROLE_PARAM}"
                                                 form="staffCreateForm" onchange="checkRole(this)">
                                                 <option id="defaultRole" hidden value="">Select a role</option>
                                                 <c:forEach items="${roleList}" var="role">
@@ -79,7 +79,7 @@
                                         <!-- Input location -->
                                         <div class="form-group" id="locationForm">
                                             <label>Theatre Location</label><br>
-                                            <select id="theatreLocation" class="inputbox"
+                                            <select id="theatreLocation" class="form-control"
                                                 name="${S.THEATRE_LOCATION_PARAM}" form="staffCreateForm"
                                                 onchange="checkLocation(this)">
                                                 <option id="defaultLocation" hidden value="">Select a theatre location
@@ -96,7 +96,6 @@
                                                         <option disabled value="">empty</option>
                                                     </c:otherwise>
                                                 </c:choose>
-
                                             </select>
                                             <!-- Location error -->
                                             <span id="locationError" class="errormessage"></span>
@@ -105,28 +104,25 @@
                                     <!-- Input name -->
                                     <div class="form-group">
                                         <label>Name</label><br>
-                                        <input class="inputbox" type="text" name="${S.USERNAME_PARAM}"
+                                        <input class="form-control" type="text" name="${S.USERNAME_PARAM}"
                                             placeholder="Enter your name" onkeyup="checkName(this)"
                                             value="${userNameInput}">
-                                        <br>
                                         <!-- Name error -->
                                         <span id="userNameError" class="errormessage"></span>
                                     </div>
                                     <!-- Input email -->
                                     <div class="form-group">
                                         <label>Email</label><br>
-                                        <input name="${S.EMAIL_PARAM}" class="inputbox" type="text"
+                                        <input name="${S.EMAIL_PARAM}" class="form-control" type="text"
                                             placeholder="Enter email" onkeyup="checkEmail(this)" value="${emailInput}">
-                                        <br>
                                         <!-- Email error -->
                                         <span id="emailError" class="errormessage"></span>
                                     </div>
                                     <!-- Input password -->
                                     <div class="form-group">
                                         <label>Password</label><br>
-                                        <input name="${S.PASSWORD_PARAM}" class="inputbox" type="password"
+                                        <input name="${S.PASSWORD_PARAM}" class="form-control" type="password"
                                             placeholder="Enter password" onkeyup="checkPassword(this)">
-                                        <br>
                                         <!-- Password error -->
                                         <span id="passwordError" class="errormessage"></span>
                                     </div>

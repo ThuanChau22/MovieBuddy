@@ -64,28 +64,27 @@
                             <!-- Input theatre name -->
                             <div class="form-group">
                                 <label>Theatre Name</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.THEATRE_NAME_PARAM}" type="text"
+                                <input class="form-control" name="${S.THEATRE_NAME_PARAM}" type="text"
                                     placeholder="Buddy###" onkeyup="checkTheatreName(this)" value="${nameInput}" />
-                                <br>
                                 <!-- Theatre name error -->
                                 <span id="theatreNameError" class="errormessage"></span>
                             </div>
                             <!-- Input address -->
                             <div class="form-group">
                                 <label>Address</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.ADDRESS_PARAM}" type="text" placeholder="1234 Main St"
+                                <input class="form-control" name="${S.ADDRESS_PARAM}" type="text" placeholder="1234 Main St"
                                     value="${addressInput}" />
                             </div>
                             <!-- Input city -->
                             <div class="form-group">
                                 <label>City</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.CITY_PARAM}" type="text" placeholder="San Francisco"
+                                <input class="form-control" name="${S.CITY_PARAM}" type="text" placeholder="San Francisco"
                                     value="${cityInput}" />
                             </div>
                             <!-- input state -->
                             <div class="form-group">
                                 <label>State</label><span class="errormessage">*</span><br>
-                                <select class="inputbox" id="state" name="${S.STATE_PARAM}">
+                                <select class="form-control" id="state" name="${S.STATE_PARAM}">
                                     <option id="default" hidden selected value="">Select a State</option>
                                     <option value="AL">Alabama</option>
                                     <option value="AK">Alaska</option>
@@ -143,15 +142,14 @@
                             <!-- Input country -->
                             <div class="form-group">
                                 <label>Country</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.COUNTRY_PARAM}" type="text" placeholder="USA"
+                                <input class="form-control" name="${S.COUNTRY_PARAM}" type="text" placeholder="USA"
                                     value="${countryInput}" />
                             </div>
                             <!-- Input zip code -->
                             <div class="form-group">
                                 <label>Zip Code</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.ZIP_PARAM}" type="text" placeholder="12345"
+                                <input class="form-control" name="${S.ZIP_PARAM}" type="text" placeholder="12345"
                                     onkeyup="checkZip(this)" value="${zipInput}" />
-                                <br>
                                 <!-- Zip code error -->
                                 <span id="zipError" class="errormessage"></span>
                             </div>

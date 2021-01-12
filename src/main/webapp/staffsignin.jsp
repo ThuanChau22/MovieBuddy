@@ -55,19 +55,17 @@
                                     <!-- Input staff id -->
                                     <div class="form-group ">
                                         <label>Staff ID Number</label><br>
-                                        <input class="inputbox" type="text" name="${S.STAFF_ID_PARAM}"
+                                        <input class="form-control" type="text" name="${S.STAFF_ID_PARAM}"
                                             placeholder="Enter staff ID number" onkeyup="checkSignInStaffId(this)"
                                             value="${staffIdInput}">
-                                        <br>
                                         <!-- Staff id error -->
                                         <span id="staffIdError" class="errormessage"></span>
                                     </div>
                                     <!-- Input password -->
                                     <div class="form-group">
                                         <label>Password</label><br>
-                                        <input class="inputbox" type="password" name="${S.PASSWORD_PARAM}"
+                                        <input class="form-control" type="password" name="${S.PASSWORD_PARAM}"
                                             placeholder="Enter password" onkeyup="checkSignInPassword(this)">
-                                        <br>
                                         <!-- Password error -->
                                         <span id="passwordError" class="errormessage"></span>
                                     </div>

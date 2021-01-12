@@ -63,36 +63,36 @@
                             <!-- Input title -->
                             <div class="form-group">
                                 <label>Title</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.TITLE_PARAM}" type="text" placeholder="Enter title"
+                                <input class="form-control" name="${S.TITLE_PARAM}" type="text" placeholder="Enter title"
                                     value="${titleInput}" />
                             </div>
                             <!-- Input release date -->
                             <div class="form-group">
                                 <label>Release Date</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.RELEASE_DATE_PARAM}" type="date"
+                                <input class="form-control" name="${S.RELEASE_DATE_PARAM}" type="date"
                                     value="${releaseDateInput}" />
                             </div>
                             <!-- Input duration -->
                             <div class="form-group">
                                 <label>Duration</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.DURATION_PARAM}" type="text"
+                                <input class="form-control" name="${S.DURATION_PARAM}" type="text"
                                     placeholder="Enter duration in minutes" value="${durationInput}" />
                             </div>
                             <!-- Input trailer -->
                             <div class="form-group">
                                 <label>Trailer Source</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.TRAILER_PARAM}" type="text"
+                                <input class="form-control" name="${S.TRAILER_PARAM}" type="text"
                                     placeholder="Enter trailer source..." value="${trailerInput}" />
                             </div>
                             <!-- Input poster -->
                             <div class="form-group">
                                 <label>Poster</label><br>
-                                <input class="inputbox" name="${S.POSTER_PARAM}" type="file" />
+                                <input name="${S.POSTER_PARAM}" type="file" />
                             </div>
                             <!-- Input description -->
                             <div class="form-group">
                                 <label>Description</label><span class="errormessage">*</span><br>
-                                <textarea class="inputbox" name="${S.DESCRIPTION_PARAM}" cols="60" rows="5"
+                                <textarea class="form-control" name="${S.DESCRIPTION_PARAM}" cols="60" rows="5"
                                     maxlength="1000" style="resize: none;"
                                     placeholder="Enter movie description...">${descriptionInput}</textarea>
                             </div>

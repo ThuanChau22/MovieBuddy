@@ -69,28 +69,25 @@
                             <!-- Input room number -->
                             <div class="form-group">
                                 <label>Room Number</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.ROOM_NUMBER_PARAM}" type="number" min="1"
+                                <input class="form-control" name="${S.ROOM_NUMBER_PARAM}" type="number" min="1"
                                     placeholder="Enter room number" onkeyup="checkRoomNumber(this)"
                                     value="${roomNumberInput}" />
-                                <br>
                                 <!-- Room number error -->
                                 <span id="roomNumberError" class="errormessage"></span>
                             </div>
                             <!-- Input number of sections -->
                             <div class="form-group">
                                 <label>Sections</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.SECTIONS_PARAM}" type="number" min="1"
+                                <input class="form-control" name="${S.SECTIONS_PARAM}" type="number" min="1"
                                     placeholder="Number of sections" value="${sectionsInput}" />
-                                <br>
                                 <!-- Sections error -->
                                 <span id="sectionsError" class="errormessage"></span>
                             </div>
                             <!-- Input seats per section -->
                             <div class="form-group">
                                 <label>Seats</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.SEATS_PARAM}" type="number" min="1"
+                                <input class="form-control" name="${S.SEATS_PARAM}" type="number" min="1"
                                     placeholder="Seats per section" value="${seatsInput}" />
-                                <br>
                                 <!-- Seats error -->
                                 <span id="seatsError" class="errormessage"></span>
                             </div>

@@ -54,19 +54,17 @@
                                     <!-- Input email -->
                                     <div class="form-group ">
                                         <label>Email address</label><br>
-                                        <input id="email" class="inputbox" type="text" name="${S.EMAIL_PARAM}"
+                                        <input id="email" class="form-control" type="text" name="${S.EMAIL_PARAM}"
                                             placeholder="Enter email" onkeyup="checkSignInEmail(this)"
                                             value="${emailInput}">
-                                        <br>
                                         <!-- Email error -->
                                         <span id="emailError" class="errormessage"></span>
                                     </div>
                                     <!-- Input password -->
                                     <div class="form-group">
                                         <label>Password</label><br>
-                                        <input class="inputbox" type="password" name="${S.PASSWORD_PARAM}"
+                                        <input class="form-control" type="password" name="${S.PASSWORD_PARAM}"
                                             placeholder="Enter password" onkeyup="checkSignInPassword(this)">
-                                        <br>
                                         <!-- Password error -->
                                         <span id="passwordError" class="errormessage"></span>
                                     </div>

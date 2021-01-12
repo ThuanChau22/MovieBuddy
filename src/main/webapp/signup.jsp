@@ -56,37 +56,33 @@
                                     <!-- Input name -->
                                     <div class="form-group">
                                         <label>Name</label><br>
-                                        <input class="inputbox" type="text" name="${S.USERNAME_PARAM}"
+                                        <input class="form-control" type="text" name="${S.USERNAME_PARAM}"
                                             placeholder="Enter your name" onkeyup="checkName(this)"
                                             value="${userNameInput}">
-                                        <br>
                                         <!-- Name error -->
                                         <span id="userNameError" class="errormessage"></span>
                                     </div>
                                     <!-- Input email -->
                                     <div class="form-group">
                                         <label>Email</label><br>
-                                        <input class="inputbox" type="text" name="${S.EMAIL_PARAM}"
+                                        <input class="form-control" type="text" name="${S.EMAIL_PARAM}"
                                             placeholder="Enter email" onkeyup="checkEmail(this)" value="${emailInput}">
-                                        <br>
                                         <!-- Email error -->
                                         <span id="emailError" class="errormessage"></span>
                                     </div>
                                     <!-- Input password -->
                                     <div class="form-group">
                                         <label>Password</label><br>
-                                        <input class="inputbox" type="password" name="${S.PASSWORD_PARAM}"
+                                        <input class="form-control" type="password" name="${S.PASSWORD_PARAM}"
                                             placeholder="Enter password" onkeyup="checkPassword(this)">
-                                        <br>
                                         <!-- Password error -->
                                         <span id="passwordError" class="errormessage"></span>
                                     </div>
                                     <!-- Input Re-password -->
                                     <div class="form-group">
                                         <label>Confirm Password</label><br>
-                                        <input class="inputbox" type="password" name="${S.RE_PASSWORD_PARAM}"
+                                        <input class="form-control" type="password" name="${S.RE_PASSWORD_PARAM}"
                                             placeholder="Re-enter password" onkeyup="checkRePassword('signUpForm')">
-                                        <br>
                                         <!-- Re-password error -->
                                         <span id="rePasswordError" class="errormessage"></span>
                                     </div>

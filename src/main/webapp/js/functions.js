@@ -16,11 +16,6 @@ function loadSelectedOption(defaultId, selectId, optionValue) {
     }
 }
 
-// Submit a form
-function submitForm(formId) {
-    $(formId).submit();
-}
-
 // Load list of dates with JCarousel
 function loadDates(selectedDateIndex) {
     let a = $("#dateItem-" + selectedDateIndex).children("a.date-picker-link");

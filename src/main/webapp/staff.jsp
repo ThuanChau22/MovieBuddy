@@ -69,7 +69,7 @@
                                 <span class="input-group-text">Theatre</span>
                             </div>
                             <select id="theatreOption" name="${S.THEATRE_OPTION_PARAM}" class="custom-select"
-                                onchange="submitForm('#selectTheatreForm')">
+                                onchange="$('#selectTheatreForm').submit();">
                                 <option id="defaultLocation" hidden value="">Select a theatre</option>
                                 <c:choose>
                                     <c:when test="${!theatreListEmpty}">

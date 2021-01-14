@@ -27,10 +27,6 @@ public class FindTheatreNameServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            response.setContentType("text/plain");
-            response.setCharacterEncoding("UTF-8");
-            PrintWriter out = response.getWriter();
-
             // Sanitize parameter
             String theatreId = V.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
             String theatreName = V.sanitize(request.getParameter(S.THEATRE_NAME_PARAM));
@@ -45,12 +41,17 @@ public class FindTheatreNameServlet extends HttpServlet {
             boolean duplicateEditName = theatre != null && theatreId != null
                     && !(theatre.getId() + "").equals(theatreId);
 
-            // Check duplcated theatre name
+            // Check duplicated theatre name
+            String result = "";
             if (duplicateCreateName || duplicateEditName) {
-                out.print("Theatre name already existed\n");
-            } else {
-                out.print("");
+                result= "Theatre name already existed\n";
             }
+
+            // Sending response
+            PrintWriter out = response.getWriter();
+            response.setContentType("text/plain");
+            response.setCharacterEncoding("UTF-8");
+            out.print(result);
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();

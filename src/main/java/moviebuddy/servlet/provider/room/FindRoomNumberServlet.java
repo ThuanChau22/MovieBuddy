@@ -26,10 +26,6 @@ public class FindRoomNumberServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            response.setContentType("text/plain");
-            response.setCharacterEncoding("UTF-8");
-            PrintWriter out = response.getWriter();
-
             // Sanitize paramaters
             String theatreId = V.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
             String roomId = V.sanitize(request.getParameter(S.ROOM_ID_PARAM));
@@ -45,11 +41,16 @@ public class FindRoomNumberServlet extends HttpServlet {
             boolean duplicateEditNumber = room != null && roomId != null && !roomId.equals(roomNumber);
 
             // Check for duplicated room number
+            String result = "";
             if (duplicateCreateNumber || duplicateEditNumber) {
-                out.print("Room number already existed\n");
-            } else {
-                out.print("");
+                result = "Room number already existed\n";
             }
+
+            // Sending response
+            PrintWriter out = response.getWriter();
+            response.setContentType("text/plain");
+            response.setCharacterEncoding("UTF-8");
+            out.print(result);
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();

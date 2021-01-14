@@ -50,6 +50,7 @@ public class FindRoomNumberServlet extends HttpServlet {
             } else {
                 out.print("");
             }
+            out.flush();
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect(S.ERROR);

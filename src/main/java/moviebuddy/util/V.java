@@ -20,7 +20,8 @@ public class V {
     }
 
     public static String extractSrc(String html) {
-        return Jsoup.parse(html).select("iframe").attr("src");
+        String val = Jsoup.parse(html).select("iframe").attr("src");
+        return !val.isEmpty() ? val : html;
     }
 
     public static String validateSignUpForm(String userName, String email, String password, String rePassword) {

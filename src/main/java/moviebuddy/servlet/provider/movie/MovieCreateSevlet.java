@@ -72,7 +72,7 @@ public class MovieCreateSevlet extends HttpServlet {
                 String title = V.sanitize(request.getParameter(S.TITLE_PARAM));
                 String releaseDate = V.sanitize(request.getParameter(S.RELEASE_DATE_PARAM));
                 String duration = V.sanitize(request.getParameter(S.DURATION_PARAM));
-                String trailer = V.extractSrc(request.getParameter(S.TRAILER_PARAM));
+                String trailer = V.sanitize(V.extractSrc(request.getParameter(S.TRAILER_PARAM)));
                 Part partPoster = request.getPart(S.POSTER_PARAM);
                 InputStream streamPoster = partPoster.getInputStream();
                 long posterSize = partPoster.getSize();

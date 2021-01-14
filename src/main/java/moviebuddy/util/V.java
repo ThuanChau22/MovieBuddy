@@ -19,6 +19,10 @@ public class V {
         return input != null ? Jsoup.clean(input.trim(), Whitelist.none()) : "";
     }
 
+    public static String extractSrc(String html) {
+        return Jsoup.parse(html).select("iframe").attr("src");
+    }
+
     public static String validateSignUpForm(String userName, String email, String password, String rePassword) {
         String errorMessage = validateUserName(userName);
         if (!errorMessage.isEmpty()) {

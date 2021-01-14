@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 <div class="row justify-content-center">
-                    <div class="col-12 col-sm-8 col-md-6 col-lg-5">
+                    <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
                         <table>
                             <tr>
                                 <th>Start time</th>
@@ -73,7 +73,7 @@
                                     <input form="addTicketPriceForm" name="${S.START_TIME_PARAM}" class="form-control"
                                         type="time" value="${startTimeInput}" />
                                 </td>
-                                <td class="input-cell" style="width: 100px;">
+                                <td class="input-cell" style="width: 110px;">
                                     <!-- Input price -->
                                     <input form="addTicketPriceForm" name="${S.PRICE_PARAM}" class="form-control"
                                         type="number" min="0" step="0.01" ; placeholder="11.50" value="${priceInput}" />

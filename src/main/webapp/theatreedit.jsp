@@ -51,14 +51,13 @@
             <div class="container">
                 <h3>Manage Theatre</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.THEATRE}#${theatreId}">&lsaquo;<span>Back</span></a>
+                <a class="custom-link" href="./${S.THEATRE}#${theatreId}">&lsaquo;<span>Back</span></a>
                 <h1 class="display-4 text-center">Edit Theatre Information</h1>
                 <hr>
-                <div class="row">
-                    <div class="col-lg-3"></div>
-                    <div class="col-lg">
-                        <!-- Error message -->
-                        <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                <!-- Error message -->
+                <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6">
                         <!-- Edit theatre information form -->
                         <form id="editTheatreForm" action="${S.THEATRE_EDIT}" method="POST"
                             onsubmit="return validateTheatreForm(this)">
@@ -181,16 +180,10 @@
                             </div>
                         </form>
                         <div class="text-center">
-                            <div class="button">
-                                <input form="editTheatreForm" type="submit" class="btn btn-outline-info" value="Save">
-                            </div>
-                            <div class="button">
-                                <input form="cancelTheatreForm" type="submit" class="btn btn-outline-info"
-                                    value="Cancel" />
-                            </div>
+                            <input form="editTheatreForm" type="submit" class="btn btn-outline-info" value="Save">
+                            <input form="cancelTheatreForm" type="submit" class="btn btn-outline-info" value="Cancel" />
                         </div>
                     </div>
-                    <div class="col-lg-3"></div>
                 </div>
             </div>
         </div>

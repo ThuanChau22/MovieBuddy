@@ -63,10 +63,12 @@
                 <hr>
                 <!-- List of theatre options -->
                 <c:if test="${isAdmin}">
-                    <form id="selectTheatreForm" action="${S.THEATRE_SELECT}" method="POST">
-                        <div class="form-group">
-                            <label>Theatre: </label>
-                            <select id="theatreOption" name="${S.THEATRE_OPTION_PARAM}" form="selectTheatreForm"
+                    <form id="selectTheatreForm" action="${S.THEATRE_SELECT}" method="POST" class="form-inline">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Theatre</span>
+                            </div>
+                            <select id="theatreOption" name="${S.THEATRE_OPTION_PARAM}" class="custom-select"
                                 onchange="submitForm('#selectTheatreForm')">
                                 <option id="defaultLocation" hidden value="">Select a theatre</option>
                                 <c:choose>
@@ -85,7 +87,7 @@
                     <hr>
                 </c:if>
                 <!-- Error message -->
-                <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                 <table>
                     <tr>
                         <th>Staff Id</th>
@@ -125,7 +127,7 @@
                                     <td>
                                         <div class="container">
                                             <!-- Delete staff account -->
-                                            <form action="${S.STAFF_DELETE}" method="POST" class="button">
+                                            <form action="${S.STAFF_DELETE}" method="POST" class="form-button">
                                                 <input type="hidden" name="${S.STAFF_ID_PARAM}"
                                                     value="${staff.getStaffId()}" />
                                                 <input type="submit" class="btn btn-outline-danger" value="Delete" />

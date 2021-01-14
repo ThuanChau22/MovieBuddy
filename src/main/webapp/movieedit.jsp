@@ -50,14 +50,14 @@
             <div class="container">
                 <h3>Manage Movie</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.MOVIE}#${movieId}">&lsaquo;<span>Back</span></a>
+                <a class="custom-link" href="./${S.MOVIE}#${movieId}">&lsaquo;<span>Back</span></a>
                 <h1 class="display-4 text-center">Edit Movie Information</h1>
                 <hr>
                 <div class="row">
                     <div class="col-lg-3"></div>
                     <div class="col-lg">
                         <!-- Error message -->
-                        <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                        <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                         <!-- Edit movie information form -->
                         <form id="editMovieForm" action="${S.MOVIE_EDIT}" method="POST" enctype="multipart/form-data"
                             onsubmit="return validateMovieForm(this)">
@@ -121,13 +121,8 @@
                             </div>
                         </form>
                         <div class="text-center">
-                            <div class="button">
-                                <input form="editMovieForm" type="submit" class="btn btn-outline-info" value="Save">
-                            </div>
-                            <div class="button">
-                                <input form="cancelMovieForm" type="submit" class="btn btn-outline-info"
-                                    value="Cancel" />
-                            </div>
+                            <input form="editMovieForm" type="submit" class="btn btn-outline-info" value="Save">
+                            <input form="cancelMovieForm" type="submit" class="btn btn-outline-info" value="Cancel" />
                         </div>
                     </div>
                     <div class="col-lg-3"></div>

@@ -50,15 +50,14 @@
                 <!-- Current theatre name -->
                 <h3>Theatre: ${theatreName}</h3>
                 <hr>
-                <a class="inputAsLink"
+                <a class="custom-link"
                     href="./${S.ROOM}?${S.THEATRE_ID_PARAM}=${theatreId}">&lsaquo;<span>Back</span></a>
                 <h1 class="display-4 text-center">Upload Room Information</h1>
                 <hr>
-                <div class="row">
-                    <div class="col-md-4"></div>
-                    <div class="col-md">
-                        <!-- Error message -->
-                        <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                <!-- Error message -->
+                <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-5">
                         <!-- Upload room information form -->
                         <form id="createRoomForm" action="${S.ROOM_CREATE}" method="POST"
                             onsubmit="return validateRoomForm(this)">
@@ -70,8 +69,9 @@
                             <div class="form-group">
                                 <label>Room Number</label><span class="errormessage">*</span><br>
                                 <div style="position: relative">
-                                    <input class="form-control" name="${S.ROOM_NUMBER_PARAM}" type="text" placeholder="Enter room number"
-                                        onkeyup="checkRoomNumber(this)" value="${roomNumberInput}" style="padding-right: 30px;" />
+                                    <input class="form-control" name="${S.ROOM_NUMBER_PARAM}" type="text"
+                                        placeholder="Enter room number" onkeyup="checkRoomNumber(this)"
+                                        value="${roomNumberInput}" style="padding-right: 30px;" />
                                     <div class="spinner-wrapper">
                                         <span id="roomNumberSpinner"></span>
                                     </div>
@@ -102,7 +102,6 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-md-4"></div>
                 </div>
             </div>
         </div>

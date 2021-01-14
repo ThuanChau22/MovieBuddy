@@ -47,18 +47,14 @@
                 <h3>Manage Theatre</h3>
                 <hr>
                 <!-- Upload theatre information -->
-                <div class="row">
-                    <div class="col"></div>
-                    <div class="col-6 text-center">
-                        <a href="./${S.THEATRE_CREATE}">
-                            <button type="button" class="btn btn-outline-info">Add Theatre</button>
-                        </a>
-                    </div>
-                    <div class="col"></div>
+                <div class="text-center">
+                    <a href="./${S.THEATRE_CREATE}">
+                        <button type="button" class="btn btn-outline-info">Add Theatre</button>
+                    </a>
                 </div>
                 <hr>
                 <!-- Error message -->
-                <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                 <c:choose>
                     <c:when test="${!theatreListEmpty}">
                         <table>
@@ -83,26 +79,26 @@
                                     <td>
                                         <div class="container">
                                             <!-- Manange ticket price -->
-                                            <form action="${S.TICKET_PRICE}" method="GET" class="button">
+                                            <form action="${S.TICKET_PRICE}" method="GET" class="form-button">
                                                 <input type="hidden" name="${S.THEATRE_ID_PARAM}"
                                                     value="${theatre.getId()}" />
                                                 <input type="submit" class="btn btn-outline-info"
                                                     value="Ticket Price" />
                                             </form>
                                             <!-- Manage room -->
-                                            <form action="${S.ROOM}" method="GET" class="button">
+                                            <form action="${S.ROOM}" method="GET" class="form-button">
                                                 <input type="hidden" name="${S.THEATRE_ID_PARAM}"
                                                     value="${theatre.getId()}" />
                                                 <input type="submit" class="btn btn-outline-info" value="Room" />
                                             </form>
                                             <!-- Edit theatre information -->
-                                            <form action="${S.THEATRE_EDIT}" method="GET" class="button">
+                                            <form action="${S.THEATRE_EDIT}" method="GET" class="form-button">
                                                 <input type="hidden" name="${S.THEATRE_ID_PARAM}"
                                                     value="${theatre.getId()}" />
                                                 <input type="submit" class="btn btn-outline-info" value="Edit" />
                                             </form>
                                             <!-- Delete theatre information -->
-                                            <form action="${S.THEATRE_DELETE}" method="POST" class="button">
+                                            <form action="${S.THEATRE_DELETE}" method="POST" class="form-button">
                                                 <input type="hidden" name="${S.THEATRE_ID_PARAM}"
                                                     value="${theatre.getId()}" />
                                                 <input type="submit" class="btn btn-outline-danger" value="Delete" />

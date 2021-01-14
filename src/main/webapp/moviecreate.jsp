@@ -49,14 +49,14 @@
             <div class="container">
                 <h3>Manage Movie</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.MOVIE}">&lsaquo;<span>Back</span></a>
+                <a class="custom-link" href="./${S.MOVIE}">&lsaquo;<span>Back</span></a>
                 <h1 class="display-4 text-center">Upload Movie Information</h1>
                 <hr>
                 <div class="row">
                     <div class="col-lg-3"></div>
                     <div class="col-lg">
                         <!-- Error message -->
-                        <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                        <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                         <!-- Upload movie information form -->
                         <form id="uploadMovieForm" action="${S.MOVIE_CREATE}" method="POST"
                             enctype="multipart/form-data" onsubmit="return validateMovieForm(this)">

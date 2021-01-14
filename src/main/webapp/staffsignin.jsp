@@ -44,9 +44,8 @@
                 <h1 class="display-3 text-center">Sign In as Faculty</h1>
                 <hr>
                 <br>
-                <div class="row">
-                    <div class="col-lg"></div>
-                    <div class="col-lg-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-4">
                         <div class="card">
                             <div class="card-body ">
                                 <!-- Sign in as staff form -->
@@ -79,7 +78,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg"></div>
                 </div>
             </div>
         </div>

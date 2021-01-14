@@ -56,7 +56,7 @@
                 <!-- Current theatre name -->
                 <h3>Manage Schedule</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.MOVIE}#${movieId}">&lsaquo;<span>Back</span></a>
+                <a class="custom-link" href="./${S.MOVIE}#${movieId}">&lsaquo;<span>Back</span></a>
                 <!-- Current movie information -->
                 <div class="row">
                     <div class="col-sm-2">
@@ -70,10 +70,12 @@
                 <hr>
                 <!-- List of theatre options -->
                 <c:if test="${isAdmin}">
-                    <form id="selectTheatreForm" action="${S.THEATRE_SELECT}" method="POST">
-                        <div class="form-group">
-                            <label>Theatre: </label>
-                            <select id="theatreOption" name="${S.THEATRE_OPTION_PARAM}" form="selectTheatreForm"
+                    <form id="selectTheatreForm" action="${S.THEATRE_SELECT}" method="POST" class="form-inline">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Theatre</span>
+                            </div>
+                            <select id="theatreOption" name="${S.THEATRE_OPTION_PARAM}" class="custom-select"
                                 onchange="submitForm('#selectTheatreForm')">
                                 <option id="defaultLocation" hidden value="">Select a theatre</option>
                                 <c:choose>
@@ -92,9 +94,9 @@
                     <hr>
                 </c:if>
                 <!-- Error message -->
-                <div class="errormessagePadding">
-                    <div class="errormessageWrapper">
-                        <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                <div class="errormessage-padding">
+                    <div class="errormessage-wrapper">
+                        <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                     </div>
                 </div>
                 <div class="row">
@@ -109,20 +111,21 @@
                                 <th>Actions</th>
                             </tr>
                             <tr>
-                                <td class="inputCell">#</td>
-                                <td class="inputCell">
+                                <td class="input-cell">#</td>
+                                <td class="input-cell" style="width: 100px;">
                                     <!-- Input show date -->
-                                    <input form="addScheduleForm" style="width: 150px;" name="${S.SHOW_DATE_PARAM}"
+                                    <input form="addScheduleForm" name="${S.SHOW_DATE_PARAM}" class="form-control"
                                         type="date" value="${showDateInput}" />
                                 </td>
-                                <td class="inputCell">
+                                <td class="input-cell" style="width: 100px;">
                                     <!-- Input start time -->
-                                    <input form="addScheduleForm" style="width: 80px;" name="${S.START_TIME_PARAM}"
+                                    <input form="addScheduleForm" name="${S.START_TIME_PARAM}" class="form-control"
                                         type="time" value="${startTimeInput}" />
                                 </td>
-                                <td class="inputCell">
+                                <td class="input-cell">
                                     <!-- List of room options -->
-                                    <select id="roomNumber" name="${S.ROOM_NUMBER_PARAM}" form="addScheduleForm">
+                                    <select id="roomNumber" name="${S.ROOM_NUMBER_PARAM}" class="custom-select"
+                                        form="addScheduleForm">
                                         <option id="defaultRoom" hidden value="">Select a room</option>
                                         <c:choose>
                                             <c:when test="${!roomListEmpty}">
@@ -137,10 +140,10 @@
                                         </c:choose>
                                     </select>
                                 </td>
-                                <td class="inputCell">
+                                <td class="input-cell">
                                     <!-- Add schedule form -->
                                     <form id="addScheduleForm" action="${S.SCHEDULE_CREATE}" method="POST"
-                                        class="button" onsubmit="return validateScheduleForm(this)">
+                                        class="form-button" onsubmit="return validateScheduleForm(this)">
                                         <input type="hidden" name="${S.MOVIE_ID_PARAM}" value="${movieId}" />
                                         <input type="submit" class="btn btn-outline-info" value="Add" />
                                     </form>
@@ -159,7 +162,7 @@
                                     <td>Room ${schedule.getRoomNumber()}</td>
                                     <td>
                                         <!-- Delete schedule -->
-                                        <form action="${S.SCHEDULE_DELETE}" method="POST" class="button">
+                                        <form action="${S.SCHEDULE_DELETE}" method="POST" class="form-button">
                                             <input type="hidden" name="${S.MOVIE_ID_PARAM}" value="${movieId}" />
                                             <input type="hidden" name="${S.SCHEDULE_ID_PARAM}"
                                                 value="${schedule.getScheduleId()}" />

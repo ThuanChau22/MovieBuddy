@@ -51,15 +51,14 @@
                 <!-- Current theatre name -->
                 <h3>Theatre: ${theatreName}</h3>
                 <hr>
-                <a class="inputAsLink"
+                <a class="custom-link"
                     href="./${S.ROOM}?${S.THEATRE_ID_PARAM}=${theatreId}#${roomId}">&lsaquo;<span>Back</span></a>
                 <h1 class="display-4 text-center">Edit Room Information</h1>
                 <hr>
-                <div class="row">
-                    <div class="col-md-4"></div>
-                    <div class="col-md">
-                        <!-- Error message -->
-                        <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                <!-- Error message -->
+                <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-5">
                         <!-- Edit room information form -->
                         <form id="editRoomForm" action="${S.ROOM_EDIT}" method="POST"
                             onsubmit="return validateRoomForm(this)">
@@ -124,16 +123,10 @@
                             </div>
                         </form>
                         <div class="text-center">
-                            <div class="button">
-                                <input form="editRoomForm" type="submit" class="btn btn-outline-info" value="Save">
-                            </div>
-                            <div class="button">
-                                <input form="cancelRoomForm" type="submit" class="btn btn-outline-info"
-                                    value="Cancel" />
-                            </div>
+                            <input form="editRoomForm" type="submit" class="btn btn-outline-info" value="Save">
+                            <input form="cancelRoomForm" type="submit" class="btn btn-outline-info" value="Cancel" />
                         </div>
                     </div>
-                    <div class="col-md-4"></div>
                 </div>
             </div>
         </div>

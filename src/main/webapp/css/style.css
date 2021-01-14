@@ -13,7 +13,7 @@ body {
     flex-shrink: 0;
 }
 
-.navbarPadding {
+.navbar-padding {
     min-height: 55px;
 }
 
@@ -42,11 +42,7 @@ body {
     background: rgb(140, 140, 140);
 }
 
-.formAsLink {
-    margin-bottom: 0px;
-}
-
-.inputAsLink {
+.custom-link {
     background-color: transparent;
     border: none;
     color: #007bff;
@@ -56,12 +52,12 @@ body {
     text-decoration: none;
 }
 
-.inputAsLink:hover {
+.custom-link:hover {
     color: #0056b3;
     text-decoration: none;
 }
 
-.inputAsLink:focus {
+.custom-link:focus {
     outline: none;
 }
 
@@ -82,15 +78,16 @@ body {
     height: 1.2rem;
     border: .1em solid currentColor;
     border-right-color: transparent;
+    vertical-align: baseline;
 }
 
-.errormessagePadding {
+.errormessage-padding {
     position: relative;
     padding-bottom: 24px;
     margin-bottom: 16px;
 }
 
-.errormessageWrapper {
+.errormessage-wrapper {
     position: absolute;
     width: 100%;
 }
@@ -99,9 +96,14 @@ body {
     color: red;
 }
 
-.button {
+.form-button {
     display: inline-block;
     margin-bottom: 0px;
+}
+
+.list-button {
+    display: table-cell;
+    padding: 0px 5px 10px 0px;
 }
 
 table {
@@ -124,7 +126,7 @@ th {
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 }
 
-.inputCell {
+.input-cell {
     background-color: #dddddd;
     position: sticky;
     top: 41px;

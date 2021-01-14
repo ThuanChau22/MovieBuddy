@@ -51,12 +51,11 @@
             <div class="container">
                 <h3>Manage Staff</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.STAFF}">&lsaquo;<span>Back</span></a>
+                <a class="custom-link" href="./${S.STAFF}">&lsaquo;<span>Back</span></a>
                 <h1 class="display-4 text-center">Create Staff Account</h1>
                 <hr>
-                <div class="row">
-                    <div class="col-lg"></div>
-                    <div class="col-lg-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-7 col-lg-5">
                         <div class="card">
                             <div class="card-body">
                                 <!-- Create staff account form -->
@@ -66,7 +65,7 @@
                                         <!-- Input role -->
                                         <div class="form-group">
                                             <label>Role</label><br>
-                                            <select id="role" class="form-control" name="${S.ROLE_PARAM}"
+                                            <select id="role" class="custom-select" name="${S.ROLE_PARAM}"
                                                 form="staffCreateForm" onchange="checkRole(this)">
                                                 <option id="defaultRole" hidden value="">Select a role</option>
                                                 <c:forEach items="${roleList}" var="role">
@@ -79,7 +78,7 @@
                                         <!-- Input location -->
                                         <div class="form-group" id="locationForm">
                                             <label>Theatre Location</label><br>
-                                            <select id="theatreLocation" class="form-control"
+                                            <select id="theatreLocation" class="custom-select"
                                                 name="${S.THEATRE_LOCATION_PARAM}" form="staffCreateForm"
                                                 onchange="checkLocation(this)">
                                                 <option id="defaultLocation" hidden value="">Select a theatre location
@@ -137,11 +136,10 @@
                                     </div>
                                 </form>
                                 <!-- Error message -->
-                                <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                                <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg"></div>
                 </div>
             </div>
         </div>

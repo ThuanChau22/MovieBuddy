@@ -49,26 +49,21 @@
                 <!-- Current theatre name -->
                 <h3>Theatre: ${theatreName}</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.THEATRE}#${theatreId}">&lsaquo;<span>Back</span></a>
+                <a class="custom-link" href="./${S.THEATRE}#${theatreId}">&lsaquo;<span>Back</span></a>
                 <!-- Upload room information -->
-                <div class="row">
-                    <div class="col"></div>
-                    <div class="col-6 text-center">
-                        <form action="${S.ROOM_CREATE}" method="GET" class="button">
-                            <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
-                            <input type="submit" class="btn btn-outline-info" value="Add Room" />
-                        </form>
-                    </div>
-                    <div class="col"></div>
+                <div class="text-center">
+                    <form action="${S.ROOM_CREATE}" method="GET" class="form-button">
+                        <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
+                        <input type="submit" class="btn btn-outline-info" value="Add Room" />
+                    </form>
                 </div>
                 <hr>
                 <!-- Error message -->
-                <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                 <c:choose>
                     <c:when test="${!roomListEmpty}">
-                        <div class="row">
-                            <div class="col-lg-1"></div>
-                            <div class="col-lg">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-9 col-xl-7">
                                 <table>
                                     <tr>
                                         <th>Room Number</th>
@@ -87,18 +82,22 @@
                                             <td>
                                                 <div class="container">
                                                     <!-- Edit room information -->
-                                                    <form action="${S.ROOM_EDIT}" method="GET" class="button">
-                                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
+                                                    <form action="${S.ROOM_EDIT}" method="GET" class="form-button">
+                                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}"
+                                                            value="${theatreId}" />
                                                         <input type="hidden" name="${S.ROOM_NUMBER_PARAM}"
                                                             value="${room.getRoomNumber()}" />
-                                                        <input type="submit" class="btn btn-outline-info" value="Edit" />
+                                                        <input type="submit" class="btn btn-outline-info"
+                                                            value="Edit" />
                                                     </form>
                                                     <!-- Delete room information -->
-                                                    <form action="${S.ROOM_DELETE}" method="POST" class="button">
-                                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
+                                                    <form action="${S.ROOM_DELETE}" method="POST" class="form-button">
+                                                        <input type="hidden" name="${S.THEATRE_ID_PARAM}"
+                                                            value="${theatreId}" />
                                                         <input type="hidden" name="${S.ROOM_NUMBER_PARAM}"
                                                             value="${room.getRoomNumber()}" />
-                                                        <input type="submit" class="btn btn-outline-danger" value="Delete" />
+                                                        <input type="submit" class="btn btn-outline-danger"
+                                                            value="Delete" />
                                                     </form>
                                                 </div>
                                             </td>
@@ -106,7 +105,6 @@
                                     </c:forEach>
                                 </table>
                             </div>
-                            <div class="col-lg-1"></div>
                         </div>
                     </c:when>
                     <c:otherwise>

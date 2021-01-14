@@ -176,7 +176,7 @@ async function checkEmail(emailInput) {
     if (invalidInput == "") {
         args = emailInput.name + "=" + emailInput.value;
         document.getElementById(EMAIL_SPINNER).classList.add("spinner-border", "text-info");
-        invalidInput = await ajaxFunction(args, FIND_REGISTERED_EMAIL);
+        invalidInput = await ajax(args, FIND_REGISTERED_EMAIL);
         document.getElementById(EMAIL_SPINNER).classList.remove("spinner-border", "text-info");
     }
     document.getElementById(EMAIL_ERROR).innerHTML = invalidInput;
@@ -253,7 +253,7 @@ async function checkTheatreName(theatreNameInput) {
         }
         args += theatreNameInput.name + "=" + theatreNameInput.value;
         document.getElementById(THEATRE_SPINNER).classList.add("spinner-border", "text-info");
-        invalidInput = await ajaxFunction(args, FIND_THEATRE_NAME);
+        invalidInput = await ajax(args, FIND_THEATRE_NAME);
         document.getElementById(THEATRE_SPINNER).classList.remove("spinner-border", "text-info");
     }
     document.getElementById(THEATRE_NAME_ERROR).innerHTML = invalidInput;
@@ -288,7 +288,7 @@ async function checkRoomNumber(roomNumberInput) {
         }
         args += roomNumberInput.name + "=" + roomNumberInput.value;
         document.getElementById(ROOM_SPINNER).classList.add("spinner-border", "text-info");
-        invalidInput = await ajaxFunction(args, FIND_ROOM_NUMBER);
+        invalidInput = await ajax(args, FIND_ROOM_NUMBER);
         document.getElementById(ROOM_SPINNER).classList.remove("spinner-border", "text-info");
     }
     document.getElementById(ROOM_NUMBER_ERROR).innerHTML = invalidInput;
@@ -325,7 +325,7 @@ function checkDuration(durationInput) {
     return invalidInput;
 }
 
-function ajaxFunction(args, url) {
+function ajax(args, url) {
     return new Promise((resolve) => {
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", url);

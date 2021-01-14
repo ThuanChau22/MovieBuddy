@@ -12,7 +12,7 @@ import java.io.IOException;
 import moviebuddy.dao.TheatreDAO;
 import moviebuddy.model.Theatre;
 import moviebuddy.model.Room;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.ROOM_EDIT)
@@ -44,8 +44,8 @@ public class RoomEditServlet extends HttpServlet {
                 session.removeAttribute(S.ERROR_MESSAGE);
 
                 // Sanitize parameters
-                String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
-                String roomNumber = Validation.sanitize(request.getParameter(S.ROOM_NUMBER_PARAM));
+                String theatreId = V.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
+                String roomNumber = V.sanitize(request.getParameter(S.ROOM_NUMBER_PARAM));
 
                 // Check whether theatre id and room number existed
                 Theatre theatre = theatreDAO.getTheatreById(theatreId);
@@ -89,20 +89,20 @@ public class RoomEditServlet extends HttpServlet {
             // Check authorized access as admin
             if (role != null && role.equals(S.ADMIN)) {
                 // Sanitize user input
-                String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
-                String roomId = Validation.sanitize(request.getParameter(S.ROOM_ID_PARAM));
+                String theatreId = V.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
+                String roomId = V.sanitize(request.getParameter(S.ROOM_ID_PARAM));
 
                 String action = request.getParameter(S.ACTION_PARAM);
                 switch (action) {
                     // Save action
                     case S.ACTION_SAVE:
                         // Sanitize user inputs
-                        String roomNumber = Validation.sanitize(request.getParameter(S.ROOM_NUMBER_PARAM));
-                        String sections = Validation.sanitize(request.getParameter(S.SECTIONS_PARAM));
-                        String seats = Validation.sanitize(request.getParameter(S.SEATS_PARAM));
+                        String roomNumber = V.sanitize(request.getParameter(S.ROOM_NUMBER_PARAM));
+                        String sections = V.sanitize(request.getParameter(S.SECTIONS_PARAM));
+                        String seats = V.sanitize(request.getParameter(S.SEATS_PARAM));
 
                         // Validate user inputs
-                        String errorMessage = Validation.validateRoomForm(roomNumber, sections, seats);
+                        String errorMessage = V.validateRoomForm(roomNumber, sections, seats);
                         if (errorMessage.isEmpty()) {
                             Room room = theatreDAO.getRoomById(theatreId, roomNumber);
                             if (room != null && !roomId.equals(roomNumber)) {

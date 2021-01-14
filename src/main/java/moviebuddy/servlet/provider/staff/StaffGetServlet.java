@@ -12,7 +12,7 @@ import java.util.List;
 
 import moviebuddy.dao.UserDAO;
 import moviebuddy.model.User;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.STAFF_GET)
@@ -36,7 +36,7 @@ public class StaffGetServlet extends HttpServlet {
                 String theatreId = "";
                 Object theaterIdObj = request.getAttribute("theatreId");
                 if (theaterIdObj != null) {
-                    theatreId = Validation.sanitize(theaterIdObj.toString());
+                    theatreId = V.sanitize(theaterIdObj.toString());
                 }
 
                 // Retrieve list of admins

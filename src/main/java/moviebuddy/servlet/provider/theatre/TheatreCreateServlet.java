@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import moviebuddy.dao.TheatreDAO;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.THEATRE_CREATE)
@@ -67,15 +67,15 @@ public class TheatreCreateServlet extends HttpServlet {
             // Check authorized access as admin
             if (role != null && role.equals(S.ADMIN)) {
                 // Sanitize user inputs
-                String theatreName = Validation.sanitize(request.getParameter(S.THEATRE_NAME_PARAM));
-                String address = Validation.sanitize(request.getParameter(S.ADDRESS_PARAM));
-                String city = Validation.sanitize(request.getParameter(S.CITY_PARAM));
-                String state = Validation.sanitize(request.getParameter(S.STATE_PARAM));
-                String country = Validation.sanitize(request.getParameter(S.COUNTRY_PARAM));
-                String zip = Validation.sanitize(request.getParameter(S.ZIP_PARAM));
+                String theatreName = V.sanitize(request.getParameter(S.THEATRE_NAME_PARAM));
+                String address = V.sanitize(request.getParameter(S.ADDRESS_PARAM));
+                String city = V.sanitize(request.getParameter(S.CITY_PARAM));
+                String state = V.sanitize(request.getParameter(S.STATE_PARAM));
+                String country = V.sanitize(request.getParameter(S.COUNTRY_PARAM));
+                String zip = V.sanitize(request.getParameter(S.ZIP_PARAM));
 
                 // Validate user inputs
-                String errorMessage = Validation.validateTheatreForm(theatreName, address, city, state, country, zip);
+                String errorMessage = V.validateTheatreForm(theatreName, address, city, state, country, zip);
                 if(errorMessage.isEmpty() && theatreDAO.getTheatreByName(theatreName) != null){
                     errorMessage = "Theatre name already existed";
                 }

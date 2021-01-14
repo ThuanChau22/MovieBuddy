@@ -12,7 +12,7 @@ import java.util.List;
 
 import moviebuddy.dao.TheatreDAO;
 import moviebuddy.model.Theatre;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.THEATRE_SELECT)
@@ -57,7 +57,7 @@ public class SelectTheatreServlet extends HttpServlet {
             // Check authorized access as admin
             if (role != null && role.equals(S.ADMIN)) {
                 // Sanitize parameter
-                String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_OPTION_PARAM));
+                String theatreId = V.sanitize(request.getParameter(S.THEATRE_OPTION_PARAM));
 
                 // Set selected theatre in session
                 session.setAttribute(S.SELECTED_THEATRE_ID, theatreId);

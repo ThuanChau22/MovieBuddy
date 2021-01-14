@@ -6,13 +6,13 @@ import java.time.LocalTime;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
-public class Validation {
+public class V {
     private static final int USERNAME_MIN_LENGTH = 2;
     private static final int USERNAME_MAX_LENGTH = 20;
     private static final int PASSWORD_MIN_LENGTH = 8;
     private static final int STAFF_ID_LENGTH = 6;
 
-    private Validation() {
+    private V() {
     }
 
     public static String sanitize(String input) {

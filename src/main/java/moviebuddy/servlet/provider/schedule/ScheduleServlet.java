@@ -13,7 +13,7 @@ import moviebuddy.dao.TheatreDAO;
 import moviebuddy.dao.MovieDAO;
 import moviebuddy.model.Theatre;
 import moviebuddy.model.Movie;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.SCHEDULE)
@@ -46,7 +46,7 @@ public class ScheduleServlet extends HttpServlet {
                 session.removeAttribute(S.ERROR_MESSAGE);
 
                 // Sanitize parameter
-                String movieId = Validation.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
+                String movieId = V.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
 
                 String theatreId = "";
                 if (role.equals(S.ADMIN)) {

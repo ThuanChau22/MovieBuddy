@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import moviebuddy.dao.TheatreDAO;
 import moviebuddy.model.Room;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.FIND_ROOM_NUMBER)
@@ -31,9 +31,9 @@ public class FindRoomNumberServlet extends HttpServlet {
             PrintWriter out = response.getWriter();
 
             // Sanitize paramaters
-            String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
-            String roomId = Validation.sanitize(request.getParameter(S.ROOM_ID_PARAM));
-            String roomNumber = Validation.sanitize(request.getParameter(S.ROOM_NUMBER_PARAM));
+            String theatreId = V.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
+            String roomId = V.sanitize(request.getParameter(S.ROOM_ID_PARAM));
+            String roomNumber = V.sanitize(request.getParameter(S.ROOM_NUMBER_PARAM));
 
             // Retrieve room from theatre id and room number
             Room room = theatreDAO.getRoomById(theatreId, roomNumber);

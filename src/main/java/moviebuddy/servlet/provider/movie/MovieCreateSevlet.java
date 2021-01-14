@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import moviebuddy.dao.MovieDAO;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.MOVIE_CREATE)
@@ -69,17 +69,17 @@ public class MovieCreateSevlet extends HttpServlet {
             // Check authorized access as admin
             if (role != null && role.equals(S.ADMIN)) {
                 // Sanitize user inputs
-                String title = Validation.sanitize(request.getParameter(S.TITLE_PARAM));
-                String releaseDate = Validation.sanitize(request.getParameter(S.RELEASE_DATE_PARAM));
-                String duration = Validation.sanitize(request.getParameter(S.DURATION_PARAM));
-                String trailer = Validation.sanitize(request.getParameter(S.TRAILER_PARAM));
+                String title = V.sanitize(request.getParameter(S.TITLE_PARAM));
+                String releaseDate = V.sanitize(request.getParameter(S.RELEASE_DATE_PARAM));
+                String duration = V.sanitize(request.getParameter(S.DURATION_PARAM));
+                String trailer = V.sanitize(request.getParameter(S.TRAILER_PARAM));
                 Part partPoster = request.getPart(S.POSTER_PARAM);
                 InputStream streamPoster = partPoster.getInputStream();
                 long posterSize = partPoster.getSize();
-                String description = Validation.sanitize(request.getParameter(S.DESCRIPTION_PARAM));
+                String description = V.sanitize(request.getParameter(S.DESCRIPTION_PARAM));
 
                 // Validate user inputs
-                String errorMessage = Validation.validateMovieForm(title, releaseDate, duration, trailer, description);
+                String errorMessage = V.validateMovieForm(title, releaseDate, duration, trailer, description);
 
                 // Upload movie information
                 if (errorMessage.isEmpty()) {

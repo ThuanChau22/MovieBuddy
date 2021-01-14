@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import moviebuddy.dao.UserDAO;
 import moviebuddy.dao.TheatreDAO;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.STAFF_CREATE)
@@ -76,8 +76,8 @@ public class StaffCreateServlet extends HttpServlet {
                 String roleInput = "";
                 String locationInput = "";
                 if (role.equals(S.ADMIN)) {
-                    roleInput = Validation.sanitize(request.getParameter(S.ROLE_PARAM));
-                    locationInput = Validation.sanitize(request.getParameter(S.THEATRE_LOCATION_PARAM));
+                    roleInput = V.sanitize(request.getParameter(S.ROLE_PARAM));
+                    locationInput = V.sanitize(request.getParameter(S.THEATRE_LOCATION_PARAM));
                 }
                 if (role.equals(S.MANAGER)) {
                     roleInput = S.FACULTY;
@@ -89,12 +89,12 @@ public class StaffCreateServlet extends HttpServlet {
                     }
                     locationInput = theatreId;
                 }
-                String userName = Validation.sanitize(request.getParameter(S.USERNAME_PARAM));
-                String email = Validation.sanitize(request.getParameter(S.EMAIL_PARAM));
-                String password = Validation.sanitize(request.getParameter(S.PASSWORD_PARAM));
+                String userName = V.sanitize(request.getParameter(S.USERNAME_PARAM));
+                String email = V.sanitize(request.getParameter(S.EMAIL_PARAM));
+                String password = V.sanitize(request.getParameter(S.PASSWORD_PARAM));
 
                 // Validate user inputs
-                String errorMessage = Validation.validateStaffSignUpForm(roleInput, locationInput, userName, email, password);
+                String errorMessage = V.validateStaffSignUpForm(roleInput, locationInput, userName, email, password);
                 if (errorMessage.isEmpty() && !locationInput.isEmpty() && theatreDAO.getTheatreById(locationInput) == null) {
                     errorMessage = "Theatre location does not exist";
                 }

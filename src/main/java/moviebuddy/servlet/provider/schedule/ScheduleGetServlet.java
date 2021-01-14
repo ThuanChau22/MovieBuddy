@@ -13,7 +13,7 @@ import java.util.List;
 
 import moviebuddy.dao.ScheduleDAO;
 import moviebuddy.model.Schedule;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.SCHEDULE_GET)
@@ -37,14 +37,14 @@ public class ScheduleGetServlet extends HttpServlet {
                 String theatreId = "";
                 Object theaterIdObj = request.getAttribute("theatreId");
                 if (theaterIdObj != null) {
-                    theatreId = Validation.sanitize(theaterIdObj.toString());
+                    theatreId = V.sanitize(theaterIdObj.toString());
                 }
 
                 // Retrieve movie id
                 String movieId = "";
                 Object movieIdObj = request.getAttribute("movieId");
                 if (movieIdObj != null) {
-                    movieId = Validation.sanitize(movieIdObj.toString());
+                    movieId = V.sanitize(movieIdObj.toString());
                 }
 
                 // Retrieve list of schedules

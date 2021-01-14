@@ -11,7 +11,7 @@ import java.util.List;
 
 import moviebuddy.dao.TheatreDAO;
 import moviebuddy.model.TicketPrice;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.TICKET_PRICE_GET)
@@ -31,7 +31,7 @@ public class TicketPriceGetServlet extends HttpServlet {
             String theatreId = "";
             Object theaterIdObj = request.getAttribute("theatreId");
             if (theaterIdObj != null) {
-                theatreId = Validation.sanitize(theaterIdObj.toString());
+                theatreId = V.sanitize(theaterIdObj.toString());
             }
 
             // Retrieve list of ticket prices

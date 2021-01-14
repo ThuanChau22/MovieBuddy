@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import moviebuddy.dao.UserDAO;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.SIGN_UP)
@@ -50,13 +50,13 @@ public class SignUpServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             // Sanitize user inputs
-            String userName = Validation.sanitize(request.getParameter(S.USERNAME_PARAM));
-            String email = Validation.sanitize(request.getParameter(S.EMAIL_PARAM));
-            String password = Validation.sanitize(request.getParameter(S.PASSWORD_PARAM));
-            String rePassword = Validation.sanitize(request.getParameter(S.RE_PASSWORD_PARAM));
+            String userName = V.sanitize(request.getParameter(S.USERNAME_PARAM));
+            String email = V.sanitize(request.getParameter(S.EMAIL_PARAM));
+            String password = V.sanitize(request.getParameter(S.PASSWORD_PARAM));
+            String rePassword = V.sanitize(request.getParameter(S.RE_PASSWORD_PARAM));
 
             // Validate user inputs
-            String errorMessage = Validation.validateSignUpForm(userName, email, password, rePassword);
+            String errorMessage = V.validateSignUpForm(userName, email, password, rePassword);
             if (errorMessage.isEmpty() && userDAO.getRegisteredUser(email) != null) {
                 errorMessage = "Email is already registered";
             }

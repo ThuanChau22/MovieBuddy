@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.io.IOException;
 
 import moviebuddy.dao.UserDAO;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.FIND_REGISTERED_EMAIL)
@@ -31,7 +31,7 @@ public class FindRegisteredEmailServlet extends HttpServlet {
             PrintWriter out = response.getWriter();
 
             //Sanitize parameter
-            String email = Validation.sanitize(request.getParameter(S.EMAIL_PARAM));
+            String email = V.sanitize(request.getParameter(S.EMAIL_PARAM));
 
             //Check for duplicated email
             if (userDAO.getRegisteredUser(email) != null) {

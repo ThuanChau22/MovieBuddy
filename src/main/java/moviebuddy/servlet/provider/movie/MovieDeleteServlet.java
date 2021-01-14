@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import moviebuddy.dao.MovieDAO;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.MOVIE_DELETE)
@@ -30,7 +30,7 @@ public class MovieDeleteServlet extends HttpServlet {
             // Check authorized access as admin
             if (role != null && role.equals(S.ADMIN)) {
                 // Sanitize parameter
-                String movieId = Validation.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
+                String movieId = V.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
 
                 // Delete movie information
                 String errorMessage = movieDAO.deleteMovie(movieId);

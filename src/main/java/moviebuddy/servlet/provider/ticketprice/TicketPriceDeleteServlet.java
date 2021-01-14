@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import moviebuddy.dao.TheatreDAO;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.TICKET_PRICE_DELETE)
@@ -31,8 +31,8 @@ public class TicketPriceDeleteServlet extends HttpServlet {
             // // Check authorized access as admin
             if (role != null && role.equals(S.ADMIN)) {
                 // Sanitize parameters
-                String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
-                String startTime = Validation.sanitize(request.getParameter(S.START_TIME_PARAM));
+                String theatreId = V.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
+                String startTime = V.sanitize(request.getParameter(S.START_TIME_PARAM));
 
                 // Delete ticket price
                 String errorMessage = theatreDAO.deleteTicketPrice(theatreId, startTime);

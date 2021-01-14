@@ -12,7 +12,7 @@ import java.io.IOException;
 import moviebuddy.dao.UserDAO;
 import moviebuddy.model.User;
 import moviebuddy.util.Passwords;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.STAFF_SIGN_IN)
@@ -53,11 +53,11 @@ public class StaffSignInServlet extends HttpServlet {
             HttpSession session = request.getSession();
 
             // Sanitize user inputs
-            String staffId = Validation.sanitize(request.getParameter(S.STAFF_ID_PARAM));
-            String password = Validation.sanitize(request.getParameter(S.PASSWORD_PARAM));
+            String staffId = V.sanitize(request.getParameter(S.STAFF_ID_PARAM));
+            String password = V.sanitize(request.getParameter(S.PASSWORD_PARAM));
 
             // Validate user inputs
-            String errorMessage = Validation.validateStaffSignInForm(staffId, password);
+            String errorMessage = V.validateStaffSignInForm(staffId, password);
 
             // Authenticate user
             if (errorMessage.isEmpty()) {

@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <div id="custom-scroll">
+    <div class="custom-scroll">
         <div class="main">
             <div class="container">
                 <div class="element-center">

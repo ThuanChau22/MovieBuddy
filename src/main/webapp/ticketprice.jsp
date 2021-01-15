@@ -43,7 +43,7 @@
 <body>
     <!-- Navigation bar -->
     <jsp:include page="./components/navbar.jsp" />
-    <div id="custom-scroll">
+    <div class="custom-scroll">
         <div class="main">
             <!-- Page content -->
             <div class="container">

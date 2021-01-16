@@ -9,7 +9,6 @@
 <head>
     <!-- Header -->
     <jsp:include page="./components/header.jsp" />
-    <title>Movie Buddy | Error</title>
 </head>
 
 <body>

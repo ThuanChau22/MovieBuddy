@@ -39,7 +39,6 @@
 <head>
     <!-- Header -->
     <jsp:include page="./components/header.jsp" />
-    <title>Movie Buddy | Manage Staff</title>
 </head>
 
 <body>

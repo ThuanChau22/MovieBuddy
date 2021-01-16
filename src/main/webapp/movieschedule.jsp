@@ -43,7 +43,6 @@
 <head>
     <!-- Header -->
     <jsp:include page="./components/header.jsp" />
-    <title>Movie Buddy | Manage Schedule</title>
 </head>
 
 <body>

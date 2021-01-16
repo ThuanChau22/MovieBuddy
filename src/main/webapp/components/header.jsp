@@ -14,3 +14,5 @@
 
 <!-- Movie Buddy Icon -->
 <link rel="icon" href="./images/MovieBuddy.ico">
+
+<title>Movie Buddy</title>

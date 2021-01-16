@@ -42,13 +42,33 @@
     }
 %>
 <nav id="movieBuddyNavBar" class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-    <a class="navbar-brand" href="./${S.HOME}"><b>Movie Buddy</b></a>
+    <a class="navbar-brand" href="./${S.HOME}">
+        <b><span style="color: #17a2b8;">Movie</span><span style="color: #b3b3b3;">Buddy</span></b>
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler"
         aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarToggler">
+    <div class="collapse navbar-collapse nav-element" id="navbarToggler">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <!-- Search bar -->
+            <li class="nav-item dropdown">
+                <form action="#" method="GET" class="search-form my-lg-0" >
+                    <input id="searchInput" name="title" type="text" class="form-control" placeholder="search movie by title" style="padding-right: 50px;">
+                    <div class="spinner-wrapper" style="right: 30px;">
+                        <span id="searchSpinner"></span>
+                    </div>
+                    <button type="submit" class="search-button" onclick="return searchByTitle()">
+                        <span class="material-icons">search</span>
+                    </button>
+                </form>
+                <div id="searchResultMenu" class="dropdown-menu" style="z-index: 1001;">
+                    <button id="closeSearchResult" type="button" class="close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div id="searchResult" class="search-panel custom-scroll"></div>
+                </div>
+            </li>
             <!-- Provider options -->
             <c:if test="${isProvider}">
                 <li class="nav-item dropdown">
@@ -65,15 +85,6 @@
                     </div>
                 </li>
             </c:if>
-            <!-- Search bar -->
-            <li class="nav-item">
-                <div class="search-bar" id="searchBar">
-                    <form action="#" class="my-lg-0">
-                        <input type="text" class="nav-element form-control" placeholder="Search by movie title">
-                        <button type="button" class="search-button"><i class="nav-element fa fa-search"></i></button>
-                    </form>
-                </div>
-            </li>
             <!-- Current theatre location -->
             <!-- <li class="nav-item">
                 <form action="#" class="form-inline my-lg-0">
@@ -97,4 +108,4 @@
         </c:choose>
     </div>
 </nav>
-<div class="navbarPadding"></div>
+<div class="navbar-padding"></div>

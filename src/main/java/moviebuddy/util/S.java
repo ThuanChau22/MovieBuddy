@@ -44,6 +44,7 @@ public class S {
     public static final String FIND_REGISTERED_EMAIL = "FindRegisteredEmail";
     public static final String FIND_THEATRE_NAME = "FindTheatreName";
     public static final String FIND_ROOM_NUMBER = "FindRoomNumber";
+    public static final String FIND_MOVIE = "FindMovie";
 
     // JSP pages
     public static final String HOME_PAGE = "home.jsp";

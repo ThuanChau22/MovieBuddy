@@ -78,7 +78,92 @@ body {
     height: 1.2rem;
     border: .1em solid currentColor;
     border-right-color: transparent;
-    vertical-align: baseline;
+    animation: spinner-border 1.5s linear infinite;
+}
+
+.search-form {
+    position: relative;
+    margin-bottom: 0px;
+}
+
+.search-button {
+    color: #929292;
+    background: transparent;
+    border: none;
+    padding: 0px;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.search-button:hover {
+    color: #17a2b8;
+}
+
+.search-button:focus {
+    outline: none;
+}
+
+.search-button:active {
+    color: #929292;
+}
+
+.dropdown-menu {
+    position: absolute!important;
+    width: 100%;
+    animation-duration: 0.3s;
+    -webkit-animation-duration: 0.3s;
+    animation-fill-mode: both;
+    -webkit-animation-fill-mode: both;
+    animation-name: slideDown;
+    -webkit-animation-name: slideDown;
+}
+
+.search-panel {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.close {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+}
+
+.close:focus {
+    outline: none;
+}
+
+@keyframes slideDown {
+    0% {
+        transform: translateY(1rem);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0rem);
+        opacity: 1;
+    }
+    0% {
+        transform: translateY(-1rem);
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes slideDown {
+    0% {
+        -webkit-transform: transform;
+        -webkit-opacity: 0;
+    }
+    100% {
+        -webkit-transform: translateY(0);
+        -webkit-opacity: 1;
+    }
+    0% {
+        -webkit-transform: translateY(-1rem);
+        -webkit-opacity: 0;
+    }
 }
 
 .errormessage-padding {

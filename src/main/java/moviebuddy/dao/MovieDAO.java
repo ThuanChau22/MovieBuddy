@@ -52,6 +52,42 @@ public class MovieDAO {
         return movies;
     }
 
+    public List<Movie> listMovies(String title) throws Exception {
+        String QUERY_MOVIES = String.format(
+            "SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s LIKE ? ORDER BY %s;",
+            MovieDB.MOVIE_ID, MovieDB.TITLE, MovieDB.RELEASE_DATE,
+            MovieDB.DURATION, MovieDB.POSTER, MovieDB.TRAILER,
+            MovieDB.DESCRIPTION, MovieDB.TABLE, MovieDB.TITLE,
+            MovieDB.RELEASE_DATE
+        );
+
+        Connection conn = null;
+        PreparedStatement queryMovies = null;
+        List<Movie> movies = new LinkedList<>();
+        try {
+            conn = DBConnection.connect();
+            queryMovies = conn.prepareStatement(QUERY_MOVIES);
+            queryMovies.setString(1, "%"+title+"%");
+            ResultSet res = queryMovies.executeQuery();
+            while (res.next()) {
+                Movie movie = new Movie(res.getInt(MovieDB.MOVIE_ID));
+                movie.setTitle(res.getString(MovieDB.TITLE));
+                movie.setReleaseDate(LocalDate.parse(res.getString(MovieDB.RELEASE_DATE)));
+                movie.setDuration(res.getInt(MovieDB.DURATION));
+                movie.setPoster(res.getString(MovieDB.POSTER));
+                movie.setTrailer(res.getString(MovieDB.TRAILER));
+                movie.setDescription(res.getString(MovieDB.DESCRIPTION));
+                movies.add(movie);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            DBConnection.close(queryMovies);
+            DBConnection.close(conn);
+        }
+        return movies;
+    }
+
     public Movie getMovieById(String movieId) throws Exception {
         String QUERY_MOVIE_BY_ID = String.format(
             "SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s=?;",
@@ -113,7 +149,7 @@ public class MovieDAO {
             insertMovie = conn.prepareStatement(INSERT_MOVIE);
             insertMovie.setString(1, title);
             insertMovie.setString(2, releaseDate);
-            insertMovie.setInt(3, Integer.parseInt(duration));
+            insertMovie.setString(3, duration);
             insertMovie.setString(4, trailer);
             insertMovie.setString(5, description);
             insertMovie.executeUpdate();
@@ -180,7 +216,7 @@ public class MovieDAO {
             updateMovie = conn.prepareStatement(UPDATE_MOVIE);
             updateMovie.setString(1, title);
             updateMovie.setString(2, releaseDate);
-            updateMovie.setInt(3, Integer.parseInt(duration));
+            updateMovie.setString(3, duration);
             updateMovie.setString(4, trailer);
             updateMovie.setString(5, description);
             updateMovie.setString(6, movieId);

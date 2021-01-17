@@ -59,7 +59,6 @@ public class ScheduleCreateServlet extends HttpServlet {
 
                 // Validate user inputs
                 String errorMessage = V.validateScheduleForm(showDate, startTime, roomNumber);
-                // System.out.println(theatreDAO.getRoomById(theatreId, roomNumber));
                 if (errorMessage.isEmpty() && theatreDAO.getRoomById(theatreId, roomNumber) == null) {
                     errorMessage = "Room number does not exist";
                 }

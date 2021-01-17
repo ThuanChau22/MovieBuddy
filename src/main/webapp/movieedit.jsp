@@ -29,7 +29,6 @@
     // ${titleInput}
     // ${releaseDateInput}
     // ${durationInput}
-    // ${trailerInput}
     // ${descriptionInput}
     // ${errorMessage}
 %>
@@ -59,7 +58,7 @@
                         <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                         <!-- Edit movie information form -->
                         <form id="editMovieForm" action="${S.MOVIE_EDIT}" method="POST" enctype="multipart/form-data"
-                            onsubmit="return validateMovieForm(this)">
+                            onsubmit="return validateMovieForm(this, false)">
                             <!-- Save hook -->
                             <div class="form-group">
                                 <input type="hidden" name="${S.ACTION_PARAM}" value="${S.ACTION_SAVE}" />
@@ -89,16 +88,15 @@
                                 <!-- Duration error -->
                                 <span id="durationError" class="errormessage"></span>
                             </div>
-                            <!-- Input trailer -->
-                            <div class="form-group">
-                                <label>Trailer Source</label><span class="errormessage">*</span><br>
-                                <input class="form-control" name="${S.TRAILER_PARAM}" type="text"
-                                    placeholder="Enter trailer source..." value="${trailerInput}" />
-                            </div>
                             <!-- Input poster -->
                             <div class="form-group">
                                 <label>Poster</label><br>
                                 <input name="${S.POSTER_PARAM}" type="file" />
+                            </div>
+                            <!-- Input trailer -->
+                            <div class="form-group">
+                                <label>Trailer</label><br>
+                                <input name="${S.TRAILER_PARAM}" type="file" />
                             </div>
                             <!-- Input description -->
                             <div class="form-group">

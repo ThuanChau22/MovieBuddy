@@ -28,7 +28,6 @@
     // ${titleInput}
     // ${releaseDateInput}
     // ${durationInput}
-    // ${trailerInput}
     // ${descriptionInput}
     // ${errorMessage}
 %>
@@ -58,7 +57,7 @@
                         <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                         <!-- Upload movie information form -->
                         <form id="uploadMovieForm" action="${S.MOVIE_CREATE}" method="POST"
-                            enctype="multipart/form-data" onsubmit="return validateMovieForm(this)">
+                            enctype="multipart/form-data" onsubmit="return validateMovieForm(this, true)">
                             <!-- Input title -->
                             <div class="form-group">
                                 <label>Title</label><span class="errormessage">*</span><br>
@@ -80,16 +79,15 @@
                                 <!-- Duration error -->
                                 <span id="durationError" class="errormessage"></span>
                             </div>
-                            <!-- Input trailer -->
-                            <div class="form-group">
-                                <label>Trailer Source</label><span class="errormessage">*</span><br>
-                                <input class="form-control" name="${S.TRAILER_PARAM}" type="text"
-                                    placeholder="Enter trailer source..." value="${trailerInput}" />
-                            </div>
                             <!-- Input poster -->
                             <div class="form-group">
-                                <label>Poster</label><br>
+                                <label>Poster</label><span class="errormessage">*</span><br>
                                 <input name="${S.POSTER_PARAM}" type="file" />
+                            </div>
+                            <!-- Input trailer -->
+                            <div class="form-group">
+                                <label>Trailer</label><span class="errormessage">*</span><br>
+                                <input name="${S.TRAILER_PARAM}" type="file" />
                             </div>
                             <!-- Input description -->
                             <div class="form-group">

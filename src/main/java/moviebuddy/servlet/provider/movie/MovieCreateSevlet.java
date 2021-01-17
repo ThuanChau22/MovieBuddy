@@ -39,13 +39,11 @@ public class MovieCreateSevlet extends HttpServlet {
                 request.setAttribute("titleInput", session.getAttribute(S.MOVIE_TITLE_INPUT));
                 request.setAttribute("releaseDateInput", session.getAttribute(S.MOVIE_RELEASE_DATE_INPUT));
                 request.setAttribute("durationInput", session.getAttribute(S.MOVIE_DURATION_INPUT));
-                request.setAttribute("trailerInput", session.getAttribute(S.MOVIE_TRAILER_INPUT));
                 request.setAttribute("descriptionInput", session.getAttribute(S.MOVIE_DESCRIPTION_INPUT));
                 request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
                 session.removeAttribute(S.MOVIE_TITLE_INPUT);
                 session.removeAttribute(S.MOVIE_RELEASE_DATE_INPUT);
                 session.removeAttribute(S.MOVIE_DURATION_INPUT);
-                session.removeAttribute(S.MOVIE_TRAILER_INPUT);
                 session.removeAttribute(S.MOVIE_DESCRIPTION_INPUT);
                 session.removeAttribute(S.ERROR_MESSAGE);
 
@@ -72,18 +70,22 @@ public class MovieCreateSevlet extends HttpServlet {
                 String title = V.sanitize(request.getParameter(S.TITLE_PARAM));
                 String releaseDate = V.sanitize(request.getParameter(S.RELEASE_DATE_PARAM));
                 String duration = V.sanitize(request.getParameter(S.DURATION_PARAM));
-                String trailer = V.sanitize(V.extractSrc(request.getParameter(S.TRAILER_PARAM)));
+                Part partTrailer = request.getPart(S.TRAILER_PARAM);
+                InputStream streamTrailer = partTrailer.getInputStream();
+                long trailerSize = partTrailer.getSize();
                 Part partPoster = request.getPart(S.POSTER_PARAM);
                 InputStream streamPoster = partPoster.getInputStream();
                 long posterSize = partPoster.getSize();
                 String description = V.sanitize(request.getParameter(S.DESCRIPTION_PARAM));
 
                 // Validate user inputs
-                String errorMessage = V.validateMovieForm(title, releaseDate, duration, trailer, description);
+                String errorMessage = V.validateMovieForm(title,
+                    releaseDate, duration, posterSize, trailerSize, description);
 
                 // Upload movie information
                 if (errorMessage.isEmpty()) {
-                    errorMessage = movieDAO.uploadMovie(title, releaseDate, duration, trailer, streamPoster, posterSize, description);
+                    errorMessage = movieDAO.uploadMovie(title, releaseDate, duration,
+                        description, streamPoster, posterSize, streamTrailer, trailerSize);
                 }
 
                 if (errorMessage.isEmpty()) {
@@ -94,7 +96,6 @@ public class MovieCreateSevlet extends HttpServlet {
                     session.setAttribute(S.MOVIE_TITLE_INPUT, title);
                     session.setAttribute(S.MOVIE_RELEASE_DATE_INPUT, releaseDate);
                     session.setAttribute(S.MOVIE_DURATION_INPUT, duration);
-                    session.setAttribute(S.MOVIE_TRAILER_INPUT, trailer);
                     session.setAttribute(S.MOVIE_DESCRIPTION_INPUT, description);
                     session.setAttribute(S.ERROR_MESSAGE, errorMessage);
                     response.sendRedirect(S.MOVIE_CREATE);

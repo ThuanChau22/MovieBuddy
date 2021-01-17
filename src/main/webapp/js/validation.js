@@ -135,11 +135,14 @@ function validateRoomForm(form) {
 }
 
 // Validate movie form
-function validateMovieForm(form) {
+function validateMovieForm(form, isCreate) {
     errorId = document.getElementById(ERROR_MESSAGE);
     errorId.innerHTML = fail = "";
+    console.log(form.poster.value);
+    console.log(form.trailer.value);
     if (form.title.value == "" || form.release_date.value == ""
-        || form.duration.value == "" || form.trailer.value == "" || form.description.value == "") {
+        || form.duration.value == "" || form.description.value == ""
+        || (isCreate && (form.poster.value == "" || form.trailer.value == ""))) {
         errorId.innerHTML = fail += "* required fields\n";
     }
     fail += checkDuration(form.duration);

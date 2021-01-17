@@ -91,10 +91,10 @@
                                                 <!-- Movie trailer -->
                                                 <h3>Trailer</h3>
                                                 <div class="embed-responsive embed-responsive-16by9">
-                                                    <iframe width="907" height="510" src="${movie.getTrailer()}"
-                                                        frameborder="0"
-                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                        allowfullscreen></iframe>
+                                                    <video width="907" height="510" controls>
+                                                        <source src="${movie.getTrailer()}" type="video/mp4">
+                                                        Video not available.
+                                                    </video>
                                                 </div>
                                                 <hr>
                                                 <!-- Movie description -->

@@ -135,9 +135,9 @@ public class V {
         return "";
     }
 
-    public static String validateMovieForm(String title, String releaseDate, String duration, String trailer,
+    public static String validateMovieForm(String title, String releaseDate, String duration, long poster, long trailer,
             String description) {
-        if (title.isEmpty() || releaseDate.isEmpty() || duration.isEmpty() || trailer.isEmpty()
+        if (title.isEmpty() || releaseDate.isEmpty() || duration.isEmpty() || poster < 1 || trailer < 1
                 || description.isEmpty()) {
             return "* required fields";
         }
@@ -152,21 +152,21 @@ public class V {
     }
 
     public static String validateScheduleForm(String showDate, String startTime, String roomNumber) {
-        if(showDate.isEmpty()){
+        if (showDate.isEmpty()) {
             return "Please enter show date";
         }
         String errorMessage = validateDate(showDate);
-        if(!errorMessage.isEmpty()){
+        if (!errorMessage.isEmpty()) {
             return errorMessage;
         }
-        if(startTime.isEmpty()){
+        if (startTime.isEmpty()) {
             return "Please enter start time";
         }
         errorMessage = validateTime(startTime);
-        if(!errorMessage.isEmpty()){
+        if (!errorMessage.isEmpty()) {
             return errorMessage;
         }
-        if(roomNumber.isEmpty()){
+        if (roomNumber.isEmpty()) {
             return "Please select a room";
         }
         return "";

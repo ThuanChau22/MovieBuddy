@@ -32,10 +32,10 @@ public class DBConnection {
         String user = props.getProperty("user");
         String pass = props.getProperty("pass");
         conn = DriverManager.getConnection(url, user, pass);
-        PreparedStatement changeTimeZone = conn.prepareStatement("SET time_zone=?;");
-        changeTimeZone.setString(1, "US/Pacific");
-        changeTimeZone.executeUpdate();
-        close(changeTimeZone);
+        PreparedStatement utc_minus_8 = conn.prepareStatement("SET time_zone=?;");
+        utc_minus_8.setString(1, "US/Pacific");
+        utc_minus_8.executeUpdate();
+        close(utc_minus_8);
         return conn;
     }
 

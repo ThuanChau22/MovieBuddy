@@ -10,6 +10,8 @@ import java.util.Properties;
 
 public class DBConnection {
 
+    private static final String DEFAULT_TIME_ZONE = "US/Pacific";
+
     private DBConnection() {
     }
 
@@ -32,6 +34,10 @@ public class DBConnection {
         String user = props.getProperty("user");
         String pass = props.getProperty("pass");
         conn = DriverManager.getConnection(url, user, pass);
+        PreparedStatement changeTimeZone = conn.prepareStatement("SET time_zone=?;");
+        changeTimeZone.setString(1, DEFAULT_TIME_ZONE);
+        changeTimeZone.executeUpdate();
+        close(changeTimeZone);
         return conn;
     }
 

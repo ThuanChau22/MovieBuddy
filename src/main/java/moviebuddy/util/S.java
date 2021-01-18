@@ -3,6 +3,24 @@ package moviebuddy.util;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/******* Generate schedule *******/
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Random;
+
+import moviebuddy.dao.TheatreDAO;
+import moviebuddy.dao.MovieDAO;
+import moviebuddy.dao.ScheduleDAO;
+import moviebuddy.model.Theatre;
+import moviebuddy.model.Room;
+import moviebuddy.model.Movie;
+/*********************************/
+
 public class S {
 
     // Servlets
@@ -40,6 +58,7 @@ public class S {
     public static final String STAFF_CREATE = "staff-create";
     public static final String STAFF_DELETE = "staff-delete";
     public static final String ROLE_GET = "role-get";
+    public static final String SHOWTIME = "showtime";
     public static final String ERROR = "error";
     public static final String FIND_REGISTERED_EMAIL = "FindRegisteredEmail";
     public static final String FIND_THEATRE_NAME = "FindTheatreName";
@@ -64,6 +83,7 @@ public class S {
     public static final String MOVIE_SCHEDULE_PAGE = "movieschedule.jsp";
     public static final String STAFF_PAGE = "staff.jsp";
     public static final String STAFF_CREATE_PAGE = "staffcreate.jsp";
+    public static final String SHOWTIME_PAGE = "showtime.jsp";
     public static final String ERROR_PAGE = "error.jsp";
     public static final String CHECK_OUT_PAGE = "checkout.jsp";
     public static final String PROFILE_PAGE = "customerPortal.jsp";
@@ -148,7 +168,6 @@ public class S {
     public static final String MOVIE_TITLE_INPUT = "prevMovieTitleInput";
     public static final String MOVIE_RELEASE_DATE_INPUT = "prevMovieReleaseDateInput";
     public static final String MOVIE_DURATION_INPUT = "prevMovieDurationInput";
-    public static final String MOVIE_TRAILER_INPUT = "prevMovieTrailerInput";
     public static final String MOVIE_DESCRIPTION_INPUT = "prevMovieDescriptionInput";
 
     // Schedule
@@ -162,5 +181,125 @@ public class S {
     // Format date with given pattern
     public static String date(String pattern, LocalDate date) {
         return DateTimeFormatter.ofPattern(pattern).format(date);
+    }
+
+    // Generate simple random schedules
+    public static void initSchedule() {
+        final int MAX_SHOWDATE = 5;
+        final int MAX_THEATRE = 2;
+        final int MAX_MOVIE = 5;
+        final int MAX_SHOWTIME = 7;
+        final String INIT_TIME = "08:00:00";
+        final String TIME_LIMIT = "23:00:00";
+
+        try {
+            Random random = new Random();
+
+            TheatreDAO theatreDAO = new TheatreDAO();
+            MovieDAO movieDAO = new MovieDAO();
+            ScheduleDAO scheduleDAO = new ScheduleDAO();
+
+            // Set list of dates
+            LocalDate currentDate = LocalDate.now(ZoneId.of("UTC-8"));
+            List<LocalDate> dates = new LinkedList<>();
+            for (int i = 0; i < MAX_SHOWDATE; i++) {
+                LocalDate date = currentDate.plusDays(i);
+                dates.add(date);
+            }
+
+            // Set list of theatres
+            List<Theatre> theatres = theatreDAO.listTheatres();
+            Collections.shuffle(theatres);
+            int numberOfTheatres = Integer.min(MAX_THEATRE, theatres.size());
+
+            // Set lists of movies
+            List<Movie> movies = movieDAO.listMovies();
+            int numberOfMovies = Integer.min(MAX_MOVIE, movies.size());
+
+            for (LocalDate date : dates) {
+                // Get show date
+                String showDate = date.toString();
+                for (int i = 0; i < numberOfTheatres; i++) {
+                    // Get theatre id
+                    String theatreId = Integer.toString(theatres.get(i).getId());
+                    if (scheduleDAO.listSchedulesByDate(theatreId, showDate).isEmpty()) {
+                        // Set list of rooms
+                        List<Room> rooms = theatreDAO.listRooms(theatreId);
+                        Collections.shuffle(rooms);
+                        Iterator<Room> roomIter = rooms.iterator();
+                        
+                        // Get room number
+                        String roomNumber = roomIter.hasNext()
+                            ? Integer.toString(roomIter.next().getRoomNumber()) : "";
+
+                        LocalDateTime currentTime = LocalDateTime.parse(showDate + "T" + INIT_TIME);
+                        LocalDateTime timeLimit = LocalDateTime.parse(showDate + "T" + TIME_LIMIT);
+                        if (timeLimit.isAfter(LocalDateTime.parse(showDate + "T23:30:00"))) {
+                            timeLimit = LocalDateTime.parse(showDate + "T23:30:00");
+                        }
+                        boolean hasTime = currentTime.isBefore(timeLimit);
+
+                        for (int j = 0; j < numberOfMovies && !roomNumber.isEmpty() && hasTime; j++) {
+                            // Get movie id
+                            String movieId = Integer.toString(movies.get(j).getId());
+                            int duration = movies.get(j).getDuration();
+
+                            int showtimeIndex = 0;
+                            int maxShowTime = random.nextInt(MAX_SHOWTIME);
+                            while (showtimeIndex < maxShowTime && !roomNumber.isEmpty() && hasTime) {
+                                // Get start time & end time
+                                String startTime = DateTimeFormatter.ofPattern("HH:mm").format(currentTime);
+                                String endTime = LocalTime.parse(startTime).plusMinutes(duration).toString();
+
+                                // Check schedule conflict
+                                String errorMessage = "";
+                                if (scheduleDAO.getScheduleConflict(theatreId, showDate,
+                                    movieId, roomNumber, startTime, endTime) == null) {
+                                    // Create schedule
+                                    errorMessage = scheduleDAO.addSchedule(theatreId,
+                                    roomNumber, movieId, showDate, startTime, endTime);
+                                }
+
+                                // Set next default start time
+                                currentTime = currentTime.plusMinutes(15);
+                                hasTime = currentTime.isBefore(timeLimit);
+
+                                // Create schedule successfully
+                                if (errorMessage.isEmpty()) {
+                                    showtimeIndex++;
+                                    // Set follow up start time
+                                    currentTime = currentTime.plusMinutes(duration + 15);
+                                    hasTime = currentTime.isBefore(timeLimit);
+                                }
+
+                                // Out of time
+                                if (!hasTime) {
+                                    // Set next available room
+                                    roomNumber = roomIter.hasNext()
+                                        ? Integer.toString(roomIter.next().getRoomNumber()) : "";
+
+                                    // Reset start time
+                                    currentTime = LocalDateTime.parse(showDate + "T" + INIT_TIME);
+                                    hasTime = currentTime.isBefore(timeLimit);
+                                }
+                            }
+
+                            // Out of time
+                            if (!hasTime) {
+                                // Set next available room
+                                roomNumber = roomIter.hasNext() 
+                                    ? Integer.toString(roomIter.next().getRoomNumber()) : "";
+
+                                // Reset start time
+                                currentTime = LocalDateTime.parse(showDate + "T" + INIT_TIME);
+                                hasTime = currentTime.isBefore(timeLimit);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

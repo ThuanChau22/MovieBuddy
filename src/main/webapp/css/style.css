@@ -74,11 +74,19 @@ body {
 }
 
 .spinner-border {
-    width: 1.2rem;
-    height: 1.2rem;
     border: .1em solid currentColor;
     border-right-color: transparent;
     animation: spinner-border 1.5s linear infinite;
+}
+
+.spinner-search {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.spinner-showtime {
+    width: 2rem;
+    height: 2rem;
 }
 
 .search-form {
@@ -119,6 +127,10 @@ body {
     -webkit-animation-fill-mode: both;
     animation-name: slideDown;
     -webkit-animation-name: slideDown;
+}
+
+.dropdown-item {
+    outline: none;
 }
 
 .search-panel {

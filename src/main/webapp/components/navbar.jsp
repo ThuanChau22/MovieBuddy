@@ -56,7 +56,7 @@
                 <form action="#" method="GET" class="search-form my-lg-0" >
                     <input id="searchInput" name="title" type="text" class="form-control" placeholder="Search movie by title" style="padding-right: 50px;">
                     <div class="spinner-wrapper" style="right: 30px;">
-                        <span id="searchSpinner"></span>
+                        <div id="searchSpinner"></div>
                     </div>
                     <button type="submit" class="search-button" onclick="return searchByTitle()">
                         <span class="material-icons">search</span>

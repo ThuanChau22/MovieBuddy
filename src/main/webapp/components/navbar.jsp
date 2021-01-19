@@ -54,7 +54,7 @@
             <!-- Search bar -->
             <li class="nav-item dropdown">
                 <form action="#" method="GET" class="search-form my-lg-0" >
-                    <input id="searchInput" name="title" type="text" class="form-control" placeholder="search movie by title" style="padding-right: 50px;">
+                    <input id="searchInput" name="title" type="text" class="form-control" placeholder="Search movie by title" style="padding-right: 50px;">
                     <div class="spinner-wrapper" style="right: 30px;">
                         <span id="searchSpinner"></span>
                     </div>

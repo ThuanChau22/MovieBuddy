@@ -82,12 +82,18 @@
                             <!-- Input poster -->
                             <div class="form-group">
                                 <label>Poster</label><span class="errormessage">*</span><br>
-                                <input name="${S.POSTER_PARAM}" type="file" />
+                                <div class="custom-file">
+                                    <input class="custom-file-input" name="${S.POSTER_PARAM}" type="file" />
+                                    <label class="custom-file-label">Choose file (.jpg)</label>
+                                </div>
                             </div>
                             <!-- Input trailer -->
                             <div class="form-group">
                                 <label>Trailer</label><span class="errormessage">*</span><br>
-                                <input name="${S.TRAILER_PARAM}" type="file" />
+                                <div class="custom-file">
+                                    <input class="custom-file-input" name="${S.TRAILER_PARAM}" type="file" />
+                                    <label class="custom-file-label">Choose file (.mp4)</label>
+                                </div>
                             </div>
                             <!-- Input description -->
                             <div class="form-group">

@@ -185,12 +185,12 @@ public class S {
 
     // Generate simple random schedules
     public static void initSchedule() {
-        final int MAX_SHOWDATE = 5;
+        final int MAX_SHOWDATE = 2;
         final int MAX_THEATRE = 2;
         final int MAX_MOVIE = 5;
         final int MAX_SHOWTIME = 7;
-        final String INIT_TIME = "08:00:00";
-        final String TIME_LIMIT = "23:00:00";
+        final String INIT_TIME = "08:00";
+        final String TIME_LIMIT = "23:00";
 
         try {
             Random random = new Random();
@@ -228,27 +228,30 @@ public class S {
                         Collections.shuffle(rooms);
                         Iterator<Room> roomIter = rooms.iterator();
                         
-                        // Get room number
-                        String roomNumber = roomIter.hasNext()
-                            ? Integer.toString(roomIter.next().getRoomNumber()) : "";
+                        // Set room number
+                        String[] spaceArgs = {""};
+                        boolean hasRoom = setRoom(spaceArgs, roomIter);
+                        String roomNumber = spaceArgs[0];
 
-                        LocalDateTime currentTime = LocalDateTime.parse(showDate + "T" + INIT_TIME);
-                        LocalDateTime timeLimit = LocalDateTime.parse(showDate + "T" + TIME_LIMIT);
-                        if (timeLimit.isAfter(LocalDateTime.parse(showDate + "T23:30:00"))) {
-                            timeLimit = LocalDateTime.parse(showDate + "T23:30:00");
+                        // Set initial time and time limit
+                        String[] timeArgs = { showDate, INIT_TIME, TIME_LIMIT};
+                        if (LocalTime.parse(timeArgs[2]).isAfter(LocalTime.parse("23:30"))) {
+                            timeArgs[2] = "23:30";
                         }
-                        boolean hasTime = currentTime.isBefore(timeLimit);
 
-                        for (int j = 0; j < numberOfMovies && !roomNumber.isEmpty() && hasTime; j++) {
+                        boolean hasTime = setTime(timeArgs, 0);
+                        for (int j = 0; j < numberOfMovies && hasRoom && hasTime; j++) {
                             // Get movie id
                             String movieId = Integer.toString(movies.get(j).getId());
                             int duration = movies.get(j).getDuration();
 
-                            int showtimeIndex = 0;
+                            // Randomize number of showtime per movie
                             int maxShowTime = random.nextInt(MAX_SHOWTIME);
-                            while (showtimeIndex < maxShowTime && !roomNumber.isEmpty() && hasTime) {
+
+                            int showtimeIndex = 0;
+                            while (showtimeIndex < maxShowTime && hasRoom && hasTime) {
                                 // Get start time & end time
-                                String startTime = DateTimeFormatter.ofPattern("HH:mm").format(currentTime);
+                                String startTime = timeArgs[1];
                                 String endTime = LocalTime.parse(startTime).plusMinutes(duration).toString();
 
                                 // Check schedule conflict
@@ -258,41 +261,43 @@ public class S {
                                     // Create schedule
                                     errorMessage = scheduleDAO.addSchedule(theatreId,
                                     roomNumber, movieId, showDate, startTime, endTime);
+
+                                    // Print each result
+                                    System.out.println(String.format("%2s|%2s|%2s|%s|%s-%s",
+                                        theatreId, roomNumber, movieId, showDate, startTime, endTime));
                                 }
 
                                 // Set next default start time
-                                currentTime = currentTime.plusMinutes(15);
-                                hasTime = currentTime.isBefore(timeLimit);
+                                hasTime = setTime(timeArgs, 15);
 
                                 // Create schedule successfully
                                 if (errorMessage.isEmpty()) {
                                     showtimeIndex++;
                                     // Set follow up start time
-                                    currentTime = currentTime.plusMinutes(duration + 15);
-                                    hasTime = currentTime.isBefore(timeLimit);
+                                    hasTime = setTime(timeArgs, duration);
                                 }
 
                                 // Out of time
                                 if (!hasTime) {
                                     // Set next available room
-                                    roomNumber = roomIter.hasNext()
-                                        ? Integer.toString(roomIter.next().getRoomNumber()) : "";
+                                    hasRoom = setRoom(spaceArgs, roomIter);
+                                    roomNumber = spaceArgs[0];
 
                                     // Reset start time
-                                    currentTime = LocalDateTime.parse(showDate + "T" + INIT_TIME);
-                                    hasTime = currentTime.isBefore(timeLimit);
+                                    timeArgs[1] = INIT_TIME;
+                                    hasTime = setTime(timeArgs, 0);
                                 }
                             }
 
                             // Out of time
                             if (!hasTime) {
                                 // Set next available room
-                                roomNumber = roomIter.hasNext() 
-                                    ? Integer.toString(roomIter.next().getRoomNumber()) : "";
+                                hasRoom = setRoom(spaceArgs, roomIter);
+                                roomNumber = spaceArgs[0];
 
                                 // Reset start time
-                                currentTime = LocalDateTime.parse(showDate + "T" + INIT_TIME);
-                                hasTime = currentTime.isBefore(timeLimit);
+                                timeArgs[1] = INIT_TIME;
+                                hasTime = setTime(timeArgs, 0);
                             }
                         }
                     }
@@ -301,5 +306,19 @@ public class S {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // args { roomNumber }
+    private static boolean setRoom(String[] args, Iterator<Room> roomIter) {
+        args[0] = roomIter.hasNext() ? Integer.toString(roomIter.next().getRoomNumber()) : "";
+        return !args[0].isEmpty();
+    }
+
+    // args { currentDate, currentTime, timelimit }
+    private static boolean setTime(String[] args, int minutes) {
+        LocalDateTime current = LocalDateTime.parse(args[0] + "T" + args[1]).plusMinutes(minutes);
+        LocalDateTime limit = LocalDateTime.parse(args[0] + "T" + args[2]);
+        args[1] = LocalTime.parse(args[1]).plusMinutes(minutes).toString();
+        return current.isBefore(limit);
     }
 }

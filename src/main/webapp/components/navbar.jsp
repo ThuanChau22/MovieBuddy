@@ -54,8 +54,8 @@
             <!-- Search bar -->
             <li class="nav-item dropdown">
                 <form action="#" method="GET" class="search-form my-lg-0" >
-                    <input id="searchInput" name="title" type="text" class="form-control" placeholder="Search movie by title" style="padding-right: 50px;">
-                    <div class="spinner-wrapper" style="right: 30px;">
+                    <input id="searchInput" name="title" type="text" class="form-control pr-5" placeholder="Search movie by title">
+                    <div class="spinner-wrapper" style="right: 28px;">
                         <div id="searchSpinner"></div>
                     </div>
                     <button type="submit" class="search-button" onclick="return searchByTitle()">
@@ -85,14 +85,6 @@
                     </div>
                 </li>
             </c:if>
-            <!-- Current theatre location -->
-            <!-- <li class="nav-item">
-                <form action="#" class="form-inline my-lg-0">
-                    <label class="mx-2 navbar-brand">Theatre Name</label>
-                    <input class="form-control" type="text" placeholder="Zip Code" value="${zipcode}">
-                    <button class="btn btn-outline-info my-sm-0" type="submit">Enter</button>
-                </form>
-            </li> -->
         </ul>
         <c:choose>
             <c:when test="${signedIn}">

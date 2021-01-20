@@ -19,6 +19,14 @@ const TITLE_PARAM = "title";
 
 const TIME_FORMAT = { hour12: false, hour: "2-digit", minute: "2-digit" };
 
+// Load previous selected option on reload
+function loadSelectedOption(defaultId, selectId, optionValue) {
+    if (optionValue != "") {
+        $(defaultId).removeAttr("selected");
+        $(selectId).val(optionValue);
+    }
+}
+
 $(document).ready(function () {
 
     // Click handler
@@ -103,12 +111,16 @@ $(document).ready(function () {
 
 });
 
-// Load previous selected option on reload
-function loadSelectedOption(defaultId, selectId, optionValue) {
-    if (optionValue != "") {
-        $(defaultId).removeAttr("selected");
-        $(selectId).val(optionValue);
-    }
+// Show search result
+function showSearchResult() {
+    $(SEARCH_RESULT_MENU).addClass("show");
+    $(SEARCH_RESULT_MENU).parent().addClass("show");
+}
+
+// Collapse search result
+function collapseSearchResult() {
+    $(SEARCH_RESULT_MENU).removeClass("show");
+    $(SEARCH_RESULT_MENU).parent().removeClass("show");
 }
 
 // Load list of dates with JCarousel
@@ -167,6 +179,81 @@ function loadDates(selectedDateIndex) {
 
     // Set scroll
     jcarousel.jcarousel("scroll", selectedDateIndex, true);
+}
+
+// List schedules for movies (home)
+function listSchedules(element) {
+    // Check if date is currently selected
+    if (element.find("a").first().hasClass("selected-link")) {
+        return;
+    }
+
+    // Remove previous selected date and highlight current date
+    let selectedDateIndex = ("#" + element.attr("id")).replace(DATE_ITEM, "");
+    let currentIndex;
+    element.siblings("li").each(function () {
+        if ($(this).find("a").first().hasClass("selected-link")) {
+            currentIndex = ("#" + $(this).attr("id")).replace(DATE_ITEM, "");
+        }
+    });
+    selectDate(selectedDateIndex, currentIndex);
+
+    // Send request
+    $.post();
+}
+
+// List showtimes for a movie (showtime)
+function listShowtimes(element) {
+    // Check if date is currently selected
+    if (element.find("a").first().hasClass("selected-link")) {
+        return;
+    }
+
+    // Remove previous selected date and highlight current date
+    let selectedDateIndex = ("#" + element.attr("id")).replace(DATE_ITEM, "");
+    let currentIndex;
+    element.siblings("li").each(function () {
+        if ($(this).find("a").first().hasClass("selected-link")) {
+            currentIndex = ("#" + $(this).attr("id")).replace(DATE_ITEM, "");
+        }
+    });
+    selectDate(selectedDateIndex, currentIndex);
+
+    // Send request
+    addSpinner(SHOWTIME_SPINNER, "spinner-showtime");
+    $(SHOWTIME_RESULT).empty();
+    let link = element.find("a").first().attr("href");
+    $.post(SHOWTIME, link.substr(link.indexOf("?") + 1),
+        function (schedules) {
+            $(SHOWTIME_RESULT).empty();
+            if (schedules.length > 0) {
+                schedules.forEach(schedule => {
+                    // return result as button
+                    let a = $("<a></a>");
+                    a.addClass("list-button");
+                    a.attr("href", "#" + schedule.scheduleId);
+                    let button = $("<button></button>");
+                    button.attr("type", "button");
+                    button.addClass("btn btn-outline-info");
+                    let time = new Date();
+                    time.setHours(schedule.startTime.hour);
+                    time.setMinutes(schedule.startTime.minute);
+                    button.text(time.toLocaleTimeString("en-US", TIME_FORMAT));
+                    a.append(button);
+                    $(SHOWTIME_RESULT).append(a);
+                });
+            } else {
+                // No showtimes
+                let div = $("<div></div>");
+                div.addClass("text-center");
+                div.append("<h5>No showtimes</h5>");
+                div.append("<span>Please pick a differrent date!</span>");
+                $(SHOWTIME_RESULT).append(div);
+            }
+        }
+    ).done(function () {
+        removeSpinner(SHOWTIME_SPINNER);
+    });
 }
 
 // Set selected date
@@ -229,76 +316,11 @@ function searchByTitle() {
     return false;
 }
 
-// Show search result
-function showSearchResult() {
-    $(SEARCH_RESULT_MENU).addClass("show");
-    $(SEARCH_RESULT_MENU).parent().addClass("show");
-}
-
-// Collapse search result
-function collapseSearchResult() {
-    $(SEARCH_RESULT_MENU).removeClass("show");
-    $(SEARCH_RESULT_MENU).parent().removeClass("show");
-}
-
 // Highlight result from input
 function highlight(result, input) {
     input = input.toLowerCase();
     let highlightedInput = result.substr(result.toLowerCase().indexOf(input), input.length);
     return result.replace(highlightedInput, "<b>" + highlightedInput + "</b>");
-}
-
-// List showtimes for a movie
-function listShowtimes(element) {
-    // Check if date is currently selected
-    if (element.find("a").first().hasClass("selected-link")) {
-        return;
-    }
-
-    // Remove previous selected date and highlight current date
-    let selectedDateIndex = ("#" + element.attr("id")).replace(DATE_ITEM, "");
-    let currentIndex;
-    element.siblings("li").each(function () {
-        if ($(this).find("a").first().hasClass("selected-link")) {
-            currentIndex = ("#" + $(this).attr("id")).replace(DATE_ITEM, "");
-        }
-    });
-    selectDate(selectedDateIndex, currentIndex);
-
-    // Send request
-    addSpinner(SHOWTIME_SPINNER, "spinner-showtime");
-    $(SHOWTIME_RESULT).empty();
-    let link = element.find("a").first().attr("href");
-    $.post(SHOWTIME, link.substr(link.indexOf("?") + 1),
-        function (schedules) {
-            if (schedules.length > 0) {
-                schedules.forEach(schedule => {
-                    // return result as button
-                    let a = $("<a></a>");
-                    a.addClass("list-button");
-                    a.attr("href", "#" + schedule.scheduleId);
-                    let button = $("<button></button>");
-                    button.attr("type", "button");
-                    button.addClass("btn btn-outline-info");
-                    let time = new Date();
-                    time.setHours(schedule.startTime.hour);
-                    time.setMinutes(schedule.startTime.minute);
-                    button.text(time.toLocaleTimeString("en-US", TIME_FORMAT));
-                    a.append(button);
-                    $(SHOWTIME_RESULT).append(a);
-                });
-            } else {
-                // No showtimes
-                let div = $("<div></div>");
-                div.addClass("text-center");
-                div.append("<h5>No showtimes</h5>");
-                div.append("<span>Please pick a differrent date!</span>");
-                $(SHOWTIME_RESULT).append(div);
-            }
-        }
-    ).done(function () {
-        removeSpinner(SHOWTIME_SPINNER);
-    });
 }
 
 function addSpinner(spinnerId, style){

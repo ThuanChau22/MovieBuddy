@@ -185,7 +185,7 @@ public class S {
 
     // Generate simple random schedules
     public static void initSchedule() {
-        final int MAX_SHOWDATE = 2;
+        final int MAX_SHOWDATE = 7;
         final int MAX_THEATRE = 2;
         final int MAX_MOVIE = 5;
         final int MAX_SHOWTIME = 7;

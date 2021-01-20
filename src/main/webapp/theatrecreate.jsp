@@ -88,7 +88,7 @@
                             <!-- input state -->
                             <div class="form-group">
                                 <label>State</label><span class="errormessage">*</span><br>
-                                <select class="form-control" id="state" name="${S.STATE_PARAM}">
+                                <select class="custom-select" id="state" name="${S.STATE_PARAM}">
                                     <option id="default" hidden selected value="">Select a State</option>
                                     <option value="AL">Alabama</option>
                                     <option value="AK">Alaska</option>

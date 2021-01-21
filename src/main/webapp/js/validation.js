@@ -21,9 +21,9 @@ const DURATION_ERROR = "durationError";
 const ERROR_MESSAGE = "errorMessage";
 
 // Ajax URLs
-const FIND_REGISTERED_EMAIL = "FindRegisteredEmail";
-const FIND_THEATRE_NAME = "FindTheatreName";
-const FIND_ROOM_NUMBER = "FindRoomNumber";
+const FIND_REGISTERED_EMAIL = "find-registered-email";
+const FIND_THEATRE_NAME = "find-theatre-name";
+const FIND_ROOM_NUMBER = "find-room-number";
 
 // Input limits
 const USERNAME_MIN_LENGTH = 2;

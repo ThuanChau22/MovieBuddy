@@ -60,10 +60,10 @@ public class S {
     public static final String ROLE_GET = "role-get";
     public static final String SHOWTIME = "showtime";
     public static final String ERROR = "error";
-    public static final String FIND_REGISTERED_EMAIL = "FindRegisteredEmail";
-    public static final String FIND_THEATRE_NAME = "FindTheatreName";
-    public static final String FIND_ROOM_NUMBER = "FindRoomNumber";
-    public static final String FIND_MOVIE = "FindMovie";
+    public static final String SEARCH_MOVIE = "search";
+    public static final String FIND_REGISTERED_EMAIL = "find-registered-email";
+    public static final String FIND_THEATRE_NAME = "find-theatre-name";
+    public static final String FIND_ROOM_NUMBER = "find-room-number";
 
     // JSP pages
     public static final String HOME_PAGE = "home.jsp";

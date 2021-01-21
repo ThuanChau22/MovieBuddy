@@ -36,6 +36,7 @@
         <div class="main">
             <!-- Page content -->
             <div class="container">
+                <jsp:include page="./components/theatrelocation.jsp" />
                 <div class="card" id="${movie.getId()}">
                     <div class="card-body">
                         <div class="row">

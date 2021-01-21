@@ -53,7 +53,7 @@
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <!-- Search bar -->
             <li class="nav-item dropdown">
-                <form action="#" method="GET" class="search-form my-lg-0" >
+                <form action="${S.SEARCH_MOVIE}" method="GET" class="search-form my-lg-0" >
                     <input id="searchInput" name="title" type="text" class="form-control pr-5" placeholder="Search movie by title">
                     <div class="spinner-wrapper" style="right: 28px;">
                         <div id="searchSpinner"></div>

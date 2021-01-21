@@ -1,4 +1,4 @@
-package moviebuddy.servlet.provider.movie;
+package moviebuddy.servlet.customer;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
@@ -17,9 +17,9 @@ import moviebuddy.model.Movie;
 import moviebuddy.util.V;
 import moviebuddy.util.S;
 
-@WebServlet("/" + S.FIND_MOVIE)
-public class FindMovieServlet extends HttpServlet {
-    private static final long serialVersionUID = -4399189137969988859L;
+@WebServlet("/" + S.SEARCH_MOVIE)
+public class SearchMovieServlet extends HttpServlet {
+    private static final long serialVersionUID = -1237538741866714268L;
 
     private MovieDAO movieDAO;
     private Gson gson;
@@ -27,6 +27,32 @@ public class FindMovieServlet extends HttpServlet {
     public void init() {
         movieDAO = new MovieDAO();
         gson = new Gson();
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            // Sanitize parameter
+            String title = V.sanitize(request.getParameter(S.TITLE_PARAM));
+
+            // Retrieve list of movies
+            List<Movie> movies = new LinkedList<>();
+            if (!title.isEmpty()) {
+                movies = movieDAO.listMovies(title);
+            }
+
+            request.setAttribute("input", title);
+            request.setAttribute("resultCount", movies.size());
+            if (!movies.isEmpty()) {
+                request.setAttribute("movieList", movies);
+            }
+
+            // Forward to Home page
+            request.getRequestDispatcher(S.SEARCH_PAGE).forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect(S.ERROR);
+        }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

@@ -24,58 +24,43 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="icon" href="./images/MovieBuddy.ico">
-    <title>Movie Buddy | Home</title>
+    <!-- Header -->
+    <jsp:include page="./components/header.jsp" />
 </head>
 
 <body>
     <!-- Navigation bar -->
-    <jsp:include page="./${S.NAV_BAR_PAGE}" />
-    <div id="custom-scroll">
+    <jsp:include page="./components/navbar.jsp" />
+    <div class="custom-scroll">
         <div class="main">
             <!-- Page content -->
             <div class="container">
-                <h1 class="display-3 text-center">Movie Buddy</h1>
-                <!-- Search bar -->
-                <div id="searchBar">
-                    <br>
-                    <form class="form-inline justify-content-center">
-                        <div class="form-group mx-sm-3 mb-2">
-                            <input type="search" class="form-control" id="searchInput" placeholder="Search">
-                        </div>
-                        <button type="submit" class="btn btn-outline-info mb-2">Search</button>
-                    </form>
-                </div>
+                <h1 class="display-1 text-center">
+                    <span style="display: inline-block; color: #17a2b8;">Movie</span>
+                    <span style="display: inline-block; color: #b3b3b3;">Buddy</span>
+                </h1>
                 <hr>
+                <!-- Theatre location -->
+                <jsp:include page="./components/theatrelocation.jsp" />
                 <!-- JCarousel for dates-->
                 <div class="jcarousel-wrapper" style="width: 80%;">
-                    <div class="jcarousel">
+                    <div class="jcarousel home">
                         <ul class="jcarousel-list">
                             <c:set var="i" value="${0}" />
                             <c:forEach items="${dateList}" var="date">
-                                <c:choose>
-                                    <c:when test="${i == 0}">
-                                        <li id="dateItem-${i}" class="jcarousel-item">
-                                            <a href="?date=${date}" class="date-picker-link">
+                                <li id="dateItem-${i}" class="jcarousel-item">
+                                    <a href="?${S.DATE_PARAM}=${date}" class="date-picker-link">
+                                        <c:choose>
+                                            <c:when test="${i == 0}">
                                                 <span class="dayOfWeek"><i>Today</i></span>
-                                                <span class="month-date">${S.date("MMM dd", date)}</span>
-                                            </a>
-                                        </li>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <li id="dateItem-${i}" class="jcarousel-item">
-                                            <a href="?date=${date}" class="date-picker-link">
-                                                <span class="dayOfWeek"><i>${S.date("EEEE", date)}</i></span>
-                                                <span class="month-date">${S.date("MMM dd", date)}</span>
-                                            </a>
-                                        </li>
-                                    </c:otherwise>
-                                </c:choose>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="dayOfWeek"><i>${S.date("E", date)}</i></span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <span class="month-date">${S.date("MMM dd", date)}</span>
+                                    </a>
+                                </li>
                                 <c:set var="i" value="${i+1}" />
                             </c:forEach>
                         </ul>
@@ -83,98 +68,93 @@
                     <a href="#" class="jcarousel-control prev">&lsaquo;</a>
                     <a href="#" class="jcarousel-control next">&rsaquo;</a>
                 </div>
-                <!-- Show times -->
-                <h3 class="display-5">Showtimes</h3>
-                <hr>
-                <div class="container">
-                    <c:choose>
-                        <c:when test="${!scheduleListEmpty}">
-                            <c:forEach items="${scheduleList}" var="movie">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <!-- Movie title -->
-                                            <div class="col-lg">
-                                                <h4>${movie.getTitle()}</h4>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <div class="row">
-                                            <!-- Movie poster -->
-                                            <div class="col-lg-5">
-                                                <div class="text-center">
-                                                    <img src=${movie.getPoster()} class="rounded mx-auto w-100"
-                                                        alt="poster">
+                <br>
+                <div class="container" style="height: 50%;">
+                    <div id="scheduleSpinner"></div>
+                    <div id="schedule">
+                        <c:choose>
+                            <c:when test="${!scheduleListEmpty}">
+                                <c:forEach items="${scheduleList}" var="movie">
+                                    <div class="card" id="${movie.getId()}">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <!-- Movie title -->
+                                                <div class="col-lg">
+                                                    <h4>${movie.getTitle()}</h4>
                                                 </div>
                                             </div>
-                                            <div class="col-lg">
-                                                <ul class="list-inline">
-                                                    <!-- Movie length -->
-                                                    <p><b>Length:</b> ${movie.getDuration()} minutes</p>
-                                                    <!-- Movie release date -->
-                                                    <p><b>Release Date:</b> ${S.date("MMM dd yyyy",
-                                                        movie.getReleaseDate())}</p>
-                                                </ul>
-                                                <hr>
-                                                <!-- Movie trailer -->
-                                                <h3>Trailer</h3>
-                                                <div class="embed-responsive embed-responsive-16by9">
-                                                    <iframe width="907" height="510" src="${movie.getTrailer()}"
-                                                        frameborder="0"
-                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                        allowfullscreen></iframe>
+                                            <hr>
+                                            <div class="row">
+                                                <!-- Movie poster -->
+                                                <div class="col-lg-5">
+                                                    <div class="text-center">
+                                                        <img src=${movie.getPoster()} class="rounded mx-auto w-100" alt="poster">
+                                                    </div>
                                                 </div>
-                                                <hr>
-                                                <!-- Movie description -->
-                                                <h3>Description</h3>
-                                                <p>${movie.getDescription()}</p>
+                                                <div class="col-lg">
+                                                    <ul class="list-inline">
+                                                        <!-- Movie length -->
+                                                        <p><b>Length:</b> ${movie.getDuration()} minutes</p>
+                                                        <!-- Movie release date -->
+                                                        <p><b>Release Date:</b> ${S.date("MMM dd yyyy",
+                                                            movie.getReleaseDate())}</p>
+                                                    </ul>
+                                                    <hr>
+                                                    <!-- Movie trailer -->
+                                                    <h3>Trailer</h3>
+                                                    <div class="embed-responsive embed-responsive-16by9">
+                                                        <video width="907" height="510" controls>
+                                                            <source src="${movie.getTrailer()}" type="video/mp4">
+                                                            Video not available.
+                                                        </video>
+                                                    </div>
+                                                    <hr>
+                                                    <!-- Movie description -->
+                                                    <h3>Description</h3>
+                                                    <p>${movie.getDescription()}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <hr>
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="container">
-                                                    <!-- Start times -->
-                                                    <c:forEach items="${movie.getSchedules()}" var="schedule">
-                                                        <a href="#">
-                                                            <button type="button"
-                                                                class="btn btn-outline-info">${schedule.getStartTime()}</button>
-                                                        </a>
-                                                    </c:forEach>
+                                            <hr>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="container" style="overflow-x: auto;">
+                                                        <!-- Start times -->
+                                                        <c:forEach items="${movie.getSchedules()}" var="schedule">
+                                                            <a class="list-button" href="#${schedule.getScheduleId()}" >
+                                                                <button type="button"
+                                                                    class="btn btn-outline-info">${schedule.getStartTime()}</button>
+                                                            </a>
+                                                        </c:forEach>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <br>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="element-center">
+                                    <div class="text-center">
+                                        <h5>No showtimes</h5>
+                                        <span>Please pick a differrent date or come back later!</span>
+                                    </div>
                                 </div>
-                                <br>
-                            </c:forEach>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="element-center" style="height: 40%;">
-                                <div class="text-center">
-                                    <h5>No showtimes</h5>
-                                    <span>Please pick a differrent date or come back later!</span>
-                                </div>
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- Footer -->
         <div class="footer">
-            <jsp:include page="./${S.FOOTER_PAGE}" />
+            <jsp:include page="./components/footer.jsp" />
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous"></script>
+    <!-- Script import -->
+    <jsp:include page="./components/script.jsp" />
 
-    <script src="./js/dist/jquery.jcarousel.min.js"></script>
-    <script src="./js/dist/jquery.jcarousel-swipe.min.js"></script>
-    <script src="./js/functions.js"></script>
-    <script src="./js/validation.js"></script>
     <script>
         loadDates("${selectedDateIndex}");
     </script>

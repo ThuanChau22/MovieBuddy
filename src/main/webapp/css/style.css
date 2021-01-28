@@ -84,6 +84,11 @@ body {
     height: 1.2rem;
 }
 
+.spinner-home {
+    width: 4rem;
+    height: 4rem;
+}
+
 .spinner-showtime {
     width: 2rem;
     height: 2rem;

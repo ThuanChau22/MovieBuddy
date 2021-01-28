@@ -5,11 +5,14 @@ const SEARCH_SPINNER = "#searchSpinner";
 const SEARCH_RESULT_MENU = "#searchResultMenu";
 const CLOSE_SEARCH_RESULT = "#closeSearchResult";
 const SEARCH_RESULT = "#searchResult";
+const HOME_SPINNER = "#scheduleSpinner";
+const HOME_RESULT = "#schedule";
 const SHOWTIME_SPINNER = "#showtimeSpinner";
 const SHOWTIME_RESULT = "#showtime";
 
 // Ajax URLs
-const FIND_MOVIE = "FindMovie";
+const SEARCH_MOVIE = "search";
+const HOME = "home";
 const SHOWTIME = "showtime";
 
 // Input params
@@ -44,7 +47,7 @@ $(document).ready(function () {
         // Load home
         if (clickover.parents().hasClass("jcarousel home")) {
             event.preventDefault();
-            console.log("home");
+            listSchedules(clickover.parents().filter(".jcarousel-item"));
         }
 
         // Load showtimes
@@ -59,6 +62,13 @@ $(document).ready(function () {
         if (event.ctrlKey && event.shiftKey && event.keyCode == "83") {
             $(SEARCH_INPUT).focus();
         }
+    });
+
+    // Change label to file name
+    $(".custom-file-input").change(function (event) {
+        let fileName = event.target.files[0].name;
+        let label = event.target.nextElementSibling;
+        label.innerText = fileName;
     });
 
     // Search handler
@@ -199,7 +209,114 @@ function listSchedules(element) {
     selectDate(selectedDateIndex, currentIndex);
 
     // Send request
-    $.post();
+    $(HOME_RESULT).empty();
+    addSpinner(HOME_SPINNER, "spinner-home");
+    let href = element.find("a").first().attr("href");
+    $.post(HOME, getParams(href),
+        function (movies) {
+            $(HOME_RESULT).empty();
+            if (movies.length > 0) {
+                movies.forEach(movie => {
+                    // Title
+                    let title = $("<div class='row'></div>").append($("<div class='col-lg'></div>").append($("<h4>" + movie.title + "</h4>")));
+
+                    // Poster
+                    let img = $("<img></img>");
+                    img.addClass("rounded mx-auto w-100");
+                    img.attr({ "src": movie.poster, "alt": "poster" });
+                    let poster = $("<div class='col-lg-5'></div>").append($("<div class='text-center'></div>").append(img));
+
+                    // Length
+                    let length = $("<p><b>Length:</b> " + movie.duration + "minutes</p>");
+
+                    // Release date
+                    let date = new Date();
+                    date.setDate(movie.releaseDate.day);
+                    date.setMonth(movie.releaseDate.month);
+                    date.setFullYear(movie.releaseDate.year);
+                    let releaseDate = $("<p><b>Release Date:</b> " + formatDate("en-US", date) + "</p>");
+
+                    let ul = $("<ul class='list-inline'></ul>");
+                    ul.append(length, releaseDate);
+
+                    // Trailer
+                    let trailerHeader = $("<h3>Trailer</h3>");
+                    let source = $("<source>");
+                    source.attr({ "src": movie.trailer, "type": "video/mp4" });
+                    let video = $("<video></video>");
+                    video.attr({ "width": 907, "height": 510, "controls": true });
+                    video.append(source, "Video not available");
+                    let trailer = $("<div class='embed-responsive embed-responsive-16by9'></div>").append(video);
+
+                    // Description
+                    let descriptionHeader = $("<h3>Description</h3>");
+                    let description = $("<p>" + movie.description + "</p>");
+
+                    let movieDetails = $("<div class='col-lg'></div>");
+                    movieDetails.append(ul, hr(), trailerHeader, trailer, hr(), descriptionHeader, description);
+
+                    let movieInfo = $("<div class='row'></div>");
+                    movieInfo.append(poster, movieDetails);
+
+                    // Showtimes
+                    let container = $("<div></div>");
+                    container.addClass("container");
+                    container.css("overflow-x", "auto");
+                    movie.schedules.forEach(schedule => {
+                        let a = $("<a></a>");
+                        a.addClass("list-button");
+                        a.attr("href", "#" + schedule.scheduleId);
+                        let button = $("<button></button>");
+                        button.attr("type", "button");
+                        button.addClass("btn btn-outline-info");
+                        let time = new Date();
+                        time.setHours(schedule.startTime.hour);
+                        time.setMinutes(schedule.startTime.minute);
+                        button.text(time.toLocaleTimeString("en-US", TIME_FORMAT));
+                        a.append(button);
+                        $(container).append(a);
+                    });
+                    let showtimes = $("<div class='row'></div>").append($("<div class='col'></div>").append(container));
+
+                    // Card body
+                    let cardBody = $("<div class='card-body'></div>");
+                    cardBody.append(title, hr(), movieInfo, hr(), showtimes);
+
+                    // Card
+                    let card = $("<div class='card' id=" + movie.id + "></div>").append(cardBody);
+
+                    // Result
+                    $(HOME_RESULT).append(card, br());
+                });
+            } else {
+                let div = $("<div class='text-center'></div>");
+                div.append("<h5>No Showtimes</h5>");
+                div.append("<span>Please pick a differrent date or come back later!</span>");
+                div = $("<div class='element-center'></div>").append(div);
+                // Result
+                $(HOME_RESULT).append(div);
+            }
+
+        }
+    ).done(function () {
+        removeSpinner(HOME_SPINNER);
+    });
+}
+
+function hr() {
+    return $("<hr>");
+}
+
+function br() {
+    return $("<br>");
+}
+
+// Format date to (MMM dd yyyy)
+function formatDate(lang, date) {
+    let MMM = date.toLocaleDateString(lang, { month: "short" });
+    let dd = date.toLocaleDateString(lang, { day: "2-digit" });
+    let yyyy = date.toLocaleDateString(lang, { year: "numeric" });
+    return MMM + " " + dd + " " + yyyy;
 }
 
 // List showtimes for a movie (showtime)
@@ -220,10 +337,10 @@ function listShowtimes(element) {
     selectDate(selectedDateIndex, currentIndex);
 
     // Send request
-    addSpinner(SHOWTIME_SPINNER, "spinner-showtime");
     $(SHOWTIME_RESULT).empty();
-    let link = element.find("a").first().attr("href");
-    $.post(SHOWTIME, link.substr(link.indexOf("?") + 1),
+    addSpinner(SHOWTIME_SPINNER, "spinner-showtime");
+    let href = element.find("a").first().attr("href");
+    $.post(SHOWTIME, getParams(href),
         function (schedules) {
             $(SHOWTIME_RESULT).empty();
             if (schedules.length > 0) {
@@ -286,7 +403,7 @@ function searchByTitle() {
 
     // Send request
     addSpinner(SEARCH_SPINNER, "spinner-search");
-    $.post(FIND_MOVIE, TITLE_PARAM + "=" + titleInput,
+    $.post(SEARCH_MOVIE, TITLE_PARAM + "=" + titleInput,
         function (movies) {
             $(SEARCH_RESULT).empty();
             if (movies.length > 0) {
@@ -316,6 +433,11 @@ function searchByTitle() {
     return false;
 }
 
+// Extract parameters from href
+function getParams(href) {
+    return href.substr(href.indexOf("?") + 1);
+}
+
 // Highlight result from input
 function highlight(result, input) {
     input = input.toLowerCase();
@@ -323,7 +445,7 @@ function highlight(result, input) {
     return result.replace(highlightedInput, "<b>" + highlightedInput + "</b>");
 }
 
-function addSpinner(spinnerId, style){
+function addSpinner(spinnerId, style) {
     removeSpinner(spinnerId); // reset
     $(spinnerId).addClass("text-center element-center");
     let span = $("<span></span>");
@@ -331,7 +453,7 @@ function addSpinner(spinnerId, style){
     $(spinnerId).append(span);
 }
 
-function removeSpinner(spinnerId){
+function removeSpinner(spinnerId) {
     $(spinnerId).empty();
     $(spinnerId).removeClass("text-center element-center");
 }

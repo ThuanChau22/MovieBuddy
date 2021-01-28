@@ -54,7 +54,7 @@ public class MovieDAO {
 
     public List<Movie> listMovies(String title) throws Exception {
         String QUERY_MOVIES = String.format(
-            "SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s LIKE ? ORDER BY %s;",
+            "SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s LIKE ? ORDER BY %s DESC;",
             MovieDB.MOVIE_ID, MovieDB.TITLE, MovieDB.RELEASE_DATE,
             MovieDB.DURATION, MovieDB.POSTER, MovieDB.TRAILER,
             MovieDB.DESCRIPTION, MovieDB.TABLE, MovieDB.TITLE,

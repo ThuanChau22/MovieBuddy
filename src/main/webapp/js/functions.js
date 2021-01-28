@@ -412,7 +412,7 @@ function searchByTitle() {
                     let a = $("<a></a>");
                     a.addClass("dropdown-item text-wrap");
                     a.attr("href", "./" + SHOWTIME + "?" + MOVIE_ID_PARAM + "=" + movie.id);
-                    a.html(highlight(movie.title, titleInput));
+                    a.html(highlight(movie.title, titleInput) + " (" + movie.releaseDate.year + ")");
                     $(SEARCH_RESULT).append(a);
                 });
             } else {

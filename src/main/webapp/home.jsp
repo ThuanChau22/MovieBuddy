@@ -36,8 +36,8 @@
             <!-- Page content -->
             <div class="container">
                 <h1 class="display-1 text-center">
-                    <span style="display: inline-block; color: #17a2b8;">Movie</span>
-                    <span style="display: inline-block; color: #b3b3b3;">Buddy</span>
+                    <span style="display: inline-block; color: #17a2b8;">Movie</span><span
+                        style="display: inline-block; color: #b3b3b3;">Buddy</span>
                 </h1>
                 <hr>
                 <!-- Theatre location -->

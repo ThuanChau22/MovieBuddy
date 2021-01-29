@@ -19,7 +19,7 @@ public class DBConnection {
 
         // Get current path to .properties file
         String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath().replaceAll("%20", " ");
-        String dbConfigPath = rootPath + "db.properties";
+        String dbConfigPath = rootPath + S.CREDENTIAL;
 
         // Get database credential from .properties file
         Properties props = new Properties();

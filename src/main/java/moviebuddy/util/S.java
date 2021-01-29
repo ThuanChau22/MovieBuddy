@@ -19,9 +19,16 @@ import moviebuddy.dao.ScheduleDAO;
 import moviebuddy.model.Theatre;
 import moviebuddy.model.Room;
 import moviebuddy.model.Movie;
+
 /*********************************/
 
 public class S {
+
+    private S() {
+    }
+
+    // .properties
+    public static final String CREDENTIAL = "credential.properties";
 
     // Servlets
     public static final String HOME = "home";
@@ -228,14 +235,14 @@ public class S {
                         List<Room> rooms = theatreDAO.listRooms(theatreId);
                         Collections.shuffle(rooms);
                         Iterator<Room> roomIter = rooms.iterator();
-                        
+
                         // Set room number
-                        String[] spaceArgs = {""};
+                        String[] spaceArgs = { "" };
                         boolean hasRoom = setRoom(spaceArgs, roomIter);
                         String roomNumber = spaceArgs[0];
 
                         // Set initial time and time limit
-                        String[] timeArgs = { showDate, INIT_TIME, TIME_LIMIT};
+                        String[] timeArgs = { showDate, INIT_TIME, TIME_LIMIT };
                         if (LocalTime.parse(timeArgs[2]).isAfter(LocalTime.parse("23:30"))) {
                             timeArgs[2] = "23:30";
                         }
@@ -257,15 +264,15 @@ public class S {
 
                                 // Check schedule conflict
                                 String errorMessage = "";
-                                if (scheduleDAO.getScheduleConflict(theatreId, showDate,
-                                    movieId, roomNumber, startTime, endTime) == null) {
+                                if (scheduleDAO.getScheduleConflict(theatreId, showDate, movieId, roomNumber, startTime,
+                                        endTime) == null) {
                                     // Create schedule
-                                    errorMessage = scheduleDAO.addSchedule(theatreId,
-                                    roomNumber, movieId, showDate, startTime, endTime);
+                                    errorMessage = scheduleDAO.addSchedule(theatreId, roomNumber, movieId, showDate,
+                                            startTime, endTime);
 
                                     // Print each result
-                                    System.out.println(String.format("%2s|%2s|%2s|%s|%s-%s",
-                                        theatreId, roomNumber, movieId, showDate, startTime, endTime));
+                                    System.out.println(String.format("%2s|%2s|%2s|%s|%s-%s", theatreId, roomNumber,
+                                            movieId, showDate, startTime, endTime));
                                 }
 
                                 // Set next default start time

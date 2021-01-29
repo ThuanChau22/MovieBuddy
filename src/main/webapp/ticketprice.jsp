@@ -35,37 +35,31 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="icon" href="./images/MovieBuddy.ico">
-    <title>Movie Buddy | Ticket Price</title>
+    <!-- Header -->
+    <jsp:include page="./components/header.jsp" />
 </head>
 
 <body>
     <!-- Navigation bar -->
-    <jsp:include page="./${S.NAV_BAR_PAGE}" />
-    <div id="custom-scroll">
+    <jsp:include page="./components/navbar.jsp" />
+    <div class="custom-scroll">
         <div class="main">
             <!-- Page content -->
             <div class="container">
                 <!-- Current theatre name -->
                 <h3>Theatre: ${theatreName}</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.THEATRE}#${theatreId}">&lsaquo;<span>Back</span></a>
+                <a class="custom-link" href="./${S.THEATRE}#${theatreId}">&lsaquo;<span>Back</span></a>
                 <h1 class="display-4 text-center">Ticket Prices</h1>
                 <hr>
                 <!-- Error message -->
-                <div class="errormessagePadding">
-                    <div class="errormessageWrapper">
-                        <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                <div class="errormessage-padding">
+                    <div class="errormessage-wrapper">
+                        <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md"></div>
-                    <div class="col-md">
+                <div class="row justify-content-center">
+                    <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
                         <table>
                             <tr>
                                 <th>Start time</th>
@@ -73,20 +67,20 @@
                                 <th>Actions</th>
                             </tr>
                             <tr>
-                                <td class="inputCell">
+                                <td class="input-cell">
                                     <!-- Input start time -->
-                                    <input form="addTicketPriceForm" style="width: 80px;" name="${S.START_TIME_PARAM}"
+                                    <input form="addTicketPriceForm" name="${S.START_TIME_PARAM}" class="form-control"
                                         type="time" value="${startTimeInput}" />
                                 </td>
-                                <td class="inputCell">
+                                <td class="input-cell" style="width: 110px;">
                                     <!-- Input price -->
-                                    <input form="addTicketPriceForm" style="width: 80px;" name="${S.PRICE_PARAM}"
+                                    <input form="addTicketPriceForm" name="${S.PRICE_PARAM}" class="form-control"
                                         type="number" min="0" step="0.01" ; placeholder="11.50" value="${priceInput}" />
                                 </td>
-                                <td class="inputCell">
+                                <td class="input-cell">
                                     <!-- Add ticket price -->
                                     <form id="addTicketPriceForm" action="${S.TICKET_PRICE_CREATE}" method="POST"
-                                        class="button" onsubmit="return validateTicketPriceForm(this)">
+                                        class="form-button" onsubmit="return validateTicketPriceForm(this)">
                                         <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
                                         <input type="submit" class="btn btn-outline-info" value="Add" />
                                     </form>
@@ -101,7 +95,7 @@
                                     <td>$${ticketPrice.displayPrice()}</td>
                                     <td>
                                         <!-- Delete ticket price -->
-                                        <form action="${S.TICKET_PRICE_DELETE}" method="POST" class="button">
+                                        <form action="${S.TICKET_PRICE_DELETE}" method="POST" class="form-button">
                                             <input type="hidden" name="${S.THEATRE_ID_PARAM}" value="${theatreId}" />
                                             <input type="hidden" name="${S.START_TIME_PARAM}"
                                                 value="${ticketPrice.getStartTime()}" />
@@ -112,23 +106,17 @@
                             </c:forEach>
                         </table>
                     </div>
-                    <div class="col-md"></div>
                 </div>
             </div>
         </div>
         <!-- Footer -->
         <div class="footer">
-            <jsp:include page="./${S.FOOTER_PAGE}" />
+            <jsp:include page="./components/footer.jsp" />
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous"></script>
-
-    <script src="./js/functions.js"></script>
-    <script src="./js/validation.js"></script>
+    <!-- Script import -->
+    <jsp:include page="./components/script.jsp" />
 </body>
 
 </html>

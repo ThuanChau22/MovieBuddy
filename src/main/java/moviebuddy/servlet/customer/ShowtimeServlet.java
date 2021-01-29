@@ -15,24 +15,25 @@ import java.util.LinkedList;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
+import moviebuddy.dao.MovieDAO;
 import moviebuddy.dao.ScheduleDAO;
 import moviebuddy.model.Movie;
+import moviebuddy.model.Schedule;
 import moviebuddy.util.V;
 import moviebuddy.util.S;
 
-@WebServlet("/" + S.HOME)
-public class HomeServlet extends HttpServlet {
-    private static final long serialVersionUID = 156345443434387L;
+@WebServlet("/" + S.SHOWTIME)
+public class ShowtimeServlet extends HttpServlet {
+    private static final long serialVersionUID = -4284277343704694564L;
 
-    private final static int NUMBER_OF_DAYS = 30;
-    private static LocalDate initDate;
+    final static int NUMBER_OF_DAYS = 30;
 
+    private MovieDAO movieDAO;
     private ScheduleDAO scheduleDAO;
     private Gson gson;
 
     public void init() {
-        initDate = LocalDate.now(ZoneId.of("UTC-8"));
-        S.initSchedule();
+        movieDAO = new MovieDAO();
         scheduleDAO = new ScheduleDAO();
         gson = new Gson();
     }
@@ -48,24 +49,19 @@ public class HomeServlet extends HttpServlet {
             session.removeAttribute(S.ERROR_MESSAGE);
 
             // Sanitize user inputs
+            String movieId = V.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
             String selectedDate = V.sanitize(request.getParameter(S.DATE_PARAM));
 
             // Get current theatre id
             request.getRequestDispatcher(S.LOCATION).include(request, response);
             String theatreId = "";
-            Object theatreIdObj = session.getAttribute(S.CURRENT_THEATRE_ID);
+            Object theatreIdObj = request.getSession().getAttribute(S.CURRENT_THEATRE_ID);
             if (theatreIdObj != null) {
                 theatreId = theatreIdObj.toString();
             }
 
             // Set current date
             LocalDate currentDate = LocalDate.now(ZoneId.of("UTC-8"));
-
-            // Generate schedule on new date
-            if (currentDate.isAfter(initDate)) {
-                initDate = currentDate;
-                S.initSchedule();
-            }
 
             // Validate user inputs
             if (selectedDate.isEmpty() || !V.validateDate(selectedDate).isEmpty()
@@ -86,16 +82,25 @@ public class HomeServlet extends HttpServlet {
             }
             request.setAttribute("dateList", dates);
 
-            // Retrieve list of movie schedules on selected date
-            List<Movie> schedules = scheduleDAO.listSchedulesByDate(theatreId, selectedDate);
-            request.setAttribute("scheduleListEmpty", true);
-            if (!schedules.isEmpty()) {
-                request.setAttribute("scheduleListEmpty", false);
-                request.setAttribute("scheduleList", schedules);
-            }
+            // Retrieve movie info
+            Movie movie = movieDAO.getMovieById(movieId);
+            if (movie != null) {
+                request.setAttribute("movie", movie);
 
-            // Forward to Home page
-            request.getRequestDispatcher(S.HOME_PAGE).forward(request, response);
+                // Retrieve schedules from movie Id on selected date
+                List<Schedule> schedules = scheduleDAO.listSchedulesByMovieDate(theatreId, movieId, selectedDate);
+                request.setAttribute("scheduleListEmpty", true);
+                if (!schedules.isEmpty()) {
+                    request.setAttribute("scheduleListEmpty", false);
+                    request.setAttribute("scheduleList", schedules);
+                }
+
+                // Forward to Home page
+                request.getRequestDispatcher(S.SHOWTIME_PAGE).forward(request, response);
+            } else {
+                // Redirect to Home page
+                response.sendRedirect(S.HOME);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect(S.ERROR);
@@ -106,6 +111,7 @@ public class HomeServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             // Sanitize user inputs
+            String movieId = V.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
             String selectedDate = V.sanitize(request.getParameter(S.DATE_PARAM));
 
             // Get current theatre id
@@ -115,10 +121,10 @@ public class HomeServlet extends HttpServlet {
                 theatreId = theatreIdObj.toString();
             }
 
-            // Retrieve list of movie schedules on selected date
-            List<Movie> schedules = new LinkedList<>();
-            if (!theatreId.isEmpty() && !selectedDate.isEmpty()) {
-                schedules = scheduleDAO.listSchedulesByDate(theatreId, selectedDate);
+            // Retrieve schedules from movie Id on selected date
+            List<Schedule> schedules = new LinkedList<>();
+            if (!theatreId.isEmpty() && !movieId.isEmpty() && !selectedDate.isEmpty()) {
+                schedules = scheduleDAO.listSchedulesByMovieDate(theatreId, movieId, selectedDate);
             }
 
             // POJO to JSON

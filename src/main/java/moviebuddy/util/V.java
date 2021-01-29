@@ -6,17 +6,22 @@ import java.time.LocalTime;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
-public class Validation {
+public class V {
     private static final int USERNAME_MIN_LENGTH = 2;
     private static final int USERNAME_MAX_LENGTH = 20;
     private static final int PASSWORD_MIN_LENGTH = 8;
     private static final int STAFF_ID_LENGTH = 6;
 
-    private Validation() {
+    private V() {
     }
 
     public static String sanitize(String input) {
         return input != null ? Jsoup.clean(input.trim(), Whitelist.none()) : "";
+    }
+
+    public static String extractSrc(String html) {
+        String val = Jsoup.parse(html).select("iframe").attr("src");
+        return !val.isEmpty() ? val : html;
     }
 
     public static String validateSignUpForm(String userName, String email, String password, String rePassword) {
@@ -130,9 +135,9 @@ public class Validation {
         return "";
     }
 
-    public static String validateMovieForm(String title, String releaseDate, String duration, String trailer,
+    public static String validateMovieForm(String title, String releaseDate, String duration, long poster, long trailer,
             String description) {
-        if (title.isEmpty() || releaseDate.isEmpty() || duration.isEmpty() || trailer.isEmpty()
+        if (title.isEmpty() || releaseDate.isEmpty() || duration.isEmpty() || poster < 1 || trailer < 1
                 || description.isEmpty()) {
             return "* required fields";
         }
@@ -147,22 +152,32 @@ public class Validation {
     }
 
     public static String validateScheduleForm(String showDate, String startTime, String roomNumber) {
-        if(showDate.isEmpty()){
+        if (showDate.isEmpty()) {
             return "Please enter show date";
         }
         String errorMessage = validateDate(showDate);
-        if(!errorMessage.isEmpty()){
+        if (!errorMessage.isEmpty()) {
             return errorMessage;
         }
-        if(startTime.isEmpty()){
+        if (startTime.isEmpty()) {
             return "Please enter start time";
         }
         errorMessage = validateTime(startTime);
-        if(!errorMessage.isEmpty()){
+        if (!errorMessage.isEmpty()) {
             return errorMessage;
         }
-        if(roomNumber.isEmpty()){
+        if (roomNumber.isEmpty()) {
             return "Please select a room";
+        }
+        return "";
+    }
+
+    public static String validateZipCodeForm(String zip) {
+        if (zip.isEmpty()) {
+            return "Please enter zipcode";
+        }
+        if (!validateNumber(zip).isEmpty()) {
+            return "Invalid zip code";
         }
         return "";
     }

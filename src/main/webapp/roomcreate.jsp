@@ -35,34 +35,28 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="icon" href="./images/MovieBuddy.ico">
-    <title>Movie Buddy | Manage Theatre</title>
+    <!-- Header -->
+    <jsp:include page="./components/header.jsp" />
 </head>
 
 <body>
     <!-- Navigation bar -->
-    <jsp:include page="./${S.NAV_BAR_PAGE}" />
-    <div id="custom-scroll">
+    <jsp:include page="./components/navbar.jsp" />
+    <div class="custom-scroll">
         <div class="main">
             <!-- Page content -->
             <div class="container">
                 <!-- Current theatre name -->
                 <h3>Theatre: ${theatreName}</h3>
                 <hr>
-                <a class="inputAsLink"
+                <a class="custom-link"
                     href="./${S.ROOM}?${S.THEATRE_ID_PARAM}=${theatreId}">&lsaquo;<span>Back</span></a>
                 <h1 class="display-4 text-center">Upload Room Information</h1>
                 <hr>
-                <div class="row">
-                    <div class="col-md-4"></div>
-                    <div class="col-md">
-                        <!-- Error message -->
-                        <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                <!-- Error message -->
+                <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-5">
                         <!-- Upload room information form -->
                         <form id="createRoomForm" action="${S.ROOM_CREATE}" method="POST"
                             onsubmit="return validateRoomForm(this)">
@@ -73,28 +67,32 @@
                             <!-- Input room number -->
                             <div class="form-group">
                                 <label>Room Number</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.ROOM_NUMBER_PARAM}" type="number" min="1"
-                                    placeholder="Enter room number" onkeyup="checkRoomNumber(this)"
-                                    value="${roomNumberInput}" />
-                                <br>
+                                <div style="position: relative">
+                                    <input class="form-control" name="${S.ROOM_NUMBER_PARAM}" type="text"
+                                        placeholder="Enter room number" onkeyup="checkRoomNumber(this)"
+                                        value="${roomNumberInput}" style="padding-right: 30px;" />
+                                    <div class="spinner-wrapper">
+                                        <span id="roomNumberSpinner"></span>
+                                    </div>
+                                </div>
                                 <!-- Room number error -->
                                 <span id="roomNumberError" class="errormessage"></span>
                             </div>
                             <!-- Input number of sections -->
                             <div class="form-group">
                                 <label>Sections</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.SECTIONS_PARAM}" type="number" min="1"
-                                    placeholder="Number of sections" value="${sectionsInput}" />
-                                <br>
+                                <input class="form-control" name="${S.SECTIONS_PARAM}" type="text"
+                                    placeholder="Enter number of sections" onkeyup="checkSections(this)"
+                                    value="${sectionsInput}" />
                                 <!-- Sections error -->
                                 <span id="sectionsError" class="errormessage"></span>
                             </div>
                             <!-- Input seats per section -->
                             <div class="form-group">
                                 <label>Seats</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.SEATS_PARAM}" type="number" min="1"
-                                    placeholder="Seats per section" value="${seatsInput}" />
-                                <br>
+                                <input class="form-control" name="${S.SEATS_PARAM}" type="text"
+                                    placeholder="Enter seats per section" onkeyup="checkSeats(this)"
+                                    value="${seatsInput}" />
                                 <!-- Seats error -->
                                 <span id="seatsError" class="errormessage"></span>
                             </div>
@@ -103,23 +101,17 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-md-4"></div>
                 </div>
             </div>
         </div>
         <!-- Footer -->
         <div class="footer">
-            <jsp:include page="./${S.FOOTER_PAGE}" />
+            <jsp:include page="./components/footer.jsp" />
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous"></script>
-
-    <script src="./js/functions.js"></script>
-    <script src="./js/validation.js"></script>
+    <!-- Script import -->
+    <jsp:include page="./components/script.jsp" />
 </body>
 
 </html>

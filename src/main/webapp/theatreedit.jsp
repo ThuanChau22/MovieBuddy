@@ -37,32 +37,26 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="icon" href="./images/MovieBuddy.ico">
-    <title>Movie Buddy | Manage Theatre</title>
+    <!-- Header -->
+    <jsp:include page="./components/header.jsp" />
 </head>
 
 <body>
     <!-- Navigation bar -->
-    <jsp:include page="./${S.NAV_BAR_PAGE}" />
-    <div id="custom-scroll">
+    <jsp:include page="./components/navbar.jsp" />
+    <div class="custom-scroll">
         <div class="main">
             <!-- Page content -->
             <div class="container">
                 <h3>Manage Theatre</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.THEATRE}#${theatreId}">&lsaquo;<span>Back</span></a>
+                <a class="custom-link" href="./${S.THEATRE}#${theatreId}">&lsaquo;<span>Back</span></a>
                 <h1 class="display-4 text-center">Edit Theatre Information</h1>
                 <hr>
-                <div class="row">
-                    <div class="col-lg-3"></div>
-                    <div class="col-lg">
-                        <!-- Error message -->
-                        <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                <!-- Error message -->
+                <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6">
                         <!-- Edit theatre information form -->
                         <form id="editTheatreForm" action="${S.THEATRE_EDIT}" method="POST"
                             onsubmit="return validateTheatreForm(this)">
@@ -77,28 +71,33 @@
                             <!-- Input theatre name -->
                             <div class="form-group">
                                 <label>Theatre Name</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.THEATRE_NAME_PARAM}" type="text"
-                                    placeholder="Buddy###" onkeyup="checkTheatreName(this)" value="${nameInput}" />
-                                <br>
+                                <div style="position: relative">
+                                    <input class="form-control" name="${S.THEATRE_NAME_PARAM}" type="text"
+                                        placeholder="Buddy###" onkeyup="checkTheatreName(this)" value="${nameInput}"
+                                        style="padding-right: 30px;" />
+                                    <div class="spinner-wrapper">
+                                        <span id="theatreNameSpinner"></span>
+                                    </div>
+                                </div>
                                 <!-- Theatre name error -->
                                 <span id="theatreNameError" class="errormessage"></span>
                             </div>
                             <!-- Input address -->
                             <div class="form-group">
                                 <label>Address</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.ADDRESS_PARAM}" type="text" placeholder="1234 Main St"
-                                    value="${addressInput}" />
+                                <input class="form-control" name="${S.ADDRESS_PARAM}" type="text"
+                                    placeholder="1234 Main St" value="${addressInput}" />
                             </div>
                             <!-- Input city -->
                             <div class="form-group">
                                 <label>City</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.CITY_PARAM}" type="text" placeholder="San Francisco"
-                                    value="${cityInput}" />
+                                <input class="form-control" name="${S.CITY_PARAM}" type="text"
+                                    placeholder="San Francisco" value="${cityInput}" />
                             </div>
                             <!-- input state -->
                             <div class="form-group">
                                 <label>State</label><span class="errormessage">*</span><br>
-                                <select id="state" class="inputbox" name="${S.STATE_PARAM}">
+                                <select id="state" class="custom-select" name="${S.STATE_PARAM}">
                                     <option id="default" hidden selected value="">Select a State</option>
                                     <option value="AL">Alabama</option>
                                     <option value="AK">Alaska</option>
@@ -156,15 +155,14 @@
                             <!-- Input country -->
                             <div class="form-group">
                                 <label>Country</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.COUNTRY_PARAM}" type="text" placeholder="USA"
+                                <input class="form-control" name="${S.COUNTRY_PARAM}" type="text" placeholder="USA"
                                     value="${countryInput}" />
                             </div>
                             <!-- Input zip code -->
                             <div class="form-group">
                                 <label>Zip Code</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.ZIP_PARAM}" type="text" placeholder="12345"
+                                <input class="form-control" name="${S.ZIP_PARAM}" type="text" placeholder="12345"
                                     onkeyup="checkZip(this)" value="${zipInput}" />
-                                <br>
                                 <!-- Zip code error -->
                                 <span id="zipError" class="errormessage"></span>
                             </div>
@@ -181,32 +179,24 @@
                             </div>
                         </form>
                         <div class="text-center">
-                            <div class="button">
-                                <input form="editTheatreForm" type="submit" class="btn btn-outline-info" value="Save">
-                            </div>
-                            <div class="button">
-                                <input form="cancelTheatreForm" type="submit" class="btn btn-outline-info"
-                                    value="Cancel" />
-                            </div>
+                            <input form="editTheatreForm" type="submit" class="btn btn-outline-info" value="Save">
+                            <input form="cancelTheatreForm" type="submit" class="btn btn-outline-info" value="Cancel" />
                         </div>
                     </div>
-                    <div class="col-lg-3"></div>
                 </div>
             </div>
         </div>
         <!-- Footer -->
         <div class="footer">
-            <jsp:include page="./${S.FOOTER_PAGE}" />
+            <jsp:include page="./components/footer.jsp" />
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous"></script>
+    <!-- Script import -->
+    <jsp:include page="./components/script.jsp" />
 
-    <script src="./js/functions.js"></script>
-    <script src="./js/validation.js"></script>
+
+    <!-- Load previous state input -->
     <script>
         loadSelectedOption("#default", "#state", "${stateInput}");
     </script>

@@ -32,19 +32,14 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="icon" href="./images/MovieBuddy.ico">
-    <title>Movie Buddy | Manage Movie</title>
+    <!-- Header -->
+    <jsp:include page="./components/header.jsp" />
 </head>
 
 <body>
     <!-- Navigation bar -->
-    <jsp:include page="./${S.NAV_BAR_PAGE}" />
-    <div id="custom-scroll">
+    <jsp:include page="./components/navbar.jsp" />
+    <div class="custom-scroll">
         <div class="main">
             <!-- Page content -->
             <div class="container">
@@ -52,24 +47,21 @@
                 <hr>
                 <!-- Upload movie information -->
                 <c:if test="${isAdmin}">
-                    <div class="row">
-                        <div class="col"></div>
-                        <div class="col-6 text-center">
-                            <a href="./${S.MOVIE_CREATE}">
-                                <button type="button" class="btn btn-outline-info">Add Movie</button>
-                            </a>
-                        </div>
-                        <div class="col"></div>
+                    <div class="text-center">
+                        <a href="./${S.MOVIE_CREATE}">
+                            <button type="button" class="btn btn-outline-info">Add Movie</button>
+                        </a>
                     </div>
                     <hr>
                 </c:if>
                 <div class="container">
                     <!-- Error message -->
-                    <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                    <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                     <c:choose>
                         <c:when test="${!movieListEmpty}">
                             <c:forEach items="${movieList}" var="movie">
-                                <div class="card">
+                                <!-- Movie id for anchor -->
+                                <div class="card" id="${movie.getId()}">
                                     <div class="card-body">
                                         <div class="row">
                                             <!-- Movie title -->
@@ -99,10 +91,10 @@
                                                 <!-- Movie trailer -->
                                                 <h3>Trailer</h3>
                                                 <div class="embed-responsive embed-responsive-16by9">
-                                                    <iframe width="907" height="510" src="${movie.getTrailer()}"
-                                                        frameborder="0"
-                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                        allowfullscreen></iframe>
+                                                    <video width="907" height="510" controls>
+                                                        <source src="${movie.getTrailer()}" type="video/mp4">
+                                                        Video not available.
+                                                    </video>
                                                 </div>
                                                 <hr>
                                                 <!-- Movie description -->
@@ -111,34 +103,28 @@
                                             </div>
                                         </div>
                                         <hr>
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="container">
-                                                    <!-- Schedule movie -->
-                                                    <form action="${S.SCHEDULE}" method="GET" class="button">
-                                                        <input type="hidden" name="${S.MOVIE_ID_PARAM}"
-                                                            value=${movie.getId()} />
-                                                        <input type="submit" class="btn btn-outline-info"
-                                                            value="Schedule" />
-                                                    </form>
-                                                    <c:if test="${isAdmin}">
-                                                        <!-- Edit movie information -->
-                                                        <form action="${S.MOVIE_EDIT}" method="GET" class="button">
-                                                            <input type="hidden" name="${S.MOVIE_ID_PARAM}"
-                                                                value=${movie.getId()} />
-                                                            <input type="submit" class="btn btn-outline-info"
-                                                                value="Edit" />
-                                                        </form>
-                                                        <!-- Delete movie information -->
-                                                        <form action="${S.MOVIE_DELETE}" method="POST" class="button">
-                                                            <input type="hidden" name="${S.MOVIE_ID_PARAM}"
-                                                                value=${movie.getId()} />
-                                                            <input type="submit" class="btn btn-outline-danger"
-                                                                value="Delete" />
-                                                        </form>
-                                                    </c:if>
-                                                </div>
-                                            </div>
+                                        <div class="container" style="overflow-x: auto;">
+                                            <!-- Schedule movie -->
+                                            <form action="${S.SCHEDULE}" method="GET" class="list-button">
+                                                <input type="hidden" name="${S.MOVIE_ID_PARAM}"
+                                                    value=${movie.getId()} />
+                                                <input type="submit" class="btn btn-outline-info" value="Schedule" />
+                                            </form>
+                                            <c:if test="${isAdmin}">
+                                                <!-- Edit movie information -->
+                                                <form action="${S.MOVIE_EDIT}" method="GET" class="list-button">
+                                                    <input type="hidden" name="${S.MOVIE_ID_PARAM}"
+                                                        value=${movie.getId()} />
+                                                    <input type="submit" class="btn btn-outline-info" value="Edit" />
+                                                </form>
+                                                <!-- Delete movie information -->
+                                                <form action="${S.MOVIE_DELETE}" method="POST" class="list-button">
+                                                    <input type="hidden" name="${S.MOVIE_ID_PARAM}"
+                                                        value=${movie.getId()} />
+                                                    <input type="submit" class="btn btn-outline-danger"
+                                                        value="Delete" />
+                                                </form>
+                                            </c:if>
                                         </div>
                                     </div>
                                 </div>
@@ -159,17 +145,12 @@
         </div>
         <!-- Footer -->
         <div class="footer">
-            <jsp:include page="./${S.FOOTER_PAGE}" />
+            <jsp:include page="./components/footer.jsp" />
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous"></script>
-
-    <script src="./js/functions.js"></script>
-    <script src="./js/validation.js"></script>
+    <!-- Script import -->
+    <jsp:include page="./components/script.jsp" />
 </body>
 
 </html>

@@ -37,30 +37,24 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="icon" href="./images/MovieBuddy.ico">
-    <title>Movie Buddy | Manage Staff</title>
+    <!-- Header -->
+    <jsp:include page="./components/header.jsp" />
 </head>
 
 <body>
     <!-- Navigation bar -->
-    <jsp:include page="./${S.NAV_BAR_PAGE}" />
-    <div id="custom-scroll">
+    <jsp:include page="./components/navbar.jsp" />
+    <div class="custom-scroll">
         <div class="main">
             <!-- Page content -->
             <div class="container">
                 <h3>Manage Staff</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.STAFF}">&lsaquo;<span>Back</span></a>
+                <a class="custom-link" href="./${S.STAFF}">&lsaquo;<span>Back</span></a>
                 <h1 class="display-4 text-center">Create Staff Account</h1>
                 <hr>
-                <div class="row">
-                    <div class="col-lg"></div>
-                    <div class="col-lg-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-7 col-lg-5">
                         <div class="card">
                             <div class="card-body">
                                 <!-- Create staff account form -->
@@ -70,7 +64,7 @@
                                         <!-- Input role -->
                                         <div class="form-group">
                                             <label>Role</label><br>
-                                            <select id="role" class="inputbox" name="${S.ROLE_PARAM}"
+                                            <select id="role" class="custom-select" name="${S.ROLE_PARAM}"
                                                 form="staffCreateForm" onchange="checkRole(this)">
                                                 <option id="defaultRole" hidden value="">Select a role</option>
                                                 <c:forEach items="${roleList}" var="role">
@@ -83,7 +77,7 @@
                                         <!-- Input location -->
                                         <div class="form-group" id="locationForm">
                                             <label>Theatre Location</label><br>
-                                            <select id="theatreLocation" class="inputbox"
+                                            <select id="theatreLocation" class="custom-select"
                                                 name="${S.THEATRE_LOCATION_PARAM}" form="staffCreateForm"
                                                 onchange="checkLocation(this)">
                                                 <option id="defaultLocation" hidden value="">Select a theatre location
@@ -100,7 +94,6 @@
                                                         <option disabled value="">empty</option>
                                                     </c:otherwise>
                                                 </c:choose>
-
                                             </select>
                                             <!-- Location error -->
                                             <span id="locationError" class="errormessage"></span>
@@ -109,28 +102,31 @@
                                     <!-- Input name -->
                                     <div class="form-group">
                                         <label>Name</label><br>
-                                        <input class="inputbox" type="text" name="${S.USERNAME_PARAM}"
+                                        <input class="form-control" type="text" name="${S.USERNAME_PARAM}"
                                             placeholder="Enter your name" onkeyup="checkName(this)"
                                             value="${userNameInput}">
-                                        <br>
                                         <!-- Name error -->
                                         <span id="userNameError" class="errormessage"></span>
                                     </div>
                                     <!-- Input email -->
                                     <div class="form-group">
                                         <label>Email</label><br>
-                                        <input name="${S.EMAIL_PARAM}" class="inputbox" type="text"
-                                            placeholder="Enter email" onkeyup="checkEmail(this)" value="${emailInput}">
-                                        <br>
+                                        <div style="position: relative">
+                                            <input class="form-control" name="${S.EMAIL_PARAM}" type="text"
+                                                placeholder="Enter email" onkeyup="checkEmail(this)"
+                                                value="${emailInput}" style="padding-right: 30px;">
+                                            <div class="spinner-wrapper">
+                                                <span id="emailSpinner"></span>
+                                            </div>
+                                        </div>
                                         <!-- Email error -->
                                         <span id="emailError" class="errormessage"></span>
                                     </div>
                                     <!-- Input password -->
                                     <div class="form-group">
                                         <label>Password</label><br>
-                                        <input name="${S.PASSWORD_PARAM}" class="inputbox" type="password"
+                                        <input name="${S.PASSWORD_PARAM}" class="form-control" type="password"
                                             placeholder="Enter password" onkeyup="checkPassword(this)">
-                                        <br>
                                         <!-- Password error -->
                                         <span id="passwordError" class="errormessage"></span>
                                     </div>
@@ -139,27 +135,22 @@
                                     </div>
                                 </form>
                                 <!-- Error message -->
-                                <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                                <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg"></div>
                 </div>
             </div>
         </div>
         <!-- Footer -->
         <div class="footer">
-            <jsp:include page="./${S.FOOTER_PAGE}" />
+            <jsp:include page="./components/footer.jsp" />
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous"></script>
+    <!-- Script import -->
+    <jsp:include page="./components/script.jsp" />
 
-    <script src="./js/functions.js"></script>
-    <script src="./js/validation.js"></script>
     <c:if test="${isAdmin}">
         <!-- Load previous inputs -->
         <script>

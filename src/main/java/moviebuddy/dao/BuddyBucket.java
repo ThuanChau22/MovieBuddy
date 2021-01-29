@@ -12,25 +12,27 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
 
 public class BuddyBucket {
     private static final String PROFILE = "moviebuddy";
     private static final String BUCKET = "moviebuddy-157a";
-    private static final String DIRECTORY = "posters/";
+    private static final String POSTER_DIR = "posters/";
+    private static final String TRAILER_DIR = "trailers/";
 
-    public static String uploadPoster(int posterId, InputStream posterContent, long posterSize) {
+    public static String uploadPoster(String posterId, InputStream content, long size) {
         try {
             AWSCredentials credentials = new ProfileCredentialsProvider(PROFILE).getCredentials();
             AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
                     .withCredentials(new AWSStaticCredentialsProvider(credentials)).withRegion(Regions.US_WEST_1)
                     .build();
-
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType("image/jpeg");
-            metadata.setContentLength(posterSize);
-            PutObjectRequest request = new PutObjectRequest(BUCKET, DIRECTORY + posterId, posterContent, metadata);
+            metadata.setContentLength(size);
+            String objectKey = POSTER_DIR + posterId;
+            PutObjectRequest request = new PutObjectRequest(BUCKET, objectKey, content, metadata);
             s3Client.putObject(request);
-            return s3Client.getUrl(BUCKET, DIRECTORY + posterId).toString();
+            return s3Client.getUrl(BUCKET, objectKey).toString() + "?" + LocalDateTime.now();
         } catch (AmazonServiceException ase) {
             serverExceptionMessage(ase);
         } catch (AmazonClientException ace) {
@@ -39,14 +41,48 @@ public class BuddyBucket {
         return "";
     }
 
-    public static void deletePoster(int posterId) {
+    public static void deletePoster(String posterId) {
         try {
             AWSCredentials credentials = new ProfileCredentialsProvider(PROFILE).getCredentials();
             AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
                     .withCredentials(new AWSStaticCredentialsProvider(credentials)).withRegion(Regions.US_WEST_1)
                     .build();
+            s3Client.deleteObject(BUCKET, POSTER_DIR + posterId);
+        } catch (AmazonServiceException ase) {
+            serverExceptionMessage(ase);
+        } catch (AmazonClientException ace) {
+            clientExceptionMessage(ace);
+        }
+    }
 
-            s3Client.deleteObject(BUCKET, DIRECTORY + posterId);
+    public static String uploadTrailer(String trailerId, InputStream content, long size) {
+        try {
+            AWSCredentials credentials = new ProfileCredentialsProvider(PROFILE).getCredentials();
+            AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
+                    .withCredentials(new AWSStaticCredentialsProvider(credentials)).withRegion(Regions.US_WEST_1)
+                    .build();
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("video/mp4");
+            metadata.setContentLength(size);
+            String objectKey = TRAILER_DIR + trailerId;
+            PutObjectRequest request = new PutObjectRequest(BUCKET, objectKey, content, metadata);
+            s3Client.putObject(request);
+            return s3Client.getUrl(BUCKET, objectKey).toString() + "?" + LocalDateTime.now();
+        } catch (AmazonServiceException ase) {
+            serverExceptionMessage(ase);
+        } catch (AmazonClientException ace) {
+            clientExceptionMessage(ace);
+        }
+        return "";
+    }
+
+    public static void deleteTrailer(String trailerId) {
+        try {
+            AWSCredentials credentials = new ProfileCredentialsProvider(PROFILE).getCredentials();
+            AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
+                    .withCredentials(new AWSStaticCredentialsProvider(credentials)).withRegion(Regions.US_WEST_1)
+                    .build();
+            s3Client.deleteObject(BUCKET, TRAILER_DIR + trailerId);
         } catch (AmazonServiceException ase) {
             serverExceptionMessage(ase);
         } catch (AmazonClientException ace) {

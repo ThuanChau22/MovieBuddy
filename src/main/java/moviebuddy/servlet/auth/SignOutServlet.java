@@ -16,7 +16,7 @@ import moviebuddy.util.S;
 public class SignOutServlet extends HttpServlet {
     private static final long serialVersionUID = -5845132156063049133L;
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();

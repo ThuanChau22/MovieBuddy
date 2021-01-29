@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import moviebuddy.dao.TheatreDAO;
 import moviebuddy.model.Theatre;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.ROOM_CREATE)
@@ -43,7 +43,7 @@ public class RoomCreateServlet extends HttpServlet {
                 session.removeAttribute(S.ERROR_MESSAGE);
 
                 // Sanitize parameter
-                String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
+                String theatreId = V.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
 
                 // Check whether theatre id existed
                 Theatre theatre = theatreDAO.getTheatreById(theatreId);
@@ -76,13 +76,13 @@ public class RoomCreateServlet extends HttpServlet {
             // Check authorized access as admin
             if (role != null && role.equals(S.ADMIN)) {
                 // Sanitize user inputs
-                String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
-                String roomNumber = Validation.sanitize(request.getParameter(S.ROOM_NUMBER_PARAM));
-                String sections = Validation.sanitize(request.getParameter(S.SECTIONS_PARAM));
-                String seats = Validation.sanitize(request.getParameter(S.SEATS_PARAM));
+                String theatreId = V.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
+                String roomNumber = V.sanitize(request.getParameter(S.ROOM_NUMBER_PARAM));
+                String sections = V.sanitize(request.getParameter(S.SECTIONS_PARAM));
+                String seats = V.sanitize(request.getParameter(S.SEATS_PARAM));
 
                 // Validate user inputs
-                String errorMessage = Validation.validateRoomForm(roomNumber, sections, seats);
+                String errorMessage = V.validateRoomForm(roomNumber, sections, seats);
                 if(errorMessage.isEmpty() && theatreDAO.getRoomById(theatreId, roomNumber) != null) {
                     errorMessage = "Room number already existed";
                 }

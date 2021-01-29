@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import moviebuddy.dao.TheatreDAO;
 import moviebuddy.model.Theatre;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.TICKET_PRICE)
@@ -40,7 +40,7 @@ public class TicketPriceServlet extends HttpServlet {
                 session.removeAttribute(S.ERROR_MESSAGE);
 
                 // Sanitize parameter
-                String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
+                String theatreId = V.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
 
                 // Retrieve theatre information
                 Theatre theatre = theatreDAO.getTheatreById(theatreId);

@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.io.IOException;
 
 import moviebuddy.dao.UserDAO;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.FIND_REGISTERED_EMAIL)
@@ -26,19 +26,21 @@ public class FindRegisteredEmailServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            response.setContentType("text/plain");
-            response.setCharacterEncoding("UTF-8");
-            PrintWriter out = response.getWriter();
-
             //Sanitize parameter
-            String email = Validation.sanitize(request.getParameter(S.EMAIL_PARAM));
+            String email = V.sanitize(request.getParameter(S.EMAIL_PARAM));
 
             //Check for duplicated email
+            String result = "";
             if (userDAO.getRegisteredUser(email) != null) {
-                out.print("Email is already registered\n");
-            } else {
-                out.print("");
+                result = "Email is already registered\n";
             }
+
+            // Sending response
+            PrintWriter out = response.getWriter();
+            response.setContentType("text/plain");
+            response.setCharacterEncoding("UTF-8");
+            out.print(result);
+            out.flush();
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect(S.ERROR);

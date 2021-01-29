@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import moviebuddy.dao.UserDAO;
 import moviebuddy.model.User;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.STAFF_DELETE)
@@ -32,7 +32,7 @@ public class StaffDeleteServlet extends HttpServlet {
             // Check authorized access as admin and manger
             if (role != null && (role.equals(S.ADMIN) || role.equals(S.MANAGER))) {
                 // Sanitize parameter
-                String staffId = Validation.sanitize(request.getParameter(S.STAFF_ID_PARAM));
+                String staffId = V.sanitize(request.getParameter(S.STAFF_ID_PARAM));
 
                 // Check unauthorized deletion
                 String errorMessage = "";

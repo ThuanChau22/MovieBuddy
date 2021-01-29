@@ -29,44 +29,36 @@
     // ${titleInput}
     // ${releaseDateInput}
     // ${durationInput}
-    // ${trailerInput}
     // ${descriptionInput}
     // ${errorMessage}
 %>
 <html lang="en">
 
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="icon" href="./images/MovieBuddy.ico">
-    <title>Movie Buddy | Manage Movie</title>
+    <!-- Header -->
+    <jsp:include page="./components/header.jsp" />
 </head>
 
 <body>
     <!-- Navigation bar -->
-    <jsp:include page="./${S.NAV_BAR_PAGE}" />
-    <div id="custom-scroll">
+    <jsp:include page="./components/navbar.jsp" />
+    <div class="custom-scroll">
         <div class="main">
             <!-- Page content -->
             <div class="container">
                 <h3>Manage Movie</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.MOVIE}#${movieId}">&lsaquo;<span>Back</span></a>
+                <a class="custom-link" href="./${S.MOVIE}#${movieId}">&lsaquo;<span>Back</span></a>
                 <h1 class="display-4 text-center">Edit Movie Information</h1>
                 <hr>
                 <div class="row">
                     <div class="col-lg-3"></div>
                     <div class="col-lg">
                         <!-- Error message -->
-                        <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                        <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                         <!-- Edit movie information form -->
                         <form id="editMovieForm" action="${S.MOVIE_EDIT}" method="POST" enctype="multipart/form-data"
-                            onsubmit="return validateMovieForm(this)">
+                            onsubmit="return validateMovieForm(this, false)">
                             <!-- Save hook -->
                             <div class="form-group">
                                 <input type="hidden" name="${S.ACTION_PARAM}" value="${S.ACTION_SAVE}" />
@@ -78,36 +70,44 @@
                             <!-- Input title -->
                             <div class="form-group">
                                 <label>Title</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.TITLE_PARAM}" type="text" placeholder="Enter title"
-                                    value="${titleInput}" />
+                                <input class="form-control" name="${S.TITLE_PARAM}" type="text"
+                                    placeholder="Enter title" value="${titleInput}" />
                             </div>
                             <!-- Input release date -->
                             <div class="form-group">
                                 <label>Release Date</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.RELEASE_DATE_PARAM}" type="date"
+                                <input class="form-control" name="${S.RELEASE_DATE_PARAM}" type="date"
                                     value="${releaseDateInput}" />
                             </div>
                             <!-- Input duration -->
                             <div class="form-group">
                                 <label>Duration</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.DURATION_PARAM}" type="text"
-                                    placeholder="Enter duration in minutes" value="${durationInput}" />
-                            </div>
-                            <!-- Input trailer -->
-                            <div class="form-group">
-                                <label>Trailer Source</label><span class="errormessage">*</span><br>
-                                <input class="inputbox" name="${S.TRAILER_PARAM}" type="text"
-                                    placeholder="Enter trailer source..." value="${trailerInput}" />
+                                <input class="form-control" name="${S.DURATION_PARAM}" type="text"
+                                    placeholder="Enter duration in minutes" onkeyup="checkDuration(this)"
+                                    value="${durationInput}" />
+                                <!-- Duration error -->
+                                <span id="durationError" class="errormessage"></span>
                             </div>
                             <!-- Input poster -->
                             <div class="form-group">
                                 <label>Poster</label><br>
-                                <input class="inputbox" name="${S.POSTER_PARAM}" type="file" />
+                                <div class="custom-file">
+                                    <input class="custom-file-input" name="${S.POSTER_PARAM}" type="file" />
+                                    <label class="custom-file-label">Choose file (.jpg)</label>
+                                </div>
+                            </div>
+                            <!-- Input trailer -->
+                            <div class="form-group">
+                                <label>Trailer</label><br>
+                                <div class="custom-file">
+                                    <input class="custom-file-input" name="${S.TRAILER_PARAM}" type="file" />
+                                    <label class="custom-file-label">Choose file (.mp4)</label>
+                                </div>
                             </div>
                             <!-- Input description -->
                             <div class="form-group">
                                 <label>Description</label><span class="errormessage">*</span><br>
-                                <textarea class="inputbox" name="${S.DESCRIPTION_PARAM}" cols="60" rows="5"
+                                <textarea class="form-control" name="${S.DESCRIPTION_PARAM}" cols="60" rows="5"
                                     maxlength="1000" style="resize: none;"
                                     placeholder="Enter movie description...">${descriptionInput}</textarea>
                             </div>
@@ -124,13 +124,8 @@
                             </div>
                         </form>
                         <div class="text-center">
-                            <div class="button">
-                                <input form="editMovieForm" type="submit" class="btn btn-outline-info" value="Save">
-                            </div>
-                            <div class="button">
-                                <input form="cancelMovieForm" type="submit" class="btn btn-outline-info"
-                                    value="Cancel" />
-                            </div>
+                            <input form="editMovieForm" type="submit" class="btn btn-outline-info" value="Save">
+                            <input form="cancelMovieForm" type="submit" class="btn btn-outline-info" value="Cancel" />
                         </div>
                     </div>
                     <div class="col-lg-3"></div>
@@ -139,17 +134,12 @@
         </div>
         <!-- Footer -->
         <div class="footer">
-            <jsp:include page="./${S.FOOTER_PAGE}" />
+            <jsp:include page="./components/footer.jsp" />
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous"></script>
-
-    <script src="./js/functions.js"></script>
-    <script src="./js/validation.js"></script>
+    <!-- Script import -->
+    <jsp:include page="./components/script.jsp" />
 </body>
 
 </html>

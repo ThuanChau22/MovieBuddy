@@ -6,13 +6,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import com.google.maps.model.GeocodingResult;
 
 import java.io.IOException;
 
+import moviebuddy.dao.BuddyLocation;
 import moviebuddy.dao.UserDAO;
+import moviebuddy.model.Theatre;
 import moviebuddy.model.User;
 import moviebuddy.util.Passwords;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.SIGN_IN)
@@ -52,11 +55,11 @@ public class SignInServlet extends HttpServlet {
             HttpSession session = request.getSession();
 
             // Sanitize user inputs
-            String email = Validation.sanitize(request.getParameter(S.EMAIL_PARAM));
-            String password = Validation.sanitize(request.getParameter(S.PASSWORD_PARAM));
+            String email = V.sanitize(request.getParameter(S.EMAIL_PARAM));
+            String password = V.sanitize(request.getParameter(S.PASSWORD_PARAM));
 
             // Validate user inputs
-            String errorMessage = Validation.validateSignInForm(email, password);
+            String errorMessage = V.validateSignInForm(email, password);
 
             // Authenticate user
             if (errorMessage.isEmpty()) {
@@ -68,7 +71,18 @@ public class SignInServlet extends HttpServlet {
                         Passwords.applySHA256(session.getId() + request.getRemoteAddr()));
                     session.setAttribute(S.ACCOUNT_ID, user.getAccountId());
                     session.setAttribute(S.USERNAME, user.getUserName());
-                    session.setAttribute(S.ZIPCODE, user.getZip());
+                    if (user.getZip() != null) {
+                        GeocodingResult origin = BuddyLocation.getLocation(user.getZip());
+                        Theatre closestTheatre = null;
+                        if (origin != null) {
+                            closestTheatre = BuddyLocation.getClosetTheatre(origin.placeId);
+                        }
+                        if (closestTheatre != null) {
+                            session.setAttribute(S.CURRENT_THEATRE_ID, closestTheatre.getId());
+                            session.setAttribute(S.CURRENT_THEATRE_NAME, closestTheatre.getTheatreName());
+                            session.setAttribute(S.ZIPCODE, user.getZip());
+                        }
+                    }
                 } else {
                     errorMessage = "Invalid email/password! Please try again";
                 }

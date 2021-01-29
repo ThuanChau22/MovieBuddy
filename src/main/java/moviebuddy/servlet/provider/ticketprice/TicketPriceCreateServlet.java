@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import moviebuddy.dao.TheatreDAO;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.TICKET_PRICE_CREATE)
@@ -31,12 +31,12 @@ public class TicketPriceCreateServlet extends HttpServlet {
             // Check authorized access as admin
             if (role != null && role.equals(S.ADMIN)) {
                 // Sanitize user inputs
-                String theatreId = Validation.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
-                String startTime = Validation.sanitize(request.getParameter(S.START_TIME_PARAM));
-                String price = Validation.sanitize(request.getParameter(S.PRICE_PARAM));
+                String theatreId = V.sanitize(request.getParameter(S.THEATRE_ID_PARAM));
+                String startTime = V.sanitize(request.getParameter(S.START_TIME_PARAM));
+                String price = V.sanitize(request.getParameter(S.PRICE_PARAM));
 
                 // Validate user inputs
-                String errorMessage = Validation.validateTicketPriceForm(startTime, price);
+                String errorMessage = V.validateTicketPriceForm(startTime, price);
                 if (errorMessage.isEmpty() && theatreDAO.getTicketPrice(theatreId, startTime) != null) {
                     errorMessage = "Ticket price already existed";
                 }

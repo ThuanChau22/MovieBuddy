@@ -42,13 +42,33 @@
     }
 %>
 <nav id="movieBuddyNavBar" class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <a class="navbar-brand" href="./${S.HOME}">
+        <b><span style="color: #17a2b8;">Movie</span><span style="color: #b3b3b3;">Buddy</span></b>
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler"
         aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="./${S.HOME}"><b>Movie Buddy</b></a>
-    <div class="collapse navbar-collapse" id="navbarToggler">
+    <div class="collapse navbar-collapse nav-element" id="navbarToggler">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <!-- Search bar -->
+            <li class="nav-item dropdown">
+                <form action="${S.SEARCH_MOVIE}" method="GET" class="search-form my-lg-0" >
+                    <input id="searchInput" name="title" type="text" class="form-control pr-5" placeholder="Search movie by title">
+                    <div class="spinner-wrapper" style="right: 28px;">
+                        <div id="searchSpinner"></div>
+                    </div>
+                    <button type="submit" class="search-button" onclick="return searchByTitle()">
+                        <span class="material-icons">search</span>
+                    </button>
+                </form>
+                <div id="searchResultMenu" class="dropdown-menu" style="z-index: 1001;">
+                    <button id="closeSearchResult" type="button" class="close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div id="searchResult" class="search-panel custom-scroll"></div>
+                </div>
+            </li>
             <!-- Provider options -->
             <c:if test="${isProvider}">
                 <li class="nav-item dropdown">
@@ -65,24 +85,12 @@
                     </div>
                 </li>
             </c:if>
-            <li class="nav-item active">
-                <!-- Current theatre location form -->
-                <form class="form-inline my-2 my-lg-0">
-                    <label class="mx-2 navbar-brand">Theatre Name</label>
-                    <input class="form-control mr-sm-2" type="search" placeholder="Zip Code" value="${zipcode}">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Enter</button>
-                </form>
-            </li>
         </ul>
         <c:choose>
             <c:when test="${signedIn}">
                 <!-- Signed In -->
-                <form action="" method="POST" class="formAsLink">
-                    <input class="inputAsLink" type="submit" value="${userName}">
-                </form>
-                <form action="${S.SIGN_OUT}" method="POST" class="formAsLink">
-                    <input class="inputAsLink" type="submit" value="Sign Out">
-                </form>
+                <a class="nav-link" href="#">${userName}</a>
+                <a class="nav-link" href="./${S.SIGN_OUT}">Sign Out</a>
             </c:when>
             <c:otherwise>
                 <!-- Signed Out -->
@@ -92,4 +100,4 @@
         </c:choose>
     </div>
 </nav>
-<div class="navbarPadding"></div>
+<div class="navbar-padding"></div>

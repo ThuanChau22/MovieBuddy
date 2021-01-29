@@ -41,26 +41,21 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="icon" href="./images/MovieBuddy.ico">
-    <title>Movie Buddy | Manage Schedule</title>
+    <!-- Header -->
+    <jsp:include page="./components/header.jsp" />
 </head>
 
 <body>
     <!-- Navigation bar -->
-    <jsp:include page="./${S.NAV_BAR_PAGE}" />
-    <div id="custom-scroll">
+    <jsp:include page="./components/navbar.jsp" />
+    <div class="custom-scroll">
         <div class="main">
             <!-- Page content -->
             <div class="container">
                 <!-- Current theatre name -->
                 <h3>Manage Schedule</h3>
                 <hr>
-                <a class="inputAsLink" href="./${S.MOVIE}#${movieId}">&lsaquo;<span>Back</span></a>
+                <a class="custom-link" href="./${S.MOVIE}#${movieId}">&lsaquo;<span>Back</span></a>
                 <!-- Current movie information -->
                 <div class="row">
                     <div class="col-sm-2">
@@ -74,11 +69,13 @@
                 <hr>
                 <!-- List of theatre options -->
                 <c:if test="${isAdmin}">
-                    <form id="selectTheatreForm" action="${S.THEATRE_SELECT}" method="POST">
-                        <div class="form-group">
-                            <label>Theatre: </label>
-                            <select id="theatreOption" name="${S.THEATRE_OPTION_PARAM}" form="selectTheatreForm"
-                                onchange="submitForm('#selectTheatreForm')">
+                    <form id="selectTheatreForm" action="${S.THEATRE_SELECT}" method="POST" class="form-inline">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Theatre</span>
+                            </div>
+                            <select id="theatreOption" name="${S.THEATRE_OPTION_PARAM}" class="custom-select"
+                                onchange="$('#selectTheatreForm').submit();">
                                 <option id="defaultLocation" hidden value="">Select a theatre</option>
                                 <c:choose>
                                     <c:when test="${!theatreListEmpty}">
@@ -96,9 +93,9 @@
                     <hr>
                 </c:if>
                 <!-- Error message -->
-                <div class="errormessagePadding">
-                    <div class="errormessageWrapper">
-                        <p class="text-center errormessage" id="errorMessage">${errorMessage}</p>
+                <div class="errormessage-padding">
+                    <div class="errormessage-wrapper">
+                        <p id="errorMessage" class="text-center errormessage">${errorMessage}</p>
                     </div>
                 </div>
                 <div class="row">
@@ -113,20 +110,21 @@
                                 <th>Actions</th>
                             </tr>
                             <tr>
-                                <td class="inputCell">#</td>
-                                <td class="inputCell">
+                                <td class="input-cell">#</td>
+                                <td class="input-cell" style="width: 100px;">
                                     <!-- Input show date -->
-                                    <input form="addScheduleForm" style="width: 150px;" name="${S.SHOW_DATE_PARAM}"
+                                    <input form="addScheduleForm" name="${S.SHOW_DATE_PARAM}" class="form-control"
                                         type="date" value="${showDateInput}" />
                                 </td>
-                                <td class="inputCell">
+                                <td class="input-cell" style="width: 100px;">
                                     <!-- Input start time -->
-                                    <input form="addScheduleForm" style="width: 80px;" name="${S.START_TIME_PARAM}"
+                                    <input form="addScheduleForm" name="${S.START_TIME_PARAM}" class="form-control"
                                         type="time" value="${startTimeInput}" />
                                 </td>
-                                <td class="inputCell">
+                                <td class="input-cell">
                                     <!-- List of room options -->
-                                    <select id="roomNumber" name="${S.ROOM_NUMBER_PARAM}" form="addScheduleForm">
+                                    <select id="roomNumber" name="${S.ROOM_NUMBER_PARAM}" class="custom-select"
+                                        form="addScheduleForm">
                                         <option id="defaultRoom" hidden value="">Select a room</option>
                                         <c:choose>
                                             <c:when test="${!roomListEmpty}">
@@ -141,10 +139,10 @@
                                         </c:choose>
                                     </select>
                                 </td>
-                                <td class="inputCell">
+                                <td class="input-cell">
                                     <!-- Add schedule form -->
                                     <form id="addScheduleForm" action="${S.SCHEDULE_CREATE}" method="POST"
-                                        class="button" onsubmit="return validateScheduleForm(this)">
+                                        class="form-button" onsubmit="return validateScheduleForm(this)">
                                         <input type="hidden" name="${S.MOVIE_ID_PARAM}" value="${movieId}" />
                                         <input type="submit" class="btn btn-outline-info" value="Add" />
                                     </form>
@@ -163,7 +161,7 @@
                                     <td>Room ${schedule.getRoomNumber()}</td>
                                     <td>
                                         <!-- Delete schedule -->
-                                        <form action="${S.SCHEDULE_DELETE}" method="POST" class="button">
+                                        <form action="${S.SCHEDULE_DELETE}" method="POST" class="form-button">
                                             <input type="hidden" name="${S.MOVIE_ID_PARAM}" value="${movieId}" />
                                             <input type="hidden" name="${S.SCHEDULE_ID_PARAM}"
                                                 value="${schedule.getScheduleId()}" />
@@ -180,23 +178,20 @@
         </div>
         <!-- Footer -->
         <div class="footer">
-            <jsp:include page="./${S.FOOTER_PAGE}" />
+            <jsp:include page="./components/footer.jsp" />
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous"></script>
+    <!-- Script import -->
+    <jsp:include page="./components/script.jsp" />
 
-    <script src="./js/functions.js"></script>
-    <script src="./js/validation.js"></script>
     <c:if test="${isAdmin}">
         <!-- Load selected theatre -->
         <script>
             loadSelectedOption("#defaultLocation", "#theatreOption", "${theatreId}");
         </script>
     </c:if>
+
     <!-- Load previous room number input -->
     <script>
         loadSelectedOption("#defaultRoom", "#roomNumber", "${roomNumberInput}");

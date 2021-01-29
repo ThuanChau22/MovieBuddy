@@ -19,7 +19,7 @@ public class DBConnection {
 
         // Get current path to .properties file
         String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath().replaceAll("%20", " ");
-        String dbConfigPath = rootPath + "db.properties";
+        String dbConfigPath = rootPath + S.CREDENTIAL;
 
         // Get database credential from .properties file
         Properties props = new Properties();
@@ -32,6 +32,10 @@ public class DBConnection {
         String user = props.getProperty("user");
         String pass = props.getProperty("pass");
         conn = DriverManager.getConnection(url, user, pass);
+        PreparedStatement utc_minus_8 = conn.prepareStatement("SET time_zone=?;");
+        utc_minus_8.setString(1, "US/Pacific");
+        utc_minus_8.executeUpdate();
+        close(utc_minus_8);
         return conn;
     }
 

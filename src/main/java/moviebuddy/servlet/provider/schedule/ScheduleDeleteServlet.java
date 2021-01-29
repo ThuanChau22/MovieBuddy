@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import moviebuddy.dao.ScheduleDAO;
 import moviebuddy.model.Schedule;
-import moviebuddy.util.Validation;
+import moviebuddy.util.V;
 import moviebuddy.util.S;
 
 @WebServlet("/" + S.SCHEDULE_DELETE)
@@ -32,8 +32,8 @@ public class ScheduleDeleteServlet extends HttpServlet {
             // Check authorized access as admin and manager
             if (role != null && (role.equals(S.ADMIN) || role.equals(S.MANAGER))) {
                 // Sanitize parameter
-                String movieId = Validation.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
-                String scheduleId = Validation.sanitize(request.getParameter(S.SCHEDULE_ID_PARAM));
+                String movieId = V.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
+                String scheduleId = V.sanitize(request.getParameter(S.SCHEDULE_ID_PARAM));
 
                 // Check unauthorized deletion
                 String errorMessage = "";

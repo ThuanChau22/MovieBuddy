@@ -13,40 +13,36 @@ body {
     flex-shrink: 0;
 }
 
-.navbarPadding {
+.navbar-padding {
     min-height: 55px;
 }
 
-#custom-scroll {
+.custom-scroll {
     height: 100%;
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
 }
 
-#custom-scroll::-webkit-scrollbar {
+.custom-scroll::-webkit-scrollbar {
     width: 8px;
 }
 
-#custom-scroll::-webkit-scrollbar-track {
+.custom-scroll::-webkit-scrollbar-track {
     box-shadow: inset 0 0 5px rgba(128, 128, 128, 0.5);
     border-radius: 10px;
 }
 
-#custom-scroll::-webkit-scrollbar-thumb {
+.custom-scroll::-webkit-scrollbar-thumb {
     background: rgb(191, 191, 191);
     border-radius: 10px;
 }
 
-#custom-scroll::-webkit-scrollbar-thumb:hover {
+.custom-scroll::-webkit-scrollbar-thumb:hover {
     background: rgb(140, 140, 140);
 }
 
-.formAsLink {
-    margin-bottom: 0px;
-}
-
-.inputAsLink {
+.custom-link {
     background-color: transparent;
     border: none;
     color: #007bff;
@@ -56,26 +52,151 @@ body {
     text-decoration: none;
 }
 
-.inputAsLink:hover {
+.custom-link:hover {
     color: #0056b3;
     text-decoration: none;
 }
 
-.inputAsLink:focus {
+.custom-link:focus {
     outline: none;
 }
 
-.inputbox {
-    width: 100%;
+.form-control:focus {
+    box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, .25);
 }
 
-.errormessagePadding {
+.spinner-wrapper {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.spinner-border {
+    border: .1em solid currentColor;
+    border-right-color: transparent;
+    animation: spinner-border 1.5s linear infinite;
+}
+
+.spinner-search {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.spinner-home {
+    width: 4rem;
+    height: 4rem;
+}
+
+.spinner-showtime {
+    width: 2rem;
+    height: 2rem;
+}
+
+.search-form {
+    position: relative;
+    margin-bottom: 0px;
+}
+
+.search-button {
+    color: #929292;
+    background: transparent;
+    border: none;
+    padding: 0px;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.search-button:hover {
+    color: #17a2b8;
+}
+
+.search-button:focus {
+    outline: none;
+}
+
+.search-button:active {
+    color: #929292;
+}
+
+.dropdown-menu {
+    position: absolute!important;
+    width: 100%;
+    animation-duration: 0.3s;
+    -webkit-animation-duration: 0.3s;
+    animation-fill-mode: both;
+    -webkit-animation-fill-mode: both;
+    animation-name: slideDown;
+    -webkit-animation-name: slideDown;
+}
+
+.dropdown-item {
+    outline: none;
+}
+
+.search-panel {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.search-result-header {
+    background-color: #17a2b8;
+    color: #fff;
+    padding: 5px 15px 5px 15px;
+    border-radius: 0.2rem;
+}
+
+.close {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+}
+
+.close:focus {
+    outline: none;
+}
+
+@keyframes slideDown {
+    0% {
+        transform: translateY(1rem);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0rem);
+        opacity: 1;
+    }
+    0% {
+        transform: translateY(-1rem);
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes slideDown {
+    0% {
+        -webkit-transform: transform;
+        -webkit-opacity: 0;
+    }
+    100% {
+        -webkit-transform: translateY(0);
+        -webkit-opacity: 1;
+    }
+    0% {
+        -webkit-transform: translateY(-1rem);
+        -webkit-opacity: 0;
+    }
+}
+
+.errormessage-padding {
     position: relative;
     padding-bottom: 24px;
     margin-bottom: 16px;
 }
 
-.errormessageWrapper {
+.errormessage-wrapper {
     position: absolute;
     width: 100%;
 }
@@ -84,9 +205,14 @@ body {
     color: red;
 }
 
-.button {
+.form-button {
     display: inline-block;
     margin-bottom: 0px;
+}
+
+.list-button {
+    display: table-cell;
+    padding: 5px 5px 10px 0px;
 }
 
 table {
@@ -109,7 +235,7 @@ th {
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 }
 
-.inputCell {
+.input-cell {
     background-color: #dddddd;
     position: sticky;
     top: 41px;
@@ -196,14 +322,16 @@ tr:nth-child(even) {
 }
 
 .date-picker-link:active {
-    background: #929292;
+    background: #b3b3b3;
     color: #fff;
 }
 
 .selected-link, .selected-link:hover {
-    background: #595959;
+    background: #b3b3b3;
     color: #fff;
     display: block;
+    text-decoration: none;
+    cursor: default;
 }
 
 .dayOfWeek, .month-date {

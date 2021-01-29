@@ -1,5 +1,8 @@
 package moviebuddy.util;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -64,6 +67,7 @@ public class S {
     public static final String STAFF_GET = "staff-get";
     public static final String STAFF_CREATE = "staff-create";
     public static final String STAFF_DELETE = "staff-delete";
+    public static final String LOCATION = "customer-theatre-location";
     public static final String ROLE_GET = "role-get";
     public static final String SHOWTIME = "showtime";
     public static final String ERROR = "error";
@@ -140,6 +144,8 @@ public class S {
     public static final String ACCOUNT_ID = "accountId";
     public static final String USERNAME = "userName";
     public static final String ZIPCODE = "zipcode";
+    public static final String CURRENT_THEATRE_ID = "currentTheatreId";
+    public static final String CURRENT_THEATRE_NAME = "currentTheatreName";
     public static final String STAFF_ID = "staffId";
     public static final String ROLE = "role";
     public static final String EMPLOY_THEATRE_ID = "employTheatreId";
@@ -185,6 +191,18 @@ public class S {
 
     // Error
     public static final String ERROR_MESSAGE = "prevErrorMessage";
+
+    // Get api key
+    public static String ggKey() throws IOException {
+        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath().replaceAll("%20",
+                " ");
+        String dbConfigPath = rootPath + S.CREDENTIAL;
+
+        // Get credential from .properties file
+        Properties props = new Properties();
+        props.load(new FileInputStream(dbConfigPath));
+        return props.getProperty("key");
+    }
 
     // Format date with given pattern
     public static String date(String pattern, LocalDate date) {

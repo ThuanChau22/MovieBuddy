@@ -172,6 +172,16 @@ public class V {
         return "";
     }
 
+    public static String validateZipCodeForm(String zip) {
+        if (zip.isEmpty()) {
+            return "Please enter zipcode";
+        }
+        if (!validateNumber(zip).isEmpty()) {
+            return "Invalid zip code";
+        }
+        return "";
+    }
+
     public static String validateUserName(String userName) {
         if (userName.isEmpty()) {
             return "Username field cannot be empty\n";

@@ -138,8 +138,6 @@ function validateRoomForm(form) {
 function validateMovieForm(form, isCreate) {
     errorId = document.getElementById(ERROR_MESSAGE);
     errorId.innerHTML = fail = "";
-    console.log(form.poster.value);
-    console.log(form.trailer.value);
     if (form.title.value == "" || form.release_date.value == ""
         || form.duration.value == "" || form.description.value == ""
         || (isCreate && (form.poster.value == "" || form.trailer.value == ""))) {
@@ -166,6 +164,16 @@ function validateScheduleForm(form) {
         return false;
     }
     return true;
+}
+
+// Validate change zipcode form
+function validateZipCodeForm(form) {
+    zipErrorId = document.getElementById(ZIP_ERROR);
+    if (form.zip.value == "") {
+        zipErrorId.innerHTML = "Please enter zipcode\n";
+        return false;
+    }
+    return checkZip(form.zip) == "" ? true : false;
 }
 
 function checkName(nameInput) {

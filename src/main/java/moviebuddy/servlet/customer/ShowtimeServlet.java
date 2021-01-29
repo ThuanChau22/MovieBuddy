@@ -5,6 +5,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import com.google.gson.Gson;
 
 import java.io.PrintWriter;
@@ -40,12 +41,24 @@ public class ShowtimeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            // Set and remove previous inputs from session
+            HttpSession session = request.getSession();
+            request.setAttribute("zipInput", session.getAttribute(S.USER_ZIP_INPUT));
+            request.setAttribute("errorMessage", session.getAttribute(S.ERROR_MESSAGE));
+            session.removeAttribute(S.USER_ZIP_INPUT);
+            session.removeAttribute(S.ERROR_MESSAGE);
+
             // Sanitize user inputs
             String movieId = V.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
             String selectedDate = V.sanitize(request.getParameter(S.DATE_PARAM));
 
-            // Set current theatre id
-            String theatreId = "32";
+            // Get current theatre id
+            request.getRequestDispatcher(S.LOCATION).include(request, response);
+            String theatreId = "";
+            Object theatreIdObj = request.getSession().getAttribute(S.CURRENT_THEATRE_ID);
+            if (theatreIdObj != null) {
+                theatreId = theatreIdObj.toString();
+            }
 
             // Set current date
             LocalDate currentDate = LocalDate.now(ZoneId.of("UTC-8"));
@@ -101,8 +114,12 @@ public class ShowtimeServlet extends HttpServlet {
             String movieId = V.sanitize(request.getParameter(S.MOVIE_ID_PARAM));
             String selectedDate = V.sanitize(request.getParameter(S.DATE_PARAM));
 
-            // Set current theatre id
-            String theatreId = "32";
+            // Get current theatre id
+            String theatreId = "";
+            Object theatreIdObj = request.getSession().getAttribute(S.CURRENT_THEATRE_ID);
+            if (theatreIdObj != null) {
+                theatreId = theatreIdObj.toString();
+            }
 
             // Retrieve schedules from movie Id on selected date
             List<Schedule> schedules = new LinkedList<>();

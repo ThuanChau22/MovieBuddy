@@ -153,6 +153,8 @@ public class S {
     public static final String ADMIN = "admin";
     public static final String MANAGER = "manager";
     public static final String FACULTY = "faculty";
+    public static final String USER_ZIP_INPUT = "prevUserZipInput";
+
 
     // Auth
     public static final String EMAIL_INPUT = "prevEmailInput";
@@ -211,6 +213,7 @@ public class S {
 
     // Generate simple random schedules
     public static void initSchedule() {
+        // Parameters
         final int MAX_SHOWDATE = 7;
         final int MAX_THEATRE = 2;
         final int MAX_MOVIE = 5;

@@ -377,6 +377,39 @@ public class UserDAO {
         return "";
     }
 
+    public String updateZipCode(String accountId, String zip) throws Exception {
+        String UPDATE_ZIPCODE = String.format(
+            "UPDATE %s SET %s=? WHERE %s=?;",
+            RegisteredDB.TABLE, RegisteredDB.ZIP_CODE, RegisteredDB.ACCOUNT_ID
+        );
+
+        Connection conn = null;
+        PreparedStatement updateZipCode = null;
+        try {
+            conn = DBConnection.connect();
+            conn.setAutoCommit(false);
+            updateZipCode = conn.prepareStatement(UPDATE_ZIPCODE);
+            updateZipCode.setString(1, zip);
+            updateZipCode.setString(2, accountId);
+            updateZipCode.executeUpdate();
+            conn.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                System.out.println("Transaction is being rolled back");
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return "Fail to update zipcode";
+        } finally {
+            conn.setAutoCommit(true);
+            DBConnection.close(updateZipCode);
+            DBConnection.close(conn);
+        }
+        return "";
+    }
+
     public String deleteProvider(String staffId) throws Exception {
         String DELETE_EMPLOY = String.format(
             "DELETE FROM %s WHERE %s=?;",
